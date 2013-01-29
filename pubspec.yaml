@@ -1,0 +1,6 @@
+name:  sudoku
+description:  A simple sudoku puzzle solver
+
+dependencies:
+  browser: any
+  unittest: any
