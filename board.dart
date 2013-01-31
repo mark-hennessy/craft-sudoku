@@ -1,7 +1,7 @@
 part of sudoku;
 
 class Board {
-  List<List<int>> grid;
+  List<List<Cell>> grid;
   
   Board() {
   }
@@ -33,9 +33,7 @@ class Rule {
   
   Rule(this.x, this.y, this.width, this.hight);
   
-  
-  
-  List<int> get numbers {
+  List<Cell> get cells {
     return null;
   }
   
