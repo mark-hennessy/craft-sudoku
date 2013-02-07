@@ -18,8 +18,13 @@ void runTests() {
     });
     
     group('Board', () {
+      Board board;
+      
+      setUp(() {
+        board = new Board(values);
+      });
+      
       test('grid initialization', () {
-        var board = new Board(values);
         expect(board._grid, hasLength(Board.SIZE));
         expect(board._grid[0], hasLength(Board.SIZE));
         board.forEachCell((cell, row, column) {
@@ -27,6 +32,13 @@ void runTests() {
         });
         expect(board.getCell(0, 2).value, equals(3));
         expect(board.getCell(0, 4).value, equals(2));
+      });
+      
+      test('_defineUnit', () {
+        var unit = board._defineUnit(row: 1, column: 2, rowSpan: 2, columnSpan: 2);
+        expect(unit.cells, hasLength(4));
+        var values = unit.cells.mappedBy((c)=>c.value);
+        expect(values, unorderedEquals([0, 3, 1, 8]));
       });
     });
   

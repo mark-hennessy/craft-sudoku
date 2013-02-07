@@ -7,16 +7,27 @@ part 'puzzle_parser.dart';
 part 'board.dart';
 part 'tests.dart';
 
+
 void main() {
-  initializeUI();
-  var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, "========");
-  var values = Parser.parsePuzzle(puzzles[0]);
-  var board = new Board(values);
-  
   runTests();
+  var sudokuGame = new Sudoku();
 }
 
-void initializeUI() {
-  query("#tests")
-    ..onClick.listen((e) => runTests());
+class Sudoku {
+  Board board;
+  
+  Sudoku() {
+    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, "========");
+    var values = Parser.parsePuzzle(puzzles[0]);
+    board = new Board(values);
+    initializeUI();
+  }
+  
+  void initializeUI() {
+    query("#tests")
+      ..onClick.listen((e) => runTests());
+    
+    board.render();
+  }
+
 }

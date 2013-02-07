@@ -32,13 +32,14 @@ class Board {
     
   }
   
-  _defineUnit({int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+  Unit _defineUnit({int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
     Unit unit = new Unit();
     for(int r = row; r < row + rowSpan; r++) {
       for(int c = column; c < column + columnSpan; c++) {
         unit.add(_grid[r][c]);
       }
     }
+    return unit;
   }
 
   Cell getCell(int row, int column) {
@@ -53,8 +54,26 @@ class Board {
     }  
   }
   
+  void render() {
+    var table = new TableElement();
+    for(int r = 0; r < SIZE; r++) {
+      TableRowElement row = table.insertRow(r);
+      for(int c = 0; c < SIZE; c++) {
+        Cell cell = getCell(r, c);
+        row.insertCell(c)
+        ..text = cell.hasValue ? cell.value : "";
+      }
+    }
+    var oldGrid = query('#grid');
+    oldGrid.replaceWith(table);
+  }
+  
+  
 }
 
+/**
+ * A collection of cells such as a row, column or block
+ */
 class Unit {
   List<Cell> cells = [];
   
