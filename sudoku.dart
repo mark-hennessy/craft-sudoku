@@ -6,7 +6,7 @@ import 'packages/unittest/unittest.dart';
 part 'puzzle_parser.dart';
 part 'board.dart';
 part 'tests.dart';
-
+part 'utils.dart';
 
 void main() {
   runTests();
@@ -17,9 +17,9 @@ class Sudoku {
   Board board;
   
   Sudoku() {
-    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, "========");
-    var values = Parser.parsePuzzle(puzzles[0]);
-    board = new Board(values);
+    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+    var cellValues = Parser.parsePuzzle(puzzles[0]);
+    board = new Board(cellValues);
     initializeUI();
   }
   

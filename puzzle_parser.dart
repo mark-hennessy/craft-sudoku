@@ -2,7 +2,7 @@ part of sudoku;
 
 class Parser {
   
-  static List<String> parseSudokuData(String sudokuData, [String separator = "\n"]) {
+  static List<String> parseSudokuData(String sudokuData, {String separator : "\n"}) {
     return sudokuData.trim().replaceAll(".", "0").split(separator);
   }
 
