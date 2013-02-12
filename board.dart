@@ -20,8 +20,22 @@ class Board {
   static const int GRID_SIZE = 9;
   static const int BOX_SIZE = 3; 
   
+  List<int> cellValues;
+  
+  List<Unit> units = [];
   List<Cell> cells = [];
-  List<int> cellValues = [];
+  List<Cell> get emptyCells => 
+      cells.where((c) => !c.hasValidValue).toList();
+  List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
+      cells.where((c) => !c.hasValidValue && c.availableValues.length == 1).toList();
+  List<Cell> get emptyCellsSortedByAvailableValuesAscending {
+    var sortedList = emptyCells;
+    sortedList.sort((c1, c2) => 
+        CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+    return sortedList;
+  }
+  
+  bool get isSolved => emptyCells.isEmpty;
   
   /**
    * Returns a [Cell] at the given [row] and [column].
@@ -31,53 +45,46 @@ class Board {
   }
   
   /**
+   * Constructs the [Board], [Cell]s and [Unit]s.
+   * 
    * The process of calculating and storing information about cells and 
    * their relationships is slow and memory intensive. Although the values 
-   * of cells change, the relationships between cells do not.
-   * 
-   * In order to combat performance issues, this constructor uses the 
-   * singleton pattern to construct a single instance of a [Board]. 
-   * The board is a flyweight object, and its only state/context is
+   * of cells change, the relationships between cells do not. Because of this,
+   * the board is designed as a flyweight object. Its only state/context is
    * a list [cellValues].
    */
-  static Board _board;
-  factory Board(List<int> cellValues) {
-    if(_board == null) {
-      _board = new Board._internal();
-    }
-    _board.cellValues = cellValues;
-    return _board;
-  }
-  
-  /**
-   * Constructs the [Board], [Cell]s and [Unit]s.
-   */
-  Board._internal() {
-    //Initialize grid
+  Board(List<int> this.cellValues) {
+    // Initialize grid
     for(int r = 0; r < GRID_SIZE; r++) {
       for(int c = 0; c < GRID_SIZE; c++) {
         cells.add(new Cell._internal(this, r, c));
       }
     }  
-    //Define row and column units
+    // Define row and column units
     for(int i = 0; i < GRID_SIZE; i++) {
+      
       var rowUnit = new Unit();
+      units.add(rowUnit);
       _traverseCells((cell) {
         rowUnit.add(cell);
         cell.rowUnit = rowUnit;
       }, row: i, columnSpan: GRID_SIZE);
       
       var columnUnit = new Unit();
+      units.add(columnUnit);
       _traverseCells((cell) {
         columnUnit.add(cell);
         cell.columnUnit = columnUnit;
       }, column: i, rowSpan: GRID_SIZE);
+      
     }
-    //Define boxes
+    
+    // Define boxes
     var grayBox = false;
     for(int r = 0; r < GRID_SIZE; r+= 3) {
       for(int c = 0; c < GRID_SIZE; c+= 3) {
         var boxUnit = new Unit();
+        units.add(boxUnit);
         if(grayBox) {
           boxUnit.cssClass = 'grid-gray';
         }
@@ -88,7 +95,7 @@ class Board {
         }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
       }
     }
-    //Calculate peers for each cell
+    // Calculate peers for each cell
     cells.forEach((c) => c._calculatePeers());
   }
   
@@ -104,23 +111,23 @@ class Board {
   }
   
   /**
-   * Tells the board to render itself. An optional [containerSelector] can 
-   * be specified to select the container DOM element for the board.
+   * Tells the board to render itself.
    */
-  void render([String containerSelector = '.grid']) {
+  void render() {
     var tableElement = new TableElement();
+    tableElement.classes.add('grid');
     for(int r = 0; r < GRID_SIZE; r++) {
       var rowElement = tableElement.insertRow(r);
       for(int c = 0; c < GRID_SIZE; c++) {
         Cell cell = getCell(r, c);
         rowElement.insertCell(c)
-        ..text = cell.hasValidValue ? cell.value.toString() : "0"
+        ..text = cell.hasValidValue ? cell.value.toString() : ""
         ..classes.add(cell.boxUnit.cssClass);
       }
     }
-    var gridContainer = query(containerSelector);
-    gridContainer.children.clear();
+    var gridContainer = query('.gridContainer');
     gridContainer.children.add(tableElement);
+    gridContainer.children.add(new BRElement());
   }
   
 }

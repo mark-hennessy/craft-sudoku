@@ -33,7 +33,7 @@ p {
   margin-top: 140px;
 }
 
-.grid table { 
+table.grid { 
   border: 3px solid black;
   border-collapse: collapse;
   border-spacing: 0;
