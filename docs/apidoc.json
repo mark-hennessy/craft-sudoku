@@ -6262,119 +6262,11 @@
     "children": [
       {
         "returnType": {
-          "name": "int",
-          "refId": "int"
-        },
-        "kind": "method",
-        "name": "compareDecending",
-        "children": [
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "param",
-            "name": "a",
-            "id": "a"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "param",
-            "name": "b",
-            "id": "b"
-          }
-        ],
-        "id": "compareDecending2()"
-      },
-      {
-        "returnType": {
-          "name": "int",
-          "refId": "int"
-        },
-        "kind": "method",
-        "name": "compareAcending",
-        "children": [
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "param",
-            "name": "a",
-            "id": "a"
-          },
-          {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "param",
-            "name": "b",
-            "id": "b"
-          }
-        ],
-        "id": "compareAcending2()"
-      },
-      {
-        "returnType": {
-          "name": "List",
-          "refId": "List"
-        },
-        "kind": "method",
-        "name": "reverse",
-        "children": [
-          {
-            "ref": {
-              "name": "List",
-              "refId": "List"
-            },
-            "kind": "param",
-            "name": "list",
-            "id": "list"
-          }
-        ],
-        "id": "reverse1()"
-      },
-      {
-        "returnType": {
-          "name": "List",
-          "refId": "List"
-        },
-        "kind": "method",
-        "comment": "\nReturns the elements in [b] that are not in [a]\n",
-        "name": "subtractListAFromListB",
-        "children": [
-          {
-            "ref": {
-              "name": "List",
-              "refId": "List"
-            },
-            "kind": "param",
-            "name": "a",
-            "id": "a"
-          },
-          {
-            "ref": {
-              "name": "List",
-              "refId": "List"
-            },
-            "kind": "param",
-            "name": "b",
-            "id": "b"
-          }
-        ],
-        "id": "subtractListAFromListB2()"
-      },
-      {
-        "returnType": {
           "name": "void",
           "refId": "void"
         },
         "kind": "method",
-        "name": "print",
+        "name": "printDebugInfo",
         "children": [
           {
             "ref": {
@@ -6386,7 +6278,7 @@
             "id": "text"
           }
         ],
-        "id": "print1()"
+        "id": "printDebugInfo1()"
       },
       {
         "returnType": {
@@ -6397,6 +6289,36 @@
         "comment": "\nThis class contains the unit tests for the Sudoku solver.\n\nTest board\n----------\n003020600\n900305001\n001806400\n008102900\n700000008\n006708200\n002609500\n800203009\n005010300\n",
         "name": "runTests",
         "id": "runTests0()"
+      },
+      {
+        "returnType": {
+          "name": "int",
+          "refId": "int"
+        },
+        "kind": "method",
+        "comment": "\nConverts two-dimensional [row] and [column] coordinates and converts \nthem to a one-dimensional list index. \n",
+        "name": "indexAtGridCoordinates",
+        "children": [
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "param",
+            "name": "row",
+            "id": "row"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "param",
+            "name": "column",
+            "id": "column"
+          }
+        ],
+        "id": "indexAtGridCoordinates2()"
       },
       {
         "returnType": {
@@ -6440,9 +6362,166 @@
           "refId": "Object"
         },
         "kind": "class",
+        "comment": "\nUtilites for working with collections. \n",
+        "name": "CollectionUtils",
+        "children": [
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "List",
+              "refId": "List"
+            },
+            "kind": "method",
+            "comment": "\nReturns the elements in [b] that are not in [a]\n",
+            "name": "subtractListAFromListB",
+            "children": [
+              {
+                "ref": {
+                  "name": "List",
+                  "refId": "List"
+                },
+                "kind": "param",
+                "name": "a",
+                "id": "a"
+              },
+              {
+                "ref": {
+                  "name": "List",
+                  "refId": "List"
+                },
+                "kind": "param",
+                "name": "b",
+                "id": "b"
+              }
+            ],
+            "id": "subtractListAFromListB2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "List",
+              "refId": "List"
+            },
+            "kind": "method",
+            "comment": "\nReturns a new [List] with the elements in the given [List] in reverse order.\n",
+            "name": "reverse",
+            "children": [
+              {
+                "ref": {
+                  "name": "List",
+                  "refId": "List"
+                },
+                "kind": "param",
+                "name": "list",
+                "id": "list"
+              }
+            ],
+            "id": "reverse1()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "comment": "\nComparator function for sorting numeric collections in ascending order.\n",
+            "name": "compareAscending",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "a",
+                "id": "a"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "b",
+                "id": "b"
+              }
+            ],
+            "id": "compareAscending2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "comment": "\nComparator function for sorting numeric collections in decending order.\n",
+            "name": "compareDecending",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "a",
+                "id": "a"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "b",
+                "id": "b"
+              }
+            ],
+            "id": "compareDecending2()"
+          }
+        ],
+        "id": "CollectionUtils"
+      },
+      {
+        "superclass": {
+          "name": "Object",
+          "refId": "Object"
+        },
+        "kind": "class",
         "comment": "\nRepresents a single cell in the 81 cell [Board].\n",
         "name": "Cell",
         "children": [
+          {
+            "returnType": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "method",
+            "name": "value",
+            "id": "value0()"
+          },
+          {
+            "isSetter": true,
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "name": "value=",
+            "children": [
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "value",
+                "id": "value"
+              }
+            ],
+            "id": "value=1()"
+          },
           {
             "returnType": {
               "name": "bool",
@@ -6465,9 +6544,9 @@
               ]
             },
             "kind": "method",
-            "comment": "\nCell values that are already taken by the cell's box, row, or column.\n",
-            "name": "unavailableValues",
-            "id": "unavailableValues0()"
+            "comment": "\nCell values that are not already taken by the cell's box, row, or column [Unit].\n",
+            "name": "availableValues",
+            "id": "availableValues0()"
           },
           {
             "returnType": {
@@ -6481,9 +6560,9 @@
               ]
             },
             "kind": "method",
-            "comment": "\nCell values that are not already taken by the cell's box, row, or column.\n",
-            "name": "availableValues",
-            "id": "availableValues0()"
+            "comment": "\nCell values that are already taken by the cell's box, row, or column.\n",
+            "name": "unavailableValues",
+            "id": "unavailableValues0()"
           },
           {
             "returnType": {
@@ -6491,21 +6570,38 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\nConstructor. A cell is not well-formed\nuntil the [calculatePeers()] method is called.\n",
-            "name": "Cell",
+            "comment": "\nConstructor. A cell is not well-formed\nuntil the [_calculatePeers] method is called.\n",
+            "name": "Cell._internal",
             "children": [
+              {
+                "ref": {
+                  "name": "Board",
+                  "refId": "Board"
+                },
+                "kind": "param",
+                "name": "board",
+                "id": "board"
+              },
               {
                 "ref": {
                   "name": "int",
                   "refId": "int"
                 },
-                "isOptional": true,
                 "kind": "param",
-                "name": "value",
-                "id": "value"
+                "name": "row",
+                "id": "row"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "column",
+                "id": "column"
               }
             ],
-            "id": "Cell1()"
+            "id": "Cell._internal3()"
           },
           {
             "returnType": {
@@ -6514,8 +6610,17 @@
             },
             "kind": "method",
             "comment": "\nThis method must be called after the box, row, and column units \nhave been set, but before other properties are used.\n",
-            "name": "calculatePeers",
-            "id": "calculatePeers0()"
+            "name": "_calculatePeers",
+            "id": "_calculatePeers0()"
+          },
+          {
+            "ref": {
+              "name": "int",
+              "refId": "int"
+            },
+            "kind": "property",
+            "name": "value",
+            "id": "value"
           },
           {
             "ref": {
@@ -6526,6 +6631,22 @@
             "comment": "\nTrue if the cell's current value is a number between 1 and 9 inclusive.\n",
             "name": "hasValidValue",
             "id": "hasValidValue"
+          },
+          {
+            "ref": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "int",
+                  "refId": "int"
+                }
+              ]
+            },
+            "kind": "property",
+            "comment": "\nCell values that are not already taken by the cell's box, row, or column [Unit].\n",
+            "name": "availableValues",
+            "id": "availableValues"
           },
           {
             "ref": {
@@ -6554,22 +6675,6 @@
                 }
               ]
             },
-            "kind": "property",
-            "comment": "\nCell values that are not already taken by the cell's box, row, or column.\n",
-            "name": "availableValues",
-            "id": "availableValues"
-          },
-          {
-            "ref": {
-              "name": "List",
-              "refId": "List",
-              "arguments": [
-                {
-                  "name": "int",
-                  "refId": "int"
-                }
-              ]
-            },
             "isStatic": true,
             "kind": "property",
             "name": "VALID_VALUES",
@@ -6577,17 +6682,17 @@
           },
           {
             "ref": {
-              "name": "Unit",
-              "refId": "Unit"
+              "name": "Board",
+              "refId": "Board"
             },
             "kind": "property",
-            "name": "box",
-            "id": "box"
+            "name": "board",
+            "id": "board"
           },
           {
             "ref": {
-              "name": "Unit",
-              "refId": "Unit"
+              "name": "int",
+              "refId": "int"
             },
             "kind": "property",
             "name": "row",
@@ -6595,12 +6700,39 @@
           },
           {
             "ref": {
-              "name": "Unit",
-              "refId": "Unit"
+              "name": "int",
+              "refId": "int"
             },
             "kind": "property",
             "name": "column",
             "id": "column"
+          },
+          {
+            "ref": {
+              "name": "Unit",
+              "refId": "Unit"
+            },
+            "kind": "property",
+            "name": "boxUnit",
+            "id": "boxUnit"
+          },
+          {
+            "ref": {
+              "name": "Unit",
+              "refId": "Unit"
+            },
+            "kind": "property",
+            "name": "rowUnit",
+            "id": "rowUnit"
+          },
+          {
+            "ref": {
+              "name": "Unit",
+              "refId": "Unit"
+            },
+            "kind": "property",
+            "name": "columnUnit",
+            "id": "columnUnit"
           },
           {
             "ref": {
@@ -6618,35 +6750,43 @@
             "id": "peers"
           },
           {
-            "ref": {
-              "name": "int",
-              "refId": "int"
-            },
-            "kind": "property",
-            "name": "value",
-            "id": "value"
-          },
-          {
             "returnType": {
               "name": "dynamic",
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\nConstructor. A cell is not well-formed\nuntil the [calculatePeers()] method is called.\n",
-            "name": "Cell",
+            "comment": "\nConstructor. A cell is not well-formed\nuntil the [_calculatePeers] method is called.\n",
+            "name": "Cell._internal",
             "children": [
+              {
+                "ref": {
+                  "name": "Board",
+                  "refId": "Board"
+                },
+                "kind": "param",
+                "name": "board",
+                "id": "board"
+              },
               {
                 "ref": {
                   "name": "int",
                   "refId": "int"
                 },
-                "isOptional": true,
                 "kind": "param",
-                "name": "value",
-                "id": "value"
+                "name": "row",
+                "id": "row"
+              },
+              {
+                "ref": {
+                  "name": "int",
+                  "refId": "int"
+                },
+                "kind": "param",
+                "name": "column",
+                "id": "column"
               }
             ],
-            "id": "Cell1()"
+            "id": "Cell._internal3()"
           }
         ],
         "id": "Cell"
@@ -6719,27 +6859,11 @@
         "children": [
           {
             "returnType": {
-              "name": "List",
-              "refId": "List",
-              "arguments": [
-                {
-                  "name": "Cell",
-                  "refId": "Cell"
-                }
-              ]
-            },
-            "kind": "method",
-            "comment": "\nReturns all of the board's [Cell]s.\n",
-            "name": "cells",
-            "id": "cells0()"
-          },
-          {
-            "returnType": {
               "name": "Cell",
               "refId": "Cell"
             },
             "kind": "method",
-            "comment": "\nReturns a [Cell] at the given row and column.\n",
+            "comment": "\nReturns a [Cell] at the given [row] and [column].\n",
             "name": "getCell",
             "children": [
               {
@@ -6769,7 +6893,6 @@
               "refId": "dynamic"
             },
             "kind": "method",
-            "comment": "\nConstructs a board using the given cell values.\n",
             "name": "Board",
             "children": [
               {
@@ -6792,12 +6915,22 @@
           },
           {
             "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "method",
+            "comment": "\nConstructs the [Board], [Cell]s and [Unit]s.\n",
+            "name": "Board._internal",
+            "id": "Board._internal0()"
+          },
+          {
+            "returnType": {
               "name": "void",
               "refId": "void"
             },
             "kind": "method",
             "comment": "\nExecutes the given [CellFunction] for the given area of the board.\n",
-            "name": "traverseCells",
+            "name": "_traverseCells",
             "children": [
               {
                 "ref": {
@@ -6849,7 +6982,7 @@
                 "id": "columnSpan"
               }
             ],
-            "id": "traverseCells5()"
+            "id": "_traverseCells5()"
           },
           {
             "returnType": {
@@ -6872,22 +7005,6 @@
               }
             ],
             "id": "render1()"
-          },
-          {
-            "ref": {
-              "name": "List",
-              "refId": "List",
-              "arguments": [
-                {
-                  "name": "Cell",
-                  "refId": "Cell"
-                }
-              ]
-            },
-            "kind": "property",
-            "comment": "\nReturns all of the board's [Cell]s.\n",
-            "name": "cells",
-            "id": "cells"
           },
           {
             "ref": {
@@ -6915,20 +7032,39 @@
               "refId": "List",
               "arguments": [
                 {
-                  "name": "List",
-                  "refId": "List",
-                  "arguments": [
-                    {
-                      "name": "Cell",
-                      "refId": "Cell"
-                    }
-                  ]
+                  "name": "Cell",
+                  "refId": "Cell"
                 }
               ]
             },
             "kind": "property",
-            "name": "_grid",
-            "id": "_grid"
+            "name": "cells",
+            "id": "cells"
+          },
+          {
+            "ref": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "int",
+                  "refId": "int"
+                }
+              ]
+            },
+            "kind": "property",
+            "name": "cellValues",
+            "id": "cellValues"
+          },
+          {
+            "ref": {
+              "name": "Board",
+              "refId": "Board"
+            },
+            "isStatic": true,
+            "kind": "property",
+            "name": "_board",
+            "id": "_board"
           },
           {
             "returnType": {
@@ -6936,7 +7072,6 @@
               "refId": "dynamic"
             },
             "kind": "constructor",
-            "comment": "\nConstructs a board using the given cell values.\n",
             "name": "Board",
             "children": [
               {
@@ -6956,6 +7091,16 @@
               }
             ],
             "id": "Board1()"
+          },
+          {
+            "returnType": {
+              "name": "dynamic",
+              "refId": "dynamic"
+            },
+            "kind": "constructor",
+            "comment": "\nConstructs the [Board], [Cell]s and [Unit]s.\n",
+            "name": "Board._internal",
+            "id": "Board._internal0()"
           }
         ],
         "id": "Board"
@@ -6972,6 +7117,7 @@
           "refId": "Object"
         },
         "kind": "class",
+        "comment": "\nA parser that parses Sudoku data in string format.\n",
         "name": "Parser",
         "children": [
           {
@@ -6987,6 +7133,79 @@
               ]
             },
             "kind": "method",
+            "comment": "\nParses a string of Sudoku puzzles separated by a [separator] string.\nThe [separator], if not provided, defaults to '\\n'.\n",
+            "name": "_splitBoards",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "sudokuData",
+                "id": "sudokuData"
+              },
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "isOptional": true,
+                "kind": "param",
+                "name": "separator",
+                "id": "separator"
+              }
+            ],
+            "id": "_splitBoards2()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "int",
+                  "refId": "int"
+                }
+              ]
+            },
+            "kind": "method",
+            "comment": "\nParses a single Sudoku puzzle stored as a string into a list of integer cell values.\n",
+            "name": "_parseCellValues",
+            "children": [
+              {
+                "ref": {
+                  "name": "String",
+                  "refId": "String"
+                },
+                "kind": "param",
+                "name": "puzzle",
+                "id": "puzzle"
+              }
+            ],
+            "id": "_parseCellValues1()"
+          },
+          {
+            "isStatic": true,
+            "returnType": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "List",
+                  "refId": "List",
+                  "arguments": [
+                    {
+                      "name": "int",
+                      "refId": "int"
+                    }
+                  ]
+                }
+              ]
+            },
+            "kind": "method",
+            "comment": "\nParses [sudokuData], a string that contains multiple Sudoku puzzles, \ninto a list of puzzles. Puzzles are represented as a list of integer cell values.\n",
             "name": "parseSudokuData",
             "children": [
               {
@@ -7010,33 +7229,6 @@
               }
             ],
             "id": "parseSudokuData2()"
-          },
-          {
-            "isStatic": true,
-            "returnType": {
-              "name": "List",
-              "refId": "List",
-              "arguments": [
-                {
-                  "name": "int",
-                  "refId": "int"
-                }
-              ]
-            },
-            "kind": "method",
-            "name": "parsePuzzle",
-            "children": [
-              {
-                "ref": {
-                  "name": "String",
-                  "refId": "String"
-                },
-                "kind": "param",
-                "name": "puzzle",
-                "id": "puzzle"
-              }
-            ],
-            "id": "parsePuzzle1()"
           }
         ],
         "id": "Parser"
@@ -7066,6 +7258,42 @@
             "kind": "method",
             "name": "initializeUI",
             "id": "initializeUI0()"
+          },
+          {
+            "ref": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "List",
+                  "refId": "List",
+                  "arguments": [
+                    {
+                      "name": "int",
+                      "refId": "int"
+                    }
+                  ]
+                }
+              ]
+            },
+            "kind": "property",
+            "name": "previousStates",
+            "id": "previousStates"
+          },
+          {
+            "ref": {
+              "name": "List",
+              "refId": "List",
+              "arguments": [
+                {
+                  "name": "int",
+                  "refId": "int"
+                }
+              ]
+            },
+            "kind": "property",
+            "name": "currentState",
+            "id": "currentState"
           },
           {
             "ref": {

@@ -28,6 +28,7 @@
 <li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
 <li><div class="icon-class"></div><strong>Cell</strong></li>
 <li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -46,13 +47,21 @@ class Cell {
  
  static const List&lt;int&gt; VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9];
  
- Unit box;
- Unit row;
- Unit column;
+ Board board;
+ int row;
+ int column;
+ 
+ Unit boxUnit;
+ Unit rowUnit;
+ Unit columnUnit;
  
  Set&lt;Cell&gt; peers;
  
- int value;
+ int get value =&gt; 
+     board.cellValues[indexAtGridCoordinates(row, column)];
+ 
+ set value(int value) =&gt; 
+     board.cellValues[indexAtGridCoordinates(row, column)] = value;
  
  /**
   * True if the cell's current value is a number between 1 and 9 inclusive.
@@ -60,23 +69,23 @@ class Cell {
  bool get hasValidValue =&gt; VALID_VALUES.contains(value);
  
  /**
-  * Cell values that are already taken by the cell's box, row, or column.
-  */
- List&lt;int&gt; get unavailableValues =&gt; peers
-     .where((c) =&gt; c.hasValidValue)
-     .mappedBy((c) =&gt; c.value).toList();
- 
- /**
-  * Cell values that are not already taken by the cell's box, row, or column.
+  * Cell values that are not already taken by the cell's box, row, or column [Unit].
   */
  List&lt;int&gt; get availableValues =&gt; 
-     subtractListAFromListB(unavailableValues, VALID_VALUES);
+     CollectionUtils.subtractListAFromListB(unavailableValues, VALID_VALUES);
+ 
+ /**
+  * Cell values that are already taken by the cell's box, row, or column.
+  */
+ List&lt;int&gt; get unavailableValues =&gt; 
+     peers.where((c) =&gt; c.hasValidValue)
+     .map((c) =&gt; c.value).toList();
  
  /**
   * Constructor. A cell is not well-formed
-  * until the [calculatePeers()] method is called.
+  * until the [_calculatePeers] method is called.
   */
- Cell([this.value]) {
+ Cell._internal(this.board, this.row, this.column) {
    peers = new Set&lt;Cell&gt;();
  }
  
@@ -84,10 +93,10 @@ class Cell {
   * This method must be called after the box, row, and column units 
   * have been set, but before other properties are used.
   */
- void calculatePeers() {
-   peers.addAll(box.cells);
-   peers.addAll(row.cells);
-   peers.addAll(column.cells);
+ void _calculatePeers() {
+   peers.addAll(boxUnit.cells);
+   peers.addAll(rowUnit.cells);
+   peers.addAll(columnUnit.cells);
    peers.remove(this);
  }
  
@@ -110,23 +119,6 @@ VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9]
 </div>
 </div>
 <div>
-<h3>Constructors</h3>
-<div class="method"><h4 id="Cell">
-<button class="show-code">Code</button>
-new <strong>Cell</strong>([<a href="http://api.dartlang.org/dart_core/int.html">int</a> value]) <a class="anchor-link" href="#Cell"
-              title="Permalink to Cell.Cell">#</a></h4>
-<div class="doc">
-<p>Constructor. A cell is not well-formed
-until the <code>calculatePeers()</code> method is called.</p>
-<pre class="source">
-Cell([this.value]) {
- peers = new Set&lt;Cell&gt;();
-}
-</pre>
-</div>
-</div>
-</div>
-<div>
 <h3>Properties</h3>
 <div class="field"><h4 id="availableValues">
 <button class="show-code">Code</button>
@@ -135,34 +127,58 @@ final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href=
             title="Permalink to Cell.availableValues">#</a>
         </h4>
         <div class="doc">
-<p>Cell values that are not already taken by the cell's box, row, or column.</p>
+<p>Cell values that are not already taken by the cell's box, row, or column <a class="crossref" href="../sudoku/Unit.html">Unit</a>.</p>
 <pre class="source">
 List&lt;int&gt; get availableValues =&gt; 
-   subtractListAFromListB(unavailableValues, VALID_VALUES);
+   CollectionUtils.subtractListAFromListB(unavailableValues, VALID_VALUES);
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="box">
+<div class="field"><h4 id="board">
 <button class="show-code">Code</button>
-<a href="../sudoku/Unit.html">Unit</a>         <strong>box</strong> <a class="anchor-link"
-            href="#box"
-            title="Permalink to Cell.box">#</a>
+<a href="../sudoku/Board.html">Board</a>         <strong>board</strong> <a class="anchor-link"
+            href="#board"
+            title="Permalink to Cell.board">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-box
+board
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boxUnit">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>boxUnit</strong> <a class="anchor-link"
+            href="#boxUnit"
+            title="Permalink to Cell.boxUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+boxUnit
 </pre>
 </div>
 </div>
 <div class="field"><h4 id="column">
 <button class="show-code">Code</button>
-<a href="../sudoku/Unit.html">Unit</a>         <strong>column</strong> <a class="anchor-link"
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>column</strong> <a class="anchor-link"
             href="#column"
             title="Permalink to Cell.column">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
 column
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="columnUnit">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>columnUnit</strong> <a class="anchor-link"
+            href="#columnUnit"
+            title="Permalink to Cell.columnUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+columnUnit
 </pre>
 </div>
 </div>
@@ -193,13 +209,25 @@ peers
 </div>
 <div class="field"><h4 id="row">
 <button class="show-code">Code</button>
-<a href="../sudoku/Unit.html">Unit</a>         <strong>row</strong> <a class="anchor-link"
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>row</strong> <a class="anchor-link"
             href="#row"
             title="Permalink to Cell.row">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
 row
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rowUnit">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>rowUnit</strong> <a class="anchor-link"
+            href="#rowUnit"
+            title="Permalink to Cell.rowUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+rowUnit
 </pre>
 </div>
 </div>
@@ -212,9 +240,9 @@ final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href=
         <div class="doc">
 <p>Cell values that are already taken by the cell's box, row, or column.</p>
 <pre class="source">
-List&lt;int&gt; get unavailableValues =&gt; peers
-   .where((c) =&gt; c.hasValidValue)
-   .mappedBy((c) =&gt; c.value).toList();
+List&lt;int&gt; get unavailableValues =&gt; 
+   peers.where((c) =&gt; c.hasValidValue)
+   .map((c) =&gt; c.value).toList();
 </pre>
 </div>
 </div>
@@ -226,27 +254,12 @@ List&lt;int&gt; get unavailableValues =&gt; peers
         </h4>
         <div class="doc">
 <pre class="source">
-value
+int get value =&gt; 
+   board.cellValues[indexAtGridCoordinates(row, column)];
 </pre>
-</div>
-</div>
-</div>
-<div>
-<h3>Methods</h3>
-<div class="method"><h4 id="calculatePeers">
-<button class="show-code">Code</button>
-void <strong>calculatePeers</strong>() <a class="anchor-link" href="#calculatePeers"
-              title="Permalink to Cell.calculatePeers">#</a></h4>
-<div class="doc">
-<p>This method must be called after the box, row, and column units 
-have been set, but before other properties are used.</p>
 <pre class="source">
-void calculatePeers() {
- peers.addAll(box.cells);
- peers.addAll(row.cells);
- peers.addAll(column.cells);
- peers.remove(this);
-}
+set value(int value) =&gt; 
+   board.cellValues[indexAtGridCoordinates(row, column)] = value;
 </pre>
 </div>
 </div>
@@ -255,7 +268,7 @@ void calculatePeers() {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 13:26:34.915</div>
+          <div>This page was generated at 2013-02-11 22:04:11.437</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

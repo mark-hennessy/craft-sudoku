@@ -34,22 +34,27 @@ void runTests() {
       });
       
       test('parseSudokuData', () {
-        List<Board> boards = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-        expect(boards, hasLength(50));
+        List<List<int>> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+        expect(puzzles, hasLength(50));
       });
     });
     
     group('Board', () {
-      var boards = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-      var board = boards[0];
+      List<List<int>> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+      Board board;
       
       setUp(() {
-        //board = new Board(cellValues);
+        board = new Board(puzzles[0]);
+      });
+      
+      test('indexAtGridCoordinates', () {
+        expect(indexAtGridCoordinates(3, 2), equals(29));
+        expect(indexAtGridCoordinates(8, 8), equals(80));
       });
       
       test('board initialized cells correctly', () {
-        expect(board._grid, hasLength(Board.GRID_SIZE));
-        expect(board._grid[0], hasLength(Board.GRID_SIZE));
+        expect(board.cellValues, hasLength(81));
+        expect(board.cells, hasLength(81));
         board.cells.forEach((c) => expect(c, isNotNull));
       });
       
@@ -89,7 +94,7 @@ void runTests() {
   });
 }
 
-void print(String text) {
+void printDebugInfo(String text) {
   query("#debug")
     ..appendText(text);
 }

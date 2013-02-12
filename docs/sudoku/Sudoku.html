@@ -28,6 +28,7 @@
 <li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
 <li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
 <li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><div class="icon-class"></div><strong>Sudoku</strong></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -42,12 +43,15 @@
 <div class="doc">
 <pre class="source">
 class Sudoku {
+ List&lt;List&lt;int&gt;&gt; previousStates;
+ List&lt;int&gt; currentState;
  Board board;
  
  Sudoku() {
-   var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
-   var cellValues = Parser.parsePuzzle(puzzles[0]);
-   board = new Board(cellValues);
+   var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+   previousStates = new List&lt;List&lt;int&gt;&gt;();
+   currentState = puzzles[0];
+   board = new Board(currentState);
    initializeUI();
  }
  
@@ -57,7 +61,8 @@ class Sudoku {
    
    board.render();
  }
-
+ 
+ 
 }
 </pre>
 </div>
@@ -70,9 +75,10 @@ new <strong>Sudoku</strong>() <a class="anchor-link" href="#Sudoku"
 <div class="doc">
 <pre class="source">
 Sudoku() {
- var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
- var cellValues = Parser.parsePuzzle(puzzles[0]);
- board = new Board(cellValues);
+ var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+ previousStates = new List&lt;List&lt;int&gt;&gt;();
+ currentState = puzzles[0];
+ board = new Board(currentState);
  initializeUI();
 }
 </pre>
@@ -90,6 +96,30 @@ Sudoku() {
         <div class="doc">
 <pre class="source">
 board
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="currentState">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>currentState</strong> <a class="anchor-link"
+            href="#currentState"
+            title="Permalink to Sudoku.currentState">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+currentState
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="previousStates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;&gt;         <strong>previousStates</strong> <a class="anchor-link"
+            href="#previousStates"
+            title="Permalink to Sudoku.previousStates">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+previousStates
 </pre>
 </div>
 </div>
@@ -116,7 +146,7 @@ void initializeUI() {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 13:26:34.934</div>
+          <div>This page was generated at 2013-02-11 22:04:11.457</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

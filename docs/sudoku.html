@@ -28,6 +28,7 @@
 <li><a href="sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
 <li><a href="sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
 <li><a href="sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><a href="sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -55,7 +56,7 @@ PUZZLES_EASY_50 = """
 002609500
 800203009
 005010300
-========
+==
 200080300
 060070084
 030500209
@@ -65,7 +66,7 @@ PUZZLES_EASY_50 = """
 301007040
 720040060
 004010003
-========
+==
 000000907
 000420180
 000705026
@@ -75,7 +76,7 @@ PUZZLES_EASY_50 = """
 920108000
 034059000
 507000000
-========
+==
 030050040
 008010500
 460000012
@@ -85,7 +86,7 @@ PUZZLES_EASY_50 = """
 250000098
 001020600
 080060020
-========
+==
 020810740
 700003100
 090002805
@@ -95,7 +96,7 @@ PUZZLES_EASY_50 = """
 302700060
 005600008
 076051090
-========
+==
 100920000
 524010000
 000000070
@@ -105,7 +106,7 @@ PUZZLES_EASY_50 = """
 060000000
 000030945
 000071006
-========
+==
 043080250
 600000000
 000001094
@@ -115,7 +116,7 @@ PUZZLES_EASY_50 = """
 820500000
 000000005
 034090710
-========
+==
 480006902
 002008001
 900370060
@@ -125,7 +126,7 @@ PUZZLES_EASY_50 = """
 020085007
 700900600
 609200018
-========
+==
 000900002
 050123400
 030000160
@@ -135,7 +136,7 @@ PUZZLES_EASY_50 = """
 091000050
 007439020
 400007000
-========
+==
 001900003
 900700160
 030005007
@@ -145,7 +146,7 @@ PUZZLES_EASY_50 = """
 600100030
 042007006
 500006800
-========
+==
 000125400
 008400000
 420800000
@@ -155,7 +156,7 @@ PUZZLES_EASY_50 = """
 000003049
 000007200
 001298000
-========
+==
 062340750
 100005600
 570000040
@@ -165,7 +166,7 @@ PUZZLES_EASY_50 = """
 030000091
 006400007
 059083260
-========
+==
 300000000
 005009000
 200504000
@@ -175,7 +176,7 @@ PUZZLES_EASY_50 = """
 000890100
 000067080
 000005437
-========
+==
 630000000
 000500008
 005674000
@@ -185,7 +186,7 @@ PUZZLES_EASY_50 = """
 000007004
 080300902
 947100080
-========
+==
 000020040
 008035000
 000070602
@@ -195,7 +196,7 @@ PUZZLES_EASY_50 = """
 049000730
 000000010
 800004000
-========
+==
 361025900
 080960010
 400000057
@@ -205,7 +206,7 @@ PUZZLES_EASY_50 = """
 740000005
 020018060
 005470329
-========
+==
 050807020
 600010090
 702540006
@@ -215,7 +216,7 @@ PUZZLES_EASY_50 = """
 900076205
 060090003
 080103040
-========
+==
 080005000
 000003457
 000070809
@@ -225,7 +226,7 @@ PUZZLES_EASY_50 = """
 901020000
 842300000
 000100080
-========
+==
 003502900
 000040000
 106000305
@@ -235,7 +236,7 @@ PUZZLES_EASY_50 = """
 308000104
 000020000
 005104800
-========
+==
 000000000
 009805100
 051907420
@@ -245,7 +246,7 @@ PUZZLES_EASY_50 = """
 026709580
 005103600
 000000000
-========
+==
 020030090
 000907000
 900208005
@@ -255,7 +256,7 @@ PUZZLES_EASY_50 = """
 800605007
 000309000
 030020050
-========
+==
 005000006
 070009020
 000500107
@@ -265,7 +266,7 @@ PUZZLES_EASY_50 = """
 907006000
 030400010
 200000600
-========
+==
 040000050
 001943600
 009000300
@@ -275,7 +276,7 @@ PUZZLES_EASY_50 = """
 005000200
 002436700
 030000040
-========
+==
 004000000
 000030002
 390700080
@@ -285,7 +286,7 @@ PUZZLES_EASY_50 = """
 010008053
 900040000
 000000800
-========
+==
 360020089
 000361000
 000000000
@@ -295,7 +296,7 @@ PUZZLES_EASY_50 = """
 000000000
 000418000
 970030014
-========
+==
 500400060
 009000800
 640020000
@@ -305,7 +306,7 @@ PUZZLES_EASY_50 = """
 000090084
 003000600
 060003002
-========
+==
 007256400
 400000005
 010030060
@@ -315,7 +316,7 @@ PUZZLES_EASY_50 = """
 030070090
 200000004
 006312700
-========
+==
 000000000
 079050180
 800000007
@@ -325,7 +326,7 @@ PUZZLES_EASY_50 = """
 700000005
 016030420
 000000000
-========
+==
 030000080
 009000500
 007509200
@@ -335,7 +336,7 @@ PUZZLES_EASY_50 = """
 004207100
 002000800
 070000090
-========
+==
 200170603
 050000100
 000006079
@@ -345,7 +346,7 @@ PUZZLES_EASY_50 = """
 310400000
 005000060
 906037002
-========
+==
 000000080
 800701040
 040020030
@@ -355,7 +356,7 @@ PUZZLES_EASY_50 = """
 010060050
 050802006
 080000000
-========
+==
 000000085
 000210009
 960080100
@@ -365,7 +366,7 @@ PUZZLES_EASY_50 = """
 009070052
 300054000
 480000000
-========
+==
 608070502
 050608070
 002000300
@@ -375,7 +376,7 @@ PUZZLES_EASY_50 = """
 005000200
 010704090
 409060701
-========
+==
 050010040
 107000602
 000905000
@@ -385,7 +386,7 @@ PUZZLES_EASY_50 = """
 000401000
 304000709
 020060010
-========
+==
 053000790
 009753400
 100000002
@@ -395,7 +396,7 @@ PUZZLES_EASY_50 = """
 500000003
 007641200
 061000940
-========
+==
 006080300
 049070250
 000405000
@@ -405,7 +406,7 @@ PUZZLES_EASY_50 = """
 000702000
 075040190
 003090600
-========
+==
 005080700
 700204005
 320000084
@@ -415,7 +416,7 @@ PUZZLES_EASY_50 = """
 450000091
 600508007
 003010600
-========
+==
 000900800
 128006400
 070800060
@@ -425,7 +426,7 @@ PUZZLES_EASY_50 = """
 090004010
 003600284
 001007000
-========
+==
 000080000
 270000054
 095000810
@@ -435,7 +436,7 @@ PUZZLES_EASY_50 = """
 017000620
 460000038
 000090000
-========
+==
 000602000
 400050001
 085010620
@@ -445,7 +446,7 @@ PUZZLES_EASY_50 = """
 026040530
 900020007
 000809000
-========
+==
 000900002
 050123400
 030000160
@@ -455,7 +456,7 @@ PUZZLES_EASY_50 = """
 091000050
 007439020
 400007000
-========
+==
 380000000
 000400785
 009020300
@@ -465,7 +466,7 @@ PUZZLES_EASY_50 = """
 001070500
 495006000
 000000092
-========
+==
 000158000
 002060800
 030000040
@@ -475,7 +476,7 @@ PUZZLES_EASY_50 = """
 050000080
 004070100
 000325000
-========
+==
 010500200
 900001000
 002008030
@@ -485,7 +486,7 @@ PUZZLES_EASY_50 = """
 040100700
 000700006
 003004050
-========
+==
 080000040
 000469000
 400000007
@@ -495,7 +496,7 @@ PUZZLES_EASY_50 = """
 900000005
 000781000
 060000010
-========
+==
 904200007
 010000000
 000706500
@@ -505,7 +506,7 @@ PUZZLES_EASY_50 = """
 001607000
 000000030
 300005702
-========
+==
 000700800
 006000031
 040002000
@@ -515,7 +516,7 @@ PUZZLES_EASY_50 = """
 000800070
 860000500
 002006000
-========
+==
 001007090
 590080001
 030000080
@@ -525,7 +526,7 @@ PUZZLES_EASY_50 = """
 080000030
 100020079
 020700400
-========
+==
 000003017
 015009008
 060000000
@@ -535,7 +536,7 @@ PUZZLES_EASY_50 = """
 000000020
 500600340
 340200000
-========
+==
 300200000
 000107000
 706030500
@@ -681,80 +682,13 @@ PUZZLES_HARDEST_11 = """
 </div>
 <div>
 <h3>Functions</h3>
-<div class="method"><h4 id="compareDecending">
+<div class="method"><h4 id="printDebugInfo">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareDecending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareDecending"
-              title="Permalink to compareDecending">#</a></h4>
+void <strong>printDebugInfo</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> text) <a class="anchor-link" href="#printDebugInfo"
+              title="Permalink to printDebugInfo">#</a></h4>
 <div class="doc">
 <pre class="source">
-int compareDecending(int a, int b) {
- if (a &gt; b) {
-   return -1;
- } else if (a &lt; b) {
-   return 1;
- } else {
-   return 0;
- }
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="compareAcending">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareAcending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareAcending"
-              title="Permalink to compareAcending">#</a></h4>
-<div class="doc">
-<pre class="source">
-int compareAcending(int a, int b) {
- if (a &lt; b) {
-   return -1;
- } else if (a &gt; b) {
-   return 1;
- } else {
-   return 0;
- }
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="reverse">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>reverse</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> list) <a class="anchor-link" href="#reverse"
-              title="Permalink to reverse">#</a></h4>
-<div class="doc">
-<pre class="source">
-List reverse(List list) {
- var reversedList = new List();
- for(int i = list.length - 1; i &gt;= 0; i--) {
-   reversedList.add(list[i]);
- }
- return reversedList;
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="subtractListAFromListB">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>subtractListAFromListB</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> a, <a href="http://api.dartlang.org/dart_core/List.html">List</a> b) <a class="anchor-link" href="#subtractListAFromListB"
-              title="Permalink to subtractListAFromListB">#</a></h4>
-<div class="doc">
-<p>Returns the elements in 
-<span class="param">b</span> that are not in 
-<span class="param">a</span></p>
-<pre class="source">
-List subtractListAFromListB(List a, List b) {
- return b.where((v) =&gt; !a.contains(v)).toList();
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="print">
-<button class="show-code">Code</button>
-void <strong>print</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> text) <a class="anchor-link" href="#print"
-              title="Permalink to print">#</a></h4>
-<div class="doc">
-<pre class="source">
-void print(String text) {
+void printDebugInfo(String text) {
  query("#debug")
    ..appendText(text);
 }
@@ -781,36 +715,43 @@ void <strong>runTests</strong>() <a class="anchor-link" href="#runTests"
 void runTests() {
  group('All', () {
    
-   
    group('Parser', () {
-     test('parse string with multiple puzzles into a list of string puzzles', () {
-       List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+     test('_splitBoards', () {
+       List&lt;String&gt; puzzles = Parser._splitBoards(PUZZLES_EASY_50, separator: '==');
        expect("003020600\n900305001\n001806400\n008102900\n700000008\n006708200\n002609500\n800203009\n005010300\n", 
            equals(puzzles[0]));
      });
      
-     test('parse puzzle stored as a string into a list of cell values', () {
-       List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
-       List&lt;int&gt; cellValues = Parser.parsePuzzle(puzzles[0]);
+     test('_parseCellValues', () {
+       List&lt;String&gt; puzzles = Parser._splitBoards(PUZZLES_EASY_50, separator: '==');
+       List&lt;int&gt; cellValues = Parser._parseCellValues(puzzles[0]);
        expect(cellValues, hasLength(81));
        //Spot check values
        expect(cellValues.getRange(0, 9), orderedEquals([0, 0, 3, 0, 2, 0, 6, 0, 0]));
      });
+     
+     test('parseSudokuData', () {
+       List&lt;List&lt;int&gt;&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+       expect(puzzles, hasLength(50));
+     });
    });
    
    group('Board', () {
-     List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
-     List&lt;int&gt; cellValues = Parser.parsePuzzle(puzzles[0]);
-     
+     List&lt;List&lt;int&gt;&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
      Board board;
      
      setUp(() {
-       board = new Board(cellValues);
+       board = new Board(puzzles[0]);
+     });
+     
+     test('indexAtGridCoordinates', () {
+       expect(indexAtGridCoordinates(3, 2), equals(29));
+       expect(indexAtGridCoordinates(8, 8), equals(80));
      });
      
      test('board initialized cells correctly', () {
-       expect(board._grid, hasLength(Board.GRID_SIZE));
-       expect(board._grid[0], hasLength(Board.GRID_SIZE));
+       expect(board.cellValues, hasLength(81));
+       expect(board.cells, hasLength(81));
        board.cells.forEach((c) =&gt; expect(c, isNotNull));
      });
      
@@ -822,7 +763,8 @@ void runTests() {
      
      group('Cell', () {
        test('hasValidValue', () {
-         var cell = new Cell();
+         var cell = board.cells.first;
+         cell.value = null;
          expect(cell.hasValidValue, isFalse);
          cell.value = 0;
          expect(cell.hasValidValue, isFalse);
@@ -847,6 +789,22 @@ void runTests() {
    });
  
  });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="indexAtGridCoordinates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>indexAtGridCoordinates</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#indexAtGridCoordinates"
+              title="Permalink to indexAtGridCoordinates">#</a></h4>
+<div class="doc">
+<p>Converts two-dimensional 
+<span class="param">row</span> and 
+<span class="param">column</span> coordinates and converts 
+them to a one-dimensional list index. </p>
+<pre class="source">
+int indexAtGridCoordinates(int row, int column) {
+ return row * Board.GRID_SIZE + column;
 }
 </pre>
 </div>
@@ -876,6 +834,12 @@ void main() {
           <div class="type">
           <h4>
             <a href="sudoku/Cell.html"><strong>Cell</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="sudoku/CollectionUtils.html"><strong>CollectionUtils</strong></a>
           </h4>
           </div>
           
@@ -911,7 +875,7 @@ void main() {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 13:26:34.905</div>
+          <div>This page was generated at 2013-02-11 22:04:11.426</div>
         </div>
         <script async src="client-static.js"></script>
         </body></html>

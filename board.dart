@@ -5,9 +5,12 @@ part of sudoku;
  */
 typedef void CellFunction(Cell cell);
 
-class GameState {
-  Queue<List<int>> previousValues;
-  List<int> currentValues;
+/**
+ * Converts two-dimensional [row] and [column] coordinates and converts 
+ * them to a one-dimensional list index. 
+ */
+int indexAtGridCoordinates(int row, int column) {
+  return row * Board.GRID_SIZE + column;
 }
 
 /**
@@ -17,36 +20,55 @@ class Board {
   static const int GRID_SIZE = 9;
   static const int BOX_SIZE = 3; 
   
-  List<Cell> cells;
+  List<Cell> cells = [];
+  List<int> cellValues = [];
   
   /**
-   * Returns a [Cell] at the given row and column.
+   * Returns a [Cell] at the given [row] and [column].
    */
   Cell getCell(int row, int column) {
-    return cells[row * GRID_SIZE * column];
+    return cells[indexAtGridCoordinates(row, column)];
   }
   
   /**
-   * Constructs a board using the given cell values.
+   * The process of calculating and storing information about cells and 
+   * their relationships is slow and memory intensive. Although the values 
+   * of cells change, the relationships between cells do not.
+   * 
+   * In order to combat performance issues, this constructor uses the 
+   * singleton pattern to construct a single instance of a [Board]. 
+   * The board is a flyweight object, and its only state/context is
+   * a list [cellValues].
    */
-  Board(List<int> this._cellValues) {
+  static Board _board;
+  factory Board(List<int> cellValues) {
+    if(_board == null) {
+      _board = new Board._internal();
+    }
+    _board.cellValues = cellValues;
+    return _board;
+  }
+  
+  /**
+   * Constructs the [Board], [Cell]s and [Unit]s.
+   */
+  Board._internal() {
     //Initialize grid
-    cells = [];
     for(int r = 0; r < GRID_SIZE; r++) {
       for(int c = 0; c < GRID_SIZE; c++) {
-        cells.add(new Cell(this, r, c));
+        cells.add(new Cell._internal(this, r, c));
       }
     }  
     //Define row and column units
     for(int i = 0; i < GRID_SIZE; i++) {
       var rowUnit = new Unit();
-      traverseCells((cell) {
+      _traverseCells((cell) {
         rowUnit.add(cell);
         cell.rowUnit = rowUnit;
       }, row: i, columnSpan: GRID_SIZE);
       
       var columnUnit = new Unit();
-      traverseCells((cell) {
+      _traverseCells((cell) {
         columnUnit.add(cell);
         cell.columnUnit = columnUnit;
       }, column: i, rowSpan: GRID_SIZE);
@@ -60,7 +82,7 @@ class Board {
           boxUnit.cssClass = 'grid-gray';
         }
         grayBox = !grayBox;
-        traverseCells((cell) {
+        _traverseCells((cell) {
           boxUnit.add(cell);
           cell.boxUnit = boxUnit;
         }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
@@ -73,7 +95,7 @@ class Board {
   /**
    * Executes the given [CellFunction] for the given area of the board.
    */
-  void traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+  void _traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
     for(int r = row; r < row + rowSpan; r++) {
       for(int c = column; c < column + columnSpan; c++) {
         cellFunc(getCell(r, c));
@@ -130,7 +152,6 @@ class Cell {
   Board board;
   int row;
   int column;
-  int get _index => row * Board.GRID_SIZE * column;
   
   Unit boxUnit;
   Unit rowUnit;
@@ -138,20 +159,16 @@ class Cell {
   
   Set<Cell> peers;
   
-  int get value => board._cellValues[_index];
-  set value(int value) => board._cellValues[_index] = value;
+  int get value => 
+      board.cellValues[indexAtGridCoordinates(row, column)];
+  
+  set value(int value) => 
+      board.cellValues[indexAtGridCoordinates(row, column)] = value;
   
   /**
    * True if the cell's current value is a number between 1 and 9 inclusive.
    */
   bool get hasValidValue => VALID_VALUES.contains(value);
-  
-  /**
-   * Cell values that are already taken by the cell's box, row, or column.
-   */
-  List<int> get unavailableValues => peers
-      .where((c) => c.hasValidValue)
-      .mappedBy((c) => c.value).toList();
   
   /**
    * Cell values that are not already taken by the cell's box, row, or column [Unit].
@@ -160,10 +177,17 @@ class Cell {
       CollectionUtils.subtractListAFromListB(unavailableValues, VALID_VALUES);
   
   /**
+   * Cell values that are already taken by the cell's box, row, or column.
+   */
+  List<int> get unavailableValues => 
+      peers.where((c) => c.hasValidValue)
+      .map((c) => c.value).toList();
+  
+  /**
    * Constructor. A cell is not well-formed
    * until the [_calculatePeers] method is called.
    */
-  Cell(this.board, this.row, this.column) {
+  Cell._internal(this.board, this.row, this.column) {
     peers = new Set<Cell>();
   }
   

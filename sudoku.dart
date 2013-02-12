@@ -9,16 +9,20 @@ part 'tests.dart';
 part 'collection_utils.dart';
 
 void main() {
-  //runTests();
+  runTests();
   var sudokuGame = new Sudoku();
 }
 
 class Sudoku {
+  List<List<int>> previousStates;
+  List<int> currentState;
   Board board;
   
   Sudoku() {
-    var boards = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-    board = boards[0];
+    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+    previousStates = new List<List<int>>();
+    currentState = puzzles[0];
+    board = new Board(currentState);
     initializeUI();
   }
   
@@ -28,5 +32,6 @@ class Sudoku {
     
     board.render();
   }
-
+  
+  
 }

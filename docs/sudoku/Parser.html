@@ -28,6 +28,7 @@
 <li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
 <li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
 <li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><div class="icon-class"></div><strong>Parser</strong></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -40,16 +41,37 @@
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
+<p>A parser that parses Sudoku data in string format.</p>
 <pre class="source">
 class Parser {
  
- static List&lt;String&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
+ /**
+  * Parses a string of Sudoku puzzles separated by a [separator] string.
+  * The [separator], if not provided, defaults to '\n'.
+  */
+ static List&lt;String&gt; _splitBoards(String sudokuData, {String separator : "\n"}) {
    return sudokuData.trim().replaceAll(".", "0").split(separator);
  }
 
- static List&lt;int&gt; parsePuzzle(String puzzle) {
+ /**
+  * Parses a single Sudoku puzzle stored as a string into a list of integer cell values.
+  */
+ static List&lt;int&gt; _parseCellValues(String puzzle) {
    return puzzle.replaceAll("\n", "")
-       .splitChars().mappedBy((c) =&gt; int.parse(c));
+       .splitChars().map((c) =&gt; int.parse(c)).toList();
+ }
+ 
+ /**
+  * Parses [sudokuData], a string that contains multiple Sudoku puzzles, 
+  * into a list of puzzles. Puzzles are represented as a list of integer cell values.
+  */
+ static List&lt;List&lt;int&gt;&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
+   var stringBoards = _splitBoards(sudokuData, separator: separator);
+   var puzzles = new List&lt;List&lt;int&gt;&gt;();
+   for(var stringBoard in stringBoards) {
+     puzzles.add(_parseCellValues(stringBoard));
+   }
+   return puzzles;
  }
  
 }
@@ -59,25 +81,20 @@ class Parser {
 <h3>Static Methods</h3>
 <div class="method"><h4 id="parseSudokuData">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/String.html">String</a>&gt; <strong>parseSudokuData</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> sudokuData, {<a href="http://api.dartlang.org/dart_core/String.html">String</a> separator: "\n"}) <a class="anchor-link" href="#parseSudokuData"
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;&gt; <strong>parseSudokuData</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> sudokuData, {<a href="http://api.dartlang.org/dart_core/String.html">String</a> separator: "\n"}) <a class="anchor-link" href="#parseSudokuData"
               title="Permalink to Parser.parseSudokuData">#</a></h4>
 <div class="doc">
+<p>Parses 
+<span class="param">sudokuData</span>, a string that contains multiple Sudoku puzzles, 
+into a list of puzzles. Puzzles are represented as a list of integer cell values.</p>
 <pre class="source">
-static List&lt;String&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
- return sudokuData.trim().replaceAll(".", "0").split(separator);
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="parsePuzzle">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; <strong>parsePuzzle</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> puzzle) <a class="anchor-link" href="#parsePuzzle"
-              title="Permalink to Parser.parsePuzzle">#</a></h4>
-<div class="doc">
-<pre class="source">
-static List&lt;int&gt; parsePuzzle(String puzzle) {
- return puzzle.replaceAll("\n", "")
-     .splitChars().mappedBy((c) =&gt; int.parse(c));
+static List&lt;List&lt;int&gt;&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
+ var stringBoards = _splitBoards(sudokuData, separator: separator);
+ var puzzles = new List&lt;List&lt;int&gt;&gt;();
+ for(var stringBoard in stringBoards) {
+   puzzles.add(_parseCellValues(stringBoard));
+ }
+ return puzzles;
 }
 </pre>
 </div>
@@ -87,7 +104,7 @@ static List&lt;int&gt; parsePuzzle(String puzzle) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 13:26:34.932</div>
+          <div>This page was generated at 2013-02-11 22:04:11.453</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

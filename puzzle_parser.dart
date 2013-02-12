@@ -14,25 +14,24 @@ class Parser {
   }
 
   /**
-   * Parses a single Sudoku puzzle stored as a string into a list of integers.
+   * Parses a single Sudoku puzzle stored as a string into a list of integer cell values.
    */
   static List<int> _parseCellValues(String puzzle) {
     return puzzle.replaceAll("\n", "")
-        .splitChars().mappedBy((c) => int.parse(c));
+        .splitChars().map((c) => int.parse(c)).toList();
   }
   
   /**
    * Parses [sudokuData], a string that contains multiple Sudoku puzzles, 
-   * into a list of [Board]s.
+   * into a list of puzzles. Puzzles are represented as a list of integer cell values.
    */
-  static List<Board> parseSudokuData(String sudokuData, {String separator : "\n"}) {
-    var boardsAsStrings = _splitBoards(sudokuData, separator: separator);
-    var boards = new List<Board>();
-    for(var boardAsString in boardsAsStrings) {
-      var cellValues = _parseCellValues(boardAsString);
-      boards.add(new Board(cellValues));
+  static List<List<int>> parseSudokuData(String sudokuData, {String separator : "\n"}) {
+    var stringBoards = _splitBoards(sudokuData, separator: separator);
+    var puzzles = new List<List<int>>();
+    for(var stringBoard in stringBoards) {
+      puzzles.add(_parseCellValues(stringBoard));
     }
-    return boards;
+    return puzzles;
   }
   
 }

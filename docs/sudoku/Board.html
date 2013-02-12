@@ -28,6 +28,7 @@
 <li><div class="icon-class"></div><strong>Board</strong></li>
 <li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
 <li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -46,51 +47,57 @@ class Board {
  static const int GRID_SIZE = 9;
  static const int BOX_SIZE = 3; 
  
- List&lt;List&lt;Cell&gt;&gt; _grid;
+ List&lt;Cell&gt; cells = [];
+ List&lt;int&gt; cellValues = [];
  
  /**
-  * Returns all of the board's [Cell]s.
-  */
- List&lt;Cell&gt; get cells {
-   var cells = new List&lt;Cell&gt;();
-   for(var row in _grid) {
-     cells.addAll(row);
-   }
-   return cells;
- }
- 
- /**
-  * Returns a [Cell] at the given row and column.
+  * Returns a [Cell] at the given [row] and [column].
   */
  Cell getCell(int row, int column) {
-   return _grid[row][column];
+   return cells[indexAtGridCoordinates(row, column)];
  }
  
  /**
-  * Constructs a board using the given cell values.
+  * The process of calculating and storing information about cells and 
+  * their relationships is slow and memory intensive. Although the values 
+  * of cells change, the relationships between cells do not.
+  * 
+  * In order to combat performance issues, this constructor uses the 
+  * singleton pattern to construct a single instance of a [Board]. 
+  * The board is a flyweight object, and its only state/context is
+  * a list [cellValues].
   */
- Board(List&lt;int&gt; cellValues) {
+ static Board _board;
+ factory Board(List&lt;int&gt; cellValues) {
+   if(_board == null) {
+     _board = new Board._internal();
+   }
+   _board.cellValues = cellValues;
+   return _board;
+ }
+ 
+ /**
+  * Constructs the [Board], [Cell]s and [Unit]s.
+  */
+ Board._internal() {
    //Initialize grid
-   _grid = [];
    for(int r = 0; r &lt; GRID_SIZE; r++) {
-     var row = [];
      for(int c = 0; c &lt; GRID_SIZE; c++) {
-       row.add(new Cell(cellValues[r * GRID_SIZE + c]));
+       cells.add(new Cell._internal(this, r, c));
      }
-     _grid.add(row);
    }  
    //Define row and column units
    for(int i = 0; i &lt; GRID_SIZE; i++) {
      var rowUnit = new Unit();
-     traverseCells((cell, row, column) {
+     _traverseCells((cell) {
        rowUnit.add(cell);
-       cell.row = rowUnit;
+       cell.rowUnit = rowUnit;
      }, row: i, columnSpan: GRID_SIZE);
      
      var columnUnit = new Unit();
-     traverseCells((cell, row, column) {
+     _traverseCells((cell) {
        columnUnit.add(cell);
-       cell.column = columnUnit;
+       cell.columnUnit = columnUnit;
      }, column: i, rowSpan: GRID_SIZE);
    }
    //Define boxes
@@ -102,23 +109,23 @@ class Board {
          boxUnit.cssClass = 'grid-gray';
        }
        grayBox = !grayBox;
-       traverseCells((cell, row, column) {
+       _traverseCells((cell) {
          boxUnit.add(cell);
-         cell.box = boxUnit;
+         cell.boxUnit = boxUnit;
        }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
      }
    }
    //Calculate peers for each cell
-   cells.forEach((c) =&gt; c.calculatePeers());
+   cells.forEach((c) =&gt; c._calculatePeers());
  }
  
  /**
   * Executes the given [CellFunction] for the given area of the board.
   */
- void traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+ void _traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
    for(int r = row; r &lt; row + rowSpan; r++) {
      for(int c = column; c &lt; column + columnSpan; c++) {
-       cellFunc(getCell(r, c), r, c);
+       cellFunc(getCell(r, c));
      }
    }
  }
@@ -135,7 +142,7 @@ class Board {
        Cell cell = getCell(r, c);
        rowElement.insertCell(c)
        ..text = cell.hasValidValue ? cell.value.toString() : "0"
-       ..classes.add(cell.box.cssClass);
+       ..classes.add(cell.boxUnit.cssClass);
      }
    }
    var gridContainer = query(containerSelector);
@@ -177,52 +184,16 @@ GRID_SIZE = 9
 <h3>Constructors</h3>
 <div class="method"><h4 id="Board">
 <button class="show-code">Code</button>
-new <strong>Board</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; cellValues) <a class="anchor-link" href="#Board"
+factory <strong>Board</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; cellValues) <a class="anchor-link" href="#Board"
               title="Permalink to Board.Board">#</a></h4>
 <div class="doc">
-<p>Constructs a board using the given cell values.</p>
 <pre class="source">
-Board(List&lt;int&gt; cellValues) {
- //Initialize grid
- _grid = [];
- for(int r = 0; r &lt; GRID_SIZE; r++) {
-   var row = [];
-   for(int c = 0; c &lt; GRID_SIZE; c++) {
-     row.add(new Cell(cellValues[r * GRID_SIZE + c]));
-   }
-   _grid.add(row);
- }  
- //Define row and column units
- for(int i = 0; i &lt; GRID_SIZE; i++) {
-   var rowUnit = new Unit();
-   traverseCells((cell, row, column) {
-     rowUnit.add(cell);
-     cell.row = rowUnit;
-   }, row: i, columnSpan: GRID_SIZE);
-   
-   var columnUnit = new Unit();
-   traverseCells((cell, row, column) {
-     columnUnit.add(cell);
-     cell.column = columnUnit;
-   }, column: i, rowSpan: GRID_SIZE);
+factory Board(List&lt;int&gt; cellValues) {
+ if(_board == null) {
+   _board = new Board._internal();
  }
- //Define boxes
- var grayBox = false;
- for(int r = 0; r &lt; GRID_SIZE; r+= 3) {
-   for(int c = 0; c &lt; GRID_SIZE; c+= 3) {
-     var boxUnit = new Unit();
-     if(grayBox) {
-       boxUnit.cssClass = 'grid-gray';
-     }
-     grayBox = !grayBox;
-     traverseCells((cell, row, column) {
-       boxUnit.add(cell);
-       cell.box = boxUnit;
-     }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
-   }
- }
- //Calculate peers for each cell
- cells.forEach((c) =&gt; c.calculatePeers());
+ _board.cellValues = cellValues;
+ return _board;
 }
 </pre>
 </div>
@@ -232,20 +203,25 @@ Board(List&lt;int&gt; cellValues) {
 <h3>Properties</h3>
 <div class="field"><h4 id="cells">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>cells</strong> <a class="anchor-link"
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>cells</strong> <a class="anchor-link"
             href="#cells"
             title="Permalink to Board.cells">#</a>
         </h4>
         <div class="doc">
-<p>Returns all of the board's <a class="crossref" href="../sudoku/Cell.html">Cell</a>s.</p>
 <pre class="source">
-List&lt;Cell&gt; get cells {
- var cells = new List&lt;Cell&gt;();
- for(var row in _grid) {
-   cells.addAll(row);
- }
- return cells;
-}
+cells = []
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="cellValues">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>cellValues</strong> <a class="anchor-link"
+            href="#cellValues"
+            title="Permalink to Board.cellValues">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+cellValues = []
 </pre>
 </div>
 </div>
@@ -257,10 +233,12 @@ List&lt;Cell&gt; get cells {
 <a href="../sudoku/Cell.html">Cell</a> <strong>getCell</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#getCell"
               title="Permalink to Board.getCell">#</a></h4>
 <div class="doc">
-<p>Returns a <a class="crossref" href="../sudoku/Cell.html">Cell</a> at the given row and column.</p>
+<p>Returns a <a class="crossref" href="../sudoku/Cell.html">Cell</a> at the given 
+<span class="param">row</span> and 
+<span class="param">column</span>.</p>
 <pre class="source">
 Cell getCell(int row, int column) {
- return _grid[row][column];
+ return cells[indexAtGridCoordinates(row, column)];
 }
 </pre>
 </div>
@@ -282,7 +260,7 @@ void render([String containerSelector = '.grid']) {
      Cell cell = getCell(r, c);
      rowElement.insertCell(c)
      ..text = cell.hasValidValue ? cell.value.toString() : "0"
-     ..classes.add(cell.box.cssClass);
+     ..classes.add(cell.boxUnit.cssClass);
    }
  }
  var gridContainer = query(containerSelector);
@@ -292,29 +270,12 @@ void render([String containerSelector = '.grid']) {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="traverseCells">
-<button class="show-code">Code</button>
-void <strong>traverseCells</strong>(<a href="../sudoku/CellFunction.html">CellFunction</a> cellFunc, {<a href="http://api.dartlang.org/dart_core/int.html">int</a> row: 0, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column: 0, <a href="http://api.dartlang.org/dart_core/int.html">int</a> rowSpan: 1, <a href="http://api.dartlang.org/dart_core/int.html">int</a> columnSpan: 1}) <a class="anchor-link" href="#traverseCells"
-              title="Permalink to Board.traverseCells">#</a></h4>
-<div class="doc">
-<p>Executes the given <a class="crossref" href="../sudoku/CellFunction.html">CellFunction</a> for the given area of the board.</p>
-<pre class="source">
-void traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
- for(int r = row; r &lt; row + rowSpan; r++) {
-   for(int c = column; c &lt; column + columnSpan; c++) {
-     cellFunc(getCell(r, c), r, c);
-   }
- }
-}
-</pre>
-</div>
-</div>
 </div>
         </div>
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 13:26:34.925</div>
+          <div>This page was generated at 2013-02-11 22:04:11.446</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>
