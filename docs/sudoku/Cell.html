@@ -1,0 +1,262 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Cell class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Cell">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Cell.html">Cell</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><div class="icon-class"></div><strong>Cell</strong></li>
+<li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
+<div class="content">
+        <h2><strong>Cell</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Represents a single cell in the 81 cell <a class="crossref" href="../sudoku/Board.html">Board</a>.</p>
+<pre class="source">
+class Cell {
+ 
+ static const List&lt;int&gt; VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9];
+ 
+ Unit box;
+ Unit row;
+ Unit column;
+ 
+ Set&lt;Cell&gt; peers;
+ 
+ int value;
+ 
+ /**
+  * True if the cell's current value is a number between 1 and 9 inclusive.
+  */
+ bool get hasValidValue =&gt; VALID_VALUES.contains(value);
+ 
+ /**
+  * Cell values that are already taken by the cell's box, row, or column.
+  */
+ List&lt;int&gt; get unavailableValues =&gt; peers
+     .where((c) =&gt; c.hasValidValue)
+     .mappedBy((c) =&gt; c.value).toList();
+ 
+ /**
+  * Cell values that are not already taken by the cell's box, row, or column.
+  */
+ List&lt;int&gt; get availableValues =&gt; 
+     subtractListAFromListB(unavailableValues, VALID_VALUES);
+ 
+ /**
+  * Constructor. A cell is not well-formed
+  * until the [calculatePeers()] method is called.
+  */
+ Cell([this.value]) {
+   peers = new Set&lt;Cell&gt;();
+ }
+ 
+ /**
+  * This method must be called after the box, row, and column units 
+  * have been set, but before other properties are used.
+  */
+ void calculatePeers() {
+   peers.addAll(box.cells);
+   peers.addAll(row.cells);
+   peers.addAll(column.cells);
+   peers.remove(this);
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="VALID_VALUES">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>VALID_VALUES</strong> <a class="anchor-link"
+            href="#VALID_VALUES"
+            title="Permalink to Cell.VALID_VALUES">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9]
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Cell">
+<button class="show-code">Code</button>
+new <strong>Cell</strong>([<a href="http://api.dartlang.org/dart_core/int.html">int</a> value]) <a class="anchor-link" href="#Cell"
+              title="Permalink to Cell.Cell">#</a></h4>
+<div class="doc">
+<p>Constructor. A cell is not well-formed
+until the <code>calculatePeers()</code> method is called.</p>
+<pre class="source">
+Cell([this.value]) {
+ peers = new Set&lt;Cell&gt;();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="availableValues">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>availableValues</strong> <a class="anchor-link"
+            href="#availableValues"
+            title="Permalink to Cell.availableValues">#</a>
+        </h4>
+        <div class="doc">
+<p>Cell values that are not already taken by the cell's box, row, or column.</p>
+<pre class="source">
+List&lt;int&gt; get availableValues =&gt; 
+   subtractListAFromListB(unavailableValues, VALID_VALUES);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="box">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>box</strong> <a class="anchor-link"
+            href="#box"
+            title="Permalink to Cell.box">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+box
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="column">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>column</strong> <a class="anchor-link"
+            href="#column"
+            title="Permalink to Cell.column">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+column
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasValidValue">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>hasValidValue</strong> <a class="anchor-link"
+            href="#hasValidValue"
+            title="Permalink to Cell.hasValidValue">#</a>
+        </h4>
+        <div class="doc">
+<p>True if the cell's current value is a number between 1 and 9 inclusive.</p>
+<pre class="source">
+bool get hasValidValue =&gt; VALID_VALUES.contains(value);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="peers">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Set.html">Set</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>peers</strong> <a class="anchor-link"
+            href="#peers"
+            title="Permalink to Cell.peers">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+peers
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="row">
+<button class="show-code">Code</button>
+<a href="../sudoku/Unit.html">Unit</a>         <strong>row</strong> <a class="anchor-link"
+            href="#row"
+            title="Permalink to Cell.row">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+row
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="unavailableValues">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>unavailableValues</strong> <a class="anchor-link"
+            href="#unavailableValues"
+            title="Permalink to Cell.unavailableValues">#</a>
+        </h4>
+        <div class="doc">
+<p>Cell values that are already taken by the cell's box, row, or column.</p>
+<pre class="source">
+List&lt;int&gt; get unavailableValues =&gt; peers
+   .where((c) =&gt; c.hasValidValue)
+   .mappedBy((c) =&gt; c.value).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="value">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>value</strong> <a class="anchor-link"
+            href="#value"
+            title="Permalink to Cell.value">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+value
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="calculatePeers">
+<button class="show-code">Code</button>
+void <strong>calculatePeers</strong>() <a class="anchor-link" href="#calculatePeers"
+              title="Permalink to Cell.calculatePeers">#</a></h4>
+<div class="doc">
+<p>This method must be called after the box, row, and column units 
+have been set, but before other properties are used.</p>
+<pre class="source">
+void calculatePeers() {
+ peers.addAll(box.cells);
+ peers.addAll(row.cells);
+ peers.addAll(column.cells);
+ peers.remove(this);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-11 13:26:34.915</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

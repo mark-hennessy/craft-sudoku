@@ -1,0 +1,102 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>MatchState class / matcher Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="matcher" data-type="MatchState">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../matcher.html">matcher</a> &rsaquo; <a href="../matcher/MatchState.html">MatchState</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><ul class="icon">
+<li><a href="../matcher/BaseMatcher.html"><div class="icon-class"></div>BaseMatcher</a></li>
+<li><a href="../matcher/CustomMatcher.html"><div class="icon-class"></div>CustomMatcher</a></li>
+<li><a href="../matcher/DefaultFailureHandler.html"><div class="icon-class"></div>DefaultFailureHandler</a></li>
+<li><a href="../matcher/Description.html"><div class="icon-class"></div>Description</a></li>
+<li><a href="../matcher/ErrorFormatter.html"><div class="icon-interface"></div>ErrorFormatter</a></li>
+<li><a href="../matcher/FailureHandler.html"><div class="icon-class"></div>FailureHandler</a></li>
+<li><a href="../matcher/isInstanceOf.html"><div class="icon-class"></div>isInstanceOf&lt;T&gt;</a></li>
+<li><a href="../matcher/Matcher.html"><div class="icon-class"></div>Matcher</a></li>
+<li><div class="icon-class"></div><strong>MatchState</strong></li>
+<li><a href="../matcher/StringDescription.html"><div class="icon-class"></div>StringDescription</a></li>
+<li><a href="../matcher/Throws.html"><div class="icon-class"></div>Throws</a></li>
+<li><a href="../matcher/TypeMatcher.html"><div class="icon-class"></div>TypeMatcher</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
+<div class="content">
+        <h2><strong>MatchState</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>MatchState is a simple wrapper around an arbitrary object.
+[Matcher] [matches] methods can use this to store useful
+information upon match failures, and this information will
+be passed to <code>describeMismatch</code>. Each <a class="crossref" href="../matcher/Matcher.html">Matcher</a> is responsible
+for its own use of this state, so the state created by <a class="crossref" href="../matcher.html#matches">matches</a>
+should be consistent with that expected by <code>describeMismatch</code> in
+the same <a class="crossref" href="../matcher/Matcher.html">Matcher</a> class, but can vary between classes. The inner
+state, if set, will typically be a <code>Map</code> with a number of key-value
+pairs containing relevant state information.</p>
+<pre class="source">
+class MatchState {
+ var state = null;
+
+ MatchState([this.state]);
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="MatchState">
+<button class="show-code">Code</button>
+new <strong>MatchState</strong>([state]) <a class="anchor-link" href="#MatchState"
+              title="Permalink to MatchState.MatchState">#</a></h4>
+<div class="doc">
+<pre class="source">
+MatchState([this.state]);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="state">
+<button class="show-code">Code</button>
+var         <strong>state</strong> <a class="anchor-link"
+            href="#state"
+            title="Permalink to MatchState.state">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+state = null
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-11 13:26:34.698</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

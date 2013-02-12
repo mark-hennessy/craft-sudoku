@@ -18,36 +18,38 @@ part of sudoku;
 void runTests() {
   group('All', () {
     
-    
     group('Parser', () {
-      test('parse string with multiple puzzles into a list of string puzzles', () {
-        List<String> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+      test('_splitBoards', () {
+        List<String> puzzles = Parser._splitBoards(PUZZLES_EASY_50, separator: '==');
         expect("003020600\n900305001\n001806400\n008102900\n700000008\n006708200\n002609500\n800203009\n005010300\n", 
             equals(puzzles[0]));
       });
       
-      test('parse puzzle stored as a string into a list of cell values', () {
-        List<String> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
-        List<int> cellValues = Parser.parsePuzzle(puzzles[0]);
+      test('_parseCellValues', () {
+        List<String> puzzles = Parser._splitBoards(PUZZLES_EASY_50, separator: '==');
+        List<int> cellValues = Parser._parseCellValues(puzzles[0]);
         expect(cellValues, hasLength(81));
         //Spot check values
         expect(cellValues.getRange(0, 9), orderedEquals([0, 0, 3, 0, 2, 0, 6, 0, 0]));
       });
+      
+      test('parseSudokuData', () {
+        List<Board> boards = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+        expect(boards, hasLength(50));
+      });
     });
     
     group('Board', () {
-      List<String> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
-      List<int> cellValues = Parser.parsePuzzle(puzzles[0]);
-      
-      Board board;
+      var boards = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+      var board = boards[0];
       
       setUp(() {
-        board = new Board(cellValues);
+        //board = new Board(cellValues);
       });
       
       test('board initialized cells correctly', () {
-        expect(board._grid, hasLength(Board.SIZE));
-        expect(board._grid[0], hasLength(Board.SIZE));
+        expect(board._grid, hasLength(Board.GRID_SIZE));
+        expect(board._grid[0], hasLength(Board.GRID_SIZE));
         board.cells.forEach((c) => expect(c, isNotNull));
       });
       
@@ -59,7 +61,8 @@ void runTests() {
       
       group('Cell', () {
         test('hasValidValue', () {
-          var cell = new Cell();
+          var cell = board.cells.first;
+          cell.value = null;
           expect(cell.hasValidValue, isFalse);
           cell.value = 0;
           expect(cell.hasValidValue, isFalse);

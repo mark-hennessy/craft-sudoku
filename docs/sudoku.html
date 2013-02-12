@@ -1,46 +1,51 @@
-part of sudoku;
-
-/**
- * A parser that parses Sudoku data in string format.
- */
-class Parser {
-  
-  /**
-   * Parses a string of Sudoku puzzles separated by a [separator] string.
-   * The [separator], if not provided, defaults to '\n'.
-   */
-  static List<String> _splitBoards(String sudokuData, {String separator : "\n"}) {
-    return sudokuData.trim().replaceAll(".", "0").split(separator);
-  }
-
-  /**
-   * Parses a single Sudoku puzzle stored as a string into a list of integers.
-   */
-  static List<int> _parseCellValues(String puzzle) {
-    return puzzle.replaceAll("\n", "")
-        .splitChars().mappedBy((c) => int.parse(c));
-  }
-  
-  /**
-   * Parses [sudokuData], a string that contains multiple Sudoku puzzles, 
-   * into a list of [Board]s.
-   */
-  static List<Board> parseSudokuData(String sudokuData, {String separator : "\n"}) {
-    var boardsAsStrings = _splitBoards(sudokuData, separator: separator);
-    var boards = new List<Board>();
-    for(var boardAsString in boardsAsStrings) {
-      var cellValues = _parseCellValues(boardAsString);
-      boards.add(new Board(cellValues));
-    }
-    return boards;
-  }
-  
-}
-
-/**
- * A string containing 50 easy Sudoku puzzles separated by '=='.
- */
-const String PUZZLES_EASY_50 = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="sudoku">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="sudoku.html">sudoku</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="mock.html">mock</a></h2><h2><div class="icon-library"></div><strong>sudoku</strong></h2><ul class="icon">
+<li><a href="sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
+<li><a href="sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
+<li><a href="sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="unittest.html">unittest</a></h2></div>
+<div class="content">
+<h2><strong>sudoku</strong> library</h2>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="PUZZLES_EASY_50">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>PUZZLES_EASY_50</strong> <a class="anchor-link"
+            href="#PUZZLES_EASY_50"
+            title="Permalink to PUZZLES_EASY_50">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+PUZZLES_EASY_50 = """
 003020600
 900305001
 001806400
@@ -50,7 +55,7 @@ const String PUZZLES_EASY_50 = """
 002609500
 800203009
 005010300
-==
+========
 200080300
 060070084
 030500209
@@ -60,7 +65,7 @@ const String PUZZLES_EASY_50 = """
 301007040
 720040060
 004010003
-==
+========
 000000907
 000420180
 000705026
@@ -70,7 +75,7 @@ const String PUZZLES_EASY_50 = """
 920108000
 034059000
 507000000
-==
+========
 030050040
 008010500
 460000012
@@ -80,7 +85,7 @@ const String PUZZLES_EASY_50 = """
 250000098
 001020600
 080060020
-==
+========
 020810740
 700003100
 090002805
@@ -90,7 +95,7 @@ const String PUZZLES_EASY_50 = """
 302700060
 005600008
 076051090
-==
+========
 100920000
 524010000
 000000070
@@ -100,7 +105,7 @@ const String PUZZLES_EASY_50 = """
 060000000
 000030945
 000071006
-==
+========
 043080250
 600000000
 000001094
@@ -110,7 +115,7 @@ const String PUZZLES_EASY_50 = """
 820500000
 000000005
 034090710
-==
+========
 480006902
 002008001
 900370060
@@ -120,7 +125,7 @@ const String PUZZLES_EASY_50 = """
 020085007
 700900600
 609200018
-==
+========
 000900002
 050123400
 030000160
@@ -130,7 +135,7 @@ const String PUZZLES_EASY_50 = """
 091000050
 007439020
 400007000
-==
+========
 001900003
 900700160
 030005007
@@ -140,7 +145,7 @@ const String PUZZLES_EASY_50 = """
 600100030
 042007006
 500006800
-==
+========
 000125400
 008400000
 420800000
@@ -150,7 +155,7 @@ const String PUZZLES_EASY_50 = """
 000003049
 000007200
 001298000
-==
+========
 062340750
 100005600
 570000040
@@ -160,7 +165,7 @@ const String PUZZLES_EASY_50 = """
 030000091
 006400007
 059083260
-==
+========
 300000000
 005009000
 200504000
@@ -170,7 +175,7 @@ const String PUZZLES_EASY_50 = """
 000890100
 000067080
 000005437
-==
+========
 630000000
 000500008
 005674000
@@ -180,7 +185,7 @@ const String PUZZLES_EASY_50 = """
 000007004
 080300902
 947100080
-==
+========
 000020040
 008035000
 000070602
@@ -190,7 +195,7 @@ const String PUZZLES_EASY_50 = """
 049000730
 000000010
 800004000
-==
+========
 361025900
 080960010
 400000057
@@ -200,7 +205,7 @@ const String PUZZLES_EASY_50 = """
 740000005
 020018060
 005470329
-==
+========
 050807020
 600010090
 702540006
@@ -210,7 +215,7 @@ const String PUZZLES_EASY_50 = """
 900076205
 060090003
 080103040
-==
+========
 080005000
 000003457
 000070809
@@ -220,7 +225,7 @@ const String PUZZLES_EASY_50 = """
 901020000
 842300000
 000100080
-==
+========
 003502900
 000040000
 106000305
@@ -230,7 +235,7 @@ const String PUZZLES_EASY_50 = """
 308000104
 000020000
 005104800
-==
+========
 000000000
 009805100
 051907420
@@ -240,7 +245,7 @@ const String PUZZLES_EASY_50 = """
 026709580
 005103600
 000000000
-==
+========
 020030090
 000907000
 900208005
@@ -250,7 +255,7 @@ const String PUZZLES_EASY_50 = """
 800605007
 000309000
 030020050
-==
+========
 005000006
 070009020
 000500107
@@ -260,7 +265,7 @@ const String PUZZLES_EASY_50 = """
 907006000
 030400010
 200000600
-==
+========
 040000050
 001943600
 009000300
@@ -270,7 +275,7 @@ const String PUZZLES_EASY_50 = """
 005000200
 002436700
 030000040
-==
+========
 004000000
 000030002
 390700080
@@ -280,7 +285,7 @@ const String PUZZLES_EASY_50 = """
 010008053
 900040000
 000000800
-==
+========
 360020089
 000361000
 000000000
@@ -290,7 +295,7 @@ const String PUZZLES_EASY_50 = """
 000000000
 000418000
 970030014
-==
+========
 500400060
 009000800
 640020000
@@ -300,7 +305,7 @@ const String PUZZLES_EASY_50 = """
 000090084
 003000600
 060003002
-==
+========
 007256400
 400000005
 010030060
@@ -310,7 +315,7 @@ const String PUZZLES_EASY_50 = """
 030070090
 200000004
 006312700
-==
+========
 000000000
 079050180
 800000007
@@ -320,7 +325,7 @@ const String PUZZLES_EASY_50 = """
 700000005
 016030420
 000000000
-==
+========
 030000080
 009000500
 007509200
@@ -330,7 +335,7 @@ const String PUZZLES_EASY_50 = """
 004207100
 002000800
 070000090
-==
+========
 200170603
 050000100
 000006079
@@ -340,7 +345,7 @@ const String PUZZLES_EASY_50 = """
 310400000
 005000060
 906037002
-==
+========
 000000080
 800701040
 040020030
@@ -350,7 +355,7 @@ const String PUZZLES_EASY_50 = """
 010060050
 050802006
 080000000
-==
+========
 000000085
 000210009
 960080100
@@ -360,7 +365,7 @@ const String PUZZLES_EASY_50 = """
 009070052
 300054000
 480000000
-==
+========
 608070502
 050608070
 002000300
@@ -370,7 +375,7 @@ const String PUZZLES_EASY_50 = """
 005000200
 010704090
 409060701
-==
+========
 050010040
 107000602
 000905000
@@ -380,7 +385,7 @@ const String PUZZLES_EASY_50 = """
 000401000
 304000709
 020060010
-==
+========
 053000790
 009753400
 100000002
@@ -390,7 +395,7 @@ const String PUZZLES_EASY_50 = """
 500000003
 007641200
 061000940
-==
+========
 006080300
 049070250
 000405000
@@ -400,7 +405,7 @@ const String PUZZLES_EASY_50 = """
 000702000
 075040190
 003090600
-==
+========
 005080700
 700204005
 320000084
@@ -410,7 +415,7 @@ const String PUZZLES_EASY_50 = """
 450000091
 600508007
 003010600
-==
+========
 000900800
 128006400
 070800060
@@ -420,7 +425,7 @@ const String PUZZLES_EASY_50 = """
 090004010
 003600284
 001007000
-==
+========
 000080000
 270000054
 095000810
@@ -430,7 +435,7 @@ const String PUZZLES_EASY_50 = """
 017000620
 460000038
 000090000
-==
+========
 000602000
 400050001
 085010620
@@ -440,7 +445,7 @@ const String PUZZLES_EASY_50 = """
 026040530
 900020007
 000809000
-==
+========
 000900002
 050123400
 030000160
@@ -450,7 +455,7 @@ const String PUZZLES_EASY_50 = """
 091000050
 007439020
 400007000
-==
+========
 380000000
 000400785
 009020300
@@ -460,7 +465,7 @@ const String PUZZLES_EASY_50 = """
 001070500
 495006000
 000000092
-==
+========
 000158000
 002060800
 030000040
@@ -470,7 +475,7 @@ const String PUZZLES_EASY_50 = """
 050000080
 004070100
 000325000
-==
+========
 010500200
 900001000
 002008030
@@ -480,7 +485,7 @@ const String PUZZLES_EASY_50 = """
 040100700
 000700006
 003004050
-==
+========
 080000040
 000469000
 400000007
@@ -490,7 +495,7 @@ const String PUZZLES_EASY_50 = """
 900000005
 000781000
 060000010
-==
+========
 904200007
 010000000
 000706500
@@ -500,7 +505,7 @@ const String PUZZLES_EASY_50 = """
 001607000
 000000030
 300005702
-==
+========
 000700800
 006000031
 040002000
@@ -510,7 +515,7 @@ const String PUZZLES_EASY_50 = """
 000800070
 860000500
 002006000
-==
+========
 001007090
 590080001
 030000080
@@ -520,7 +525,7 @@ const String PUZZLES_EASY_50 = """
 080000030
 100020079
 020700400
-==
+========
 000003017
 015009008
 060000000
@@ -530,7 +535,7 @@ const String PUZZLES_EASY_50 = """
 000000020
 500600340
 340200000
-==
+========
 300200000
 000107000
 706030500
@@ -539,12 +544,19 @@ const String PUZZLES_EASY_50 = """
 010800050
 009040301
 000702000
-000008006""";
-
-/**
- * A string containing 95 hard Sudoku puzzles separated by '\n'.
- */
-const String PUZZLES_HARD_95 = """
+000008006"""
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PUZZLES_HARD_95">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>PUZZLES_HARD_95</strong> <a class="anchor-link"
+            href="#PUZZLES_HARD_95"
+            title="Permalink to PUZZLES_HARD_95">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+PUZZLES_HARD_95 = """
 4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......
 52...6.........7.13...........4..8..6......5...........418.........3..2...87.....
 6.....8.3.4.7.................5.4.7.3..2.....1.6.......2.....5.....8.6......1....
@@ -639,12 +651,19 @@ const String PUZZLES_HARD_95 = """
 .2.3.......6..8.9.83.5........2...8.7.9..5........6..4.......1...1...4.22..7..8.9
 .5..9....1.....6.....3.8.....8.4...9514.......3....2..........4.8...6..77..15..6.
 .....2.......7...17..3...9.8..7......2.89.6...13..6....9..5.824.....891..........
-3...8.......7....51..............36...2..4....7...........6.13..452...........8..""";
-
-/**
- * A string containing 11 hard Sudoku puzzles separated by '\n'.
- */
-const String PUZZLES_HARDEST_11 = """
+3...8.......7....51..............36...2..4....7...........6.13..452...........8.."""
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PUZZLES_HARDEST_11">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>PUZZLES_HARDEST_11</strong> <a class="anchor-link"
+            href="#PUZZLES_HARDEST_11"
+            title="Permalink to PUZZLES_HARDEST_11">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+PUZZLES_HARDEST_11 = """
 85...24..72......9..4.........1.7..23.5...9...4...........8..7..17..........36.4.
 ..53.....8......2..7..1.5..4....53...1..7...6..32...8..6.5....9..4....3......97..
 12..4......5.69.1...9...5.........7.7...52.9..3......2.9.6...5.4..9..8.1..3...9.4
@@ -655,4 +674,245 @@ const String PUZZLES_HARDEST_11 = """
 ...92......68.3...19..7...623..4.1....1...7....8.3..297...8..91...5.72......64...
 .6.5.4.3.1...9...8.........9...5...6.4.6.2.7.7...4...5.........4...8...1.5.2.3.4.
 7.....4...2..7..8...3..8.799..5..3...6..2..9...1.97..6...3..9...3..4..6...9..1.35
-....7..2.8.......6.1.2.5...9.54....8.........3....85.1...3.2.8.4.......9.7..6....""";
+....7..2.8.......6.1.2.5...9.54....8.........3....85.1...3.2.8.4.......9.7..6...."""
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="compareDecending">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareDecending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareDecending"
+              title="Permalink to compareDecending">#</a></h4>
+<div class="doc">
+<pre class="source">
+int compareDecending(int a, int b) {
+ if (a &gt; b) {
+   return -1;
+ } else if (a &lt; b) {
+   return 1;
+ } else {
+   return 0;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="compareAcending">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareAcending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareAcending"
+              title="Permalink to compareAcending">#</a></h4>
+<div class="doc">
+<pre class="source">
+int compareAcending(int a, int b) {
+ if (a &lt; b) {
+   return -1;
+ } else if (a &gt; b) {
+   return 1;
+ } else {
+   return 0;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="reverse">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>reverse</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> list) <a class="anchor-link" href="#reverse"
+              title="Permalink to reverse">#</a></h4>
+<div class="doc">
+<pre class="source">
+List reverse(List list) {
+ var reversedList = new List();
+ for(int i = list.length - 1; i &gt;= 0; i--) {
+   reversedList.add(list[i]);
+ }
+ return reversedList;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="subtractListAFromListB">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>subtractListAFromListB</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> a, <a href="http://api.dartlang.org/dart_core/List.html">List</a> b) <a class="anchor-link" href="#subtractListAFromListB"
+              title="Permalink to subtractListAFromListB">#</a></h4>
+<div class="doc">
+<p>Returns the elements in 
+<span class="param">b</span> that are not in 
+<span class="param">a</span></p>
+<pre class="source">
+List subtractListAFromListB(List a, List b) {
+ return b.where((v) =&gt; !a.contains(v)).toList();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="print">
+<button class="show-code">Code</button>
+void <strong>print</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> text) <a class="anchor-link" href="#print"
+              title="Permalink to print">#</a></h4>
+<div class="doc">
+<pre class="source">
+void print(String text) {
+ query("#debug")
+   ..appendText(text);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="runTests">
+<button class="show-code">Code</button>
+void <strong>runTests</strong>() <a class="anchor-link" href="#runTests"
+              title="Permalink to runTests">#</a></h4>
+<div class="doc">
+<p>This class contains the unit tests for the Sudoku solver.</p>
+<h2>Test board</h2>
+<p>003020600
+900305001
+001806400
+008102900
+700000008
+006708200
+002609500
+800203009
+005010300</p>
+<pre class="source">
+void runTests() {
+ group('All', () {
+   
+   
+   group('Parser', () {
+     test('parse string with multiple puzzles into a list of string puzzles', () {
+       List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+       expect("003020600\n900305001\n001806400\n008102900\n700000008\n006708200\n002609500\n800203009\n005010300\n", 
+           equals(puzzles[0]));
+     });
+     
+     test('parse puzzle stored as a string into a list of cell values', () {
+       List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+       List&lt;int&gt; cellValues = Parser.parsePuzzle(puzzles[0]);
+       expect(cellValues, hasLength(81));
+       //Spot check values
+       expect(cellValues.getRange(0, 9), orderedEquals([0, 0, 3, 0, 2, 0, 6, 0, 0]));
+     });
+   });
+   
+   group('Board', () {
+     List&lt;String&gt; puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: "========");
+     List&lt;int&gt; cellValues = Parser.parsePuzzle(puzzles[0]);
+     
+     Board board;
+     
+     setUp(() {
+       board = new Board(cellValues);
+     });
+     
+     test('board initialized cells correctly', () {
+       expect(board._grid, hasLength(Board.GRID_SIZE));
+       expect(board._grid[0], hasLength(Board.GRID_SIZE));
+       board.cells.forEach((c) =&gt; expect(c, isNotNull));
+     });
+     
+     test('board has the correct values', () {
+       //Spot check values
+       expect(board.getCell(0, 2).value, equals(3));
+       expect(board.getCell(0, 4).value, equals(2));
+     });
+     
+     group('Cell', () {
+       test('hasValidValue', () {
+         var cell = new Cell();
+         expect(cell.hasValidValue, isFalse);
+         cell.value = 0;
+         expect(cell.hasValidValue, isFalse);
+         cell.value = 10;
+         expect(cell.hasValidValue, isFalse);
+         cell.value = 5;
+         expect(cell.hasValidValue, isTrue);
+       });
+       
+       test('availableValues', () {
+         var cell = board.getCell(0, 0);
+         expect(cell.availableValues, unorderedEquals([4, 5]));
+       });
+       
+       test('unavailableValues', () {
+         var cell = board.getCell(0, 0);
+         expect(cell.unavailableValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
+       });
+       
+     });
+     
+   });
+ 
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="main">
+<button class="show-code">Code</button>
+void <strong>main</strong>() <a class="anchor-link" href="#main"
+              title="Permalink to main">#</a></h4>
+<div class="doc">
+<pre class="source">
+void main() {
+ runTests();
+ var sudokuGame = new Sudoku();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="sudoku/Board.html"><strong>Board</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="sudoku/Cell.html"><strong>Cell</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="sudoku/Parser.html"><strong>Parser</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="sudoku/Sudoku.html"><strong>Sudoku</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="sudoku/Unit.html"><strong>Unit</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Typedefs</h3>
+          <div class="type">
+          <h4>
+            <a href="sudoku/CellFunction.html"><strong>CellFunction</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-11 13:26:34.905</div>
+        </div>
+        <script async src="client-static.js"></script>
+        </body></html>
+        
