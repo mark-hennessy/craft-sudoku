@@ -39,7 +39,7 @@ class Sudoku {
     initializeUI();
   }
   
-  void updateState(){
+  void updateGameState(){
     gameState.currentCellValues = board.cellValues;
   }
   
@@ -60,7 +60,7 @@ class Sudoku {
     do {
       for(var cell in freebieCells) {
         cell.value = cell.availableValues.first;
-        updateState();
+        updateGameState();
       }
       freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
     } while(freebieCells.length > 0);

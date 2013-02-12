@@ -24,6 +24,7 @@ class Board {
   
   List<Unit> units = [];
   List<Cell> cells = [];
+  
   List<Cell> get emptyCells => 
       cells.where((c) => !c.hasValidValue).toList();
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
@@ -54,13 +55,21 @@ class Board {
    * a list [cellValues].
    */
   Board(List<int> this.cellValues) {
-    // Initialize grid
+    _initializeGrid();  
+    _defineRowAndColumnUnits();
+    _defineBoxes();
+    _calculatePeersForEachCell();
+  }
+
+  void _initializeGrid() {
     for(int r = 0; r < GRID_SIZE; r++) {
       for(int c = 0; c < GRID_SIZE; c++) {
         cells.add(new Cell._internal(this, r, c));
       }
-    }  
-    // Define row and column units
+    }
+  }
+
+  void _defineRowAndColumnUnits() {
     for(int i = 0; i < GRID_SIZE; i++) {
       
       var rowUnit = new Unit();
@@ -78,8 +87,9 @@ class Board {
       }, column: i, rowSpan: GRID_SIZE);
       
     }
-    
-    // Define boxes
+  }
+
+  void _defineBoxes() {
     var grayBox = false;
     for(int r = 0; r < GRID_SIZE; r+= 3) {
       for(int c = 0; c < GRID_SIZE; c+= 3) {
@@ -95,7 +105,9 @@ class Board {
         }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
       }
     }
-    // Calculate peers for each cell
+  }
+
+  void _calculatePeersForEachCell() {
     cells.forEach((c) => c._calculatePeers());
   }
   
