@@ -52,8 +52,8 @@ void runTests() {
     });
     
     test('indexAtGridCoordinates', () {
-      expect(indexAtGridCoordinates(3, 2), equals(29));
-      expect(indexAtGridCoordinates(8, 8), equals(80));
+      expect(Board.indexAtGridCoordinates(3, 2), equals(29));
+      expect(Board.indexAtGridCoordinates(8, 8), equals(80));
     });
     
     test('board initialized cells correctly', () {
@@ -156,10 +156,5 @@ void runTests() {
     
   });
 
-}
-
-void printDebugInfo(String text) {
-  query("#debug")
-    ..appendText(text);
 }
 

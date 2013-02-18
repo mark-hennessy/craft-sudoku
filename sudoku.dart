@@ -3,14 +3,22 @@ library sudoku;
 import 'dart:html';
 import 'packages/unittest/unittest.dart';
 
+part 'collection_utils.dart';
+part 'dom_utils.dart';
+part 'key_map.dart';
+
 part 'puzzle_parser.dart';
 part 'board.dart';
 part 'tests.dart';
-part 'collection_utils.dart';
 
 void main() {
   runTests();
   var sudokuGame = new Sudoku();
+}
+
+void printDebugInfo(String text) {
+  query("#debug")
+    ..appendText(text);
 }
 
 class GameState {

@@ -56,4 +56,8 @@ table.grid {
 
 .grid-gray { 
   background-color: #AAAAAA; 
- }
+}
+ 
+.peer-cell {
+  background-color: #538792;
+}

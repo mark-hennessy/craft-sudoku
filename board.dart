@@ -1,19 +1,6 @@
 part of sudoku;
 
 /**
- * A function that performs operations on specific [Cell]s.
- */
-typedef void CellFunction(Cell cell);
-
-/**
- * Converts two-dimensional [row] and [column] coordinates and converts 
- * them to a one-dimensional list index. 
- */
-int indexAtGridCoordinates(int row, int column) {
-  return row * Board.GRID_SIZE + column;
-}
-
-/**
  * This class represents a 9x9 [Cell] Sudoku board.
  */
 class Board {
@@ -27,8 +14,10 @@ class Board {
   
   List<Cell> get emptyCells => 
       cells.where((c) => !c.hasValidValue).toList();
+  
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
       cells.where((c) => !c.hasValidValue && c.availableValues.length == 1).toList();
+  
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {
     var sortedList = emptyCells;
     sortedList.sort((c1, c2) => 
@@ -43,6 +32,14 @@ class Board {
    */
   Cell getCell(int row, int column) {
     return cells[indexAtGridCoordinates(row, column)];
+  }
+  
+  /**
+   * Converts two-dimensional [row] and [column] coordinates and converts 
+   * them to a one-dimensional list index. 
+   */
+  static int indexAtGridCoordinates(int row, int column) {
+    return row * Board.GRID_SIZE + column;
   }
   
   /**
@@ -112,9 +109,9 @@ class Board {
   }
   
   /**
-   * Executes the given [CellFunction] for the given area of the board.
+   * Executes the given [cellFunc] for the given area of the board.
    */
-  void _traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+  void _traverseCells(void cellFunc(Cell cell), {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
     for(int r = row; r < row + rowSpan; r++) {
       for(int c = column; c < column + columnSpan; c++) {
         cellFunc(getCell(r, c));
@@ -126,22 +123,95 @@ class Board {
    * Tells the board to render itself.
    */
   void render() {
-    var tableElement = new TableElement();
-    tableElement.classes.add('grid');
+    var grid = new TableElement();
+    grid.classes.add('grid');
+    var cellElementMap = new Map<Cell, Element>();
     for(int r = 0; r < GRID_SIZE; r++) {
-      var rowElement = tableElement.insertRow(r);
+      var rowElement = grid.insertRow(r);
       for(int c = 0; c < GRID_SIZE; c++) {
         Cell cell = getCell(r, c);
-        rowElement.insertCell(c)
-        ..text = cell.hasValidValue ? cell.value.toString() : ""
-        ..classes.add(cell.boxUnit.cssClass);
+        Element cellElement = rowElement.insertCell(c);
+        cellElementMap[cell] = cellElement;
+        DomUtils.makeFocusable(cellElement);
+        
+        void renderCellValue() {
+          cellElement.text = cell.hasValidValue ? cell.value.toString() : "";
+        }
+        
+        cellElement
+        ..classes.add(cell.boxUnit.cssClass)
+        ..onMouseOver.listen((e) {
+          cellElement.focus();
+        })
+        ..onKeyDown.listen((e) {
+          if(DomUtils.isNumericKeyCode(e.keyCode)) {
+            var newValue = DomUtils.parseKeyCodeAsInt(e.keyCode);
+            cell.value = newValue;
+            renderCellValue();
+          }
+        });
+        renderCellValue();
       }
     }
-    var gridContainer = query('.gridContainer');
-    gridContainer.children.add(tableElement);
-    gridContainer.children.add(new BRElement());
+    _initializePeerHighlighting(grid, cellElementMap);
+    _addGridToPage(grid);
   }
   
+  void _addGridToPage(Element grid) {
+    var gridContainer = query('.gridContainer');
+    gridContainer.children
+    ..add(grid)
+    ..add(new BRElement());
+  }
+  
+  void _initializePeerHighlighting(Element parent, Map<Cell, Element> cellElementMap) {
+    bool isHighlightPeersKey(KeyboardEvent e)
+      => (e.keyCode == KeyMap.HIGHLIGHT_PEERS);
+    
+    var isHighlightPeersKeyPressed = false;
+    parent
+    ..onKeyDown.listen((e) {
+      if(isHighlightPeersKey(e)) {
+        isHighlightPeersKeyPressed = true;
+      }
+    })
+    ..onKeyUp.listen((e) {
+      if(isHighlightPeersKey(e)) {
+        isHighlightPeersKeyPressed = false;
+      }
+    });
+    
+    cellElementMap.forEach((cell, cellElement) {
+      var peersHighlighted = false;
+      void togglePeerHighlighting() {
+        var peerElements = cell.peers.map((c) => cellElementMap[c]);
+        peerElements.forEach((e) => e.classes.toggle('peer-cell'));
+        peersHighlighted = !peersHighlighted;
+      }
+      
+      cellElement
+      ..onFocus.listen((e) {
+        if(isHighlightPeersKeyPressed && !peersHighlighted) {
+          togglePeerHighlighting();
+        }
+      })
+      ..onBlur.listen((e) {
+        if(peersHighlighted) {
+          togglePeerHighlighting();
+        }
+      })
+      ..onKeyDown.listen((e) {
+        if(isHighlightPeersKey(e) && !peersHighlighted) {
+          togglePeerHighlighting();
+        }
+      })
+      ..onKeyUp.listen((e) {
+        if(isHighlightPeersKeyPressed && peersHighlighted) {
+          togglePeerHighlighting();
+        }
+      });
+    });
+  }
 }
 
 /**
@@ -179,10 +249,10 @@ class Cell {
   Set<Cell> peers;
   
   int get value => 
-      board.cellValues[indexAtGridCoordinates(row, column)];
+      board.cellValues[Board.indexAtGridCoordinates(row, column)];
   
   set value(int value) => 
-      board.cellValues[indexAtGridCoordinates(row, column)] = value;
+      board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
   
   /**
    * True if the cell's current value is a number between 1 and 9 inclusive.
@@ -202,18 +272,10 @@ class Cell {
       peers.where((c) => c.hasValidValue)
       .map((c) => c.value).toList();
   
-  /**
-   * Constructor. A cell is not well-formed
-   * until the [_calculatePeers] method is called.
-   */
   Cell._internal(this.board, this.row, this.column) {
     peers = new Set<Cell>();
   }
   
-  /**
-   * This method must be called after the box, row, and column units 
-   * have been set, but before other properties are used.
-   */
   void _calculatePeers() {
     peers.addAll(boxUnit.cells);
     peers.addAll(rowUnit.cells);
