@@ -5,7 +5,8 @@ part of sudoku;
  */
 class Board {
   static const int GRID_SIZE = 9;
-  static const int BOX_SIZE = 3; 
+  static const int BOX_SIZE = 3;
+  static const int CELL_COUNT = GRID_SIZE * GRID_SIZE;
   
   /**
    * Converts two-dimensional [row] and [column] coordinates and converts 
@@ -47,6 +48,8 @@ class Board {
     return cells[indexAtGridCoordinates(row, column)];
   }
   
+  Board.empty() : this(new List<int>.fixedLength(CELL_COUNT, fill: 0));
+  
   /**
    * Constructs the [Board], [Cell]s and [Unit]s.
    * 
@@ -56,7 +59,10 @@ class Board {
    * the board is designed as a flyweight object. Its only state/context is
    * a list [cellValues].
    */
-  Board([List<int> this.cellValues]) {
+  Board(List<int> this.cellValues) {
+    if(cellValues.length != CELL_COUNT)
+      throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
+    
     _initializeGrid();
     _defineRowAndColumnUnits();
     _defineBoxes();
@@ -93,8 +99,8 @@ class Board {
 
   void _defineBoxes() {
     var grayBox = false;
-    for(int r = 0; r < GRID_SIZE; r+= 3) {
-      for(int c = 0; c < GRID_SIZE; c+= 3) {
+    for(int r = 0; r < GRID_SIZE; r+= BOX_SIZE) {
+      for(int c = 0; c < GRID_SIZE; c+= BOX_SIZE) {
         var boxUnit = new Unit();
         units.add(boxUnit);
         if(grayBox) {
@@ -190,6 +196,14 @@ class Cell {
     peers.addAll(rowUnit.cells);
     peers.addAll(columnUnit.cells);
     peers.remove(this);
+  }
+  
+  operator ==(Object other) {
+    Cell otherCell = other as Cell;
+    if(otherCell == null) return false;
+    return otherCell.row == this.row && 
+        otherCell.column == this.column && 
+        otherCell.value == this.value;
   }
   
 }

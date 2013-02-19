@@ -6,8 +6,16 @@ class BoardUI {
   Keyboard keyboard;
   
   BoardUI() {
-    board = new Board();
+    board = new Board.empty();
     keyboard = new Keyboard();
+  }
+  
+  void renderGameState(GameState gameState) {
+    render(gameState.cellValues, (cell, cellElement) {
+      if(gameState.changedCells.contains(cell)) {
+        cellElement.classes.add('recently-modified-cell');
+      }
+    });
   }
   
   /**
@@ -26,21 +34,15 @@ class BoardUI {
         Element cellElement = rowElement.insertCell(c);
         cellElementMap[cell] = cellElement;
         cellElement.classes.add(cell.boxUnit.cssClass);
-        customCellRenderBehavior(cell, cellElement);
+        if(?customCellRenderBehavior) {
+          customCellRenderBehavior(cell, cellElement);
+        }
         _renderCellValue(cell, cellElementMap);
         _initializeUserInput(cell, cellElementMap);
         _initializePeerHighlighting(cell, cellElementMap);
       }
     }
     _addGridToDom(grid);
-  }
-  
-  void renderGameState(GameState gameState) {
-    render(gameState.cellValues, (cell, cellElement) {
-      if(gameState.changedCells.contains(cell)) {
-        cellElement.classes.add('recently-modified-cell');
-      }
-    });
   }
   
   void _renderCellValue(Cell cell, Map<Cell, Element> cellElementMap) {

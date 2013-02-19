@@ -1,16 +1,17 @@
 part of sudoku;
 
 class GameState {
-  List<int> _cellValues = [];
-  get cellValues => _cellValues;
-  set cellValues(List<int> cellValues) {
-    //"Deep clone" the values so that they do not change as the puzzle is solved. 
-    _cellValues = new List.from(cellValues);
-  }
-  
+  List<int> cellValues = [];
   List<Cell> changedCells = [];
   
-  GameState([this._cellValues]);
+  GameState(List<int> this.cellValues);
   
+  /**
+   * Freeze/snapshot the game state, so that modifications to the board 
+   * do not effect this state object.
+   */
+  void freeze() {
+    cellValues = new List.from(cellValues);
+  }
 }
 

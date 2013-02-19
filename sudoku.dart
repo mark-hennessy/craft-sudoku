@@ -23,9 +23,8 @@ class Sudoku {
   Board board;
   BoardUI board_ui;
   
-  List<GameState> gameStates = [];
-  get currentGameState => gameStates.last;
-  set currentGameState(GameState state) => gameStates.add(state);
+  List<GameState> previousGameStates = [];
+  GameState currentGameState;
   
   Sudoku() {
     var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
@@ -41,7 +40,7 @@ class Sudoku {
     
     solve();
     
-    gameStates.forEach((gameState) 
+    previousGameStates.forEach((gameState) 
         => board_ui.renderGameState(gameState));
   }
   
@@ -71,8 +70,9 @@ class Sudoku {
   }
   
   void snapshotGameState(){
-    currentGameState.cellValues = board.cellValues;
-    currentGameState = new GameState();
+    currentGameState.freeze();
+    previousGameStates.add(currentGameState);
+    currentGameState = new GameState(board.cellValues);
   }
  
 }
