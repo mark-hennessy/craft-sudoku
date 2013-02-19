@@ -147,7 +147,7 @@ void runTests() {
       sudoku.solve();
       expect(sudoku.board.isSolved, true);
       expect(sudoku.board.cellValues, orderedEquals(solved_p0));
-      expect(sudoku.gameState.currentCellValues, orderedEquals(solved_p0));
+      expect(sudoku.currentGameState.cellValues, orderedEquals(solved_p0));
     });
     
     test('search', () {

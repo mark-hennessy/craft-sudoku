@@ -7,7 +7,20 @@ class Board {
   static const int GRID_SIZE = 9;
   static const int BOX_SIZE = 3; 
   
-  List<int> cellValues;
+  /**
+   * Converts two-dimensional [row] and [column] coordinates and converts 
+   * them to a one-dimensional list index. 
+   */
+  static int indexAtGridCoordinates(int row, int column) {
+    return row * Board.GRID_SIZE + column;
+  }
+  
+  static bool gridCoordinatesInBounds(int row, int column) {
+    return [row, column].every((coord) 
+        => (coord >= 0 && coord < GRID_SIZE));
+  }
+  
+  List<int> cellValues = [];
   
   List<Unit> units = [];
   List<Cell> cells = [];
@@ -35,14 +48,6 @@ class Board {
   }
   
   /**
-   * Converts two-dimensional [row] and [column] coordinates and converts 
-   * them to a one-dimensional list index. 
-   */
-  static int indexAtGridCoordinates(int row, int column) {
-    return row * Board.GRID_SIZE + column;
-  }
-  
-  /**
    * Constructs the [Board], [Cell]s and [Unit]s.
    * 
    * The process of calculating and storing information about cells and 
@@ -51,8 +56,8 @@ class Board {
    * the board is designed as a flyweight object. Its only state/context is
    * a list [cellValues].
    */
-  Board(List<int> this.cellValues) {
-    _initializeGrid();  
+  Board([List<int> this.cellValues]) {
+    _initializeGrid();
     _defineRowAndColumnUnits();
     _defineBoxes();
     _calculatePeersForEachCell();
@@ -119,99 +124,6 @@ class Board {
     }
   }
   
-  /**
-   * Tells the board to render itself.
-   */
-  void render() {
-    var grid = new TableElement();
-    grid.classes.add('grid');
-    var cellElementMap = new Map<Cell, Element>();
-    for(int r = 0; r < GRID_SIZE; r++) {
-      var rowElement = grid.insertRow(r);
-      for(int c = 0; c < GRID_SIZE; c++) {
-        Cell cell = getCell(r, c);
-        Element cellElement = rowElement.insertCell(c);
-        cellElementMap[cell] = cellElement;
-        DomUtils.makeFocusable(cellElement);
-        
-        void renderCellValue() {
-          cellElement.text = cell.hasValidValue ? cell.value.toString() : "";
-        }
-        
-        cellElement
-        ..classes.add(cell.boxUnit.cssClass)
-        ..onMouseOver.listen((e) {
-          cellElement.focus();
-        })
-        ..onKeyDown.listen((e) {
-          if(DomUtils.isNumericKeyCode(e.keyCode)) {
-            var newValue = DomUtils.parseKeyCodeAsInt(e.keyCode);
-            cell.value = newValue;
-            renderCellValue();
-          }
-        });
-        renderCellValue();
-      }
-    }
-    _initializePeerHighlighting(grid, cellElementMap);
-    _addGridToPage(grid);
-  }
-  
-  void _addGridToPage(Element grid) {
-    var gridContainer = query('.gridContainer');
-    gridContainer.children
-    ..add(grid)
-    ..add(new BRElement());
-  }
-  
-  void _initializePeerHighlighting(Element parent, Map<Cell, Element> cellElementMap) {
-    bool isHighlightPeersKey(KeyboardEvent e)
-      => (e.keyCode == KeyMap.HIGHLIGHT_PEERS);
-    
-    var isHighlightPeersKeyPressed = false;
-    parent
-    ..onKeyDown.listen((e) {
-      if(isHighlightPeersKey(e)) {
-        isHighlightPeersKeyPressed = true;
-      }
-    })
-    ..onKeyUp.listen((e) {
-      if(isHighlightPeersKey(e)) {
-        isHighlightPeersKeyPressed = false;
-      }
-    });
-    
-    cellElementMap.forEach((cell, cellElement) {
-      var peersHighlighted = false;
-      void togglePeerHighlighting() {
-        var peerElements = cell.peers.map((c) => cellElementMap[c]);
-        peerElements.forEach((e) => e.classes.toggle('peer-cell'));
-        peersHighlighted = !peersHighlighted;
-      }
-      
-      cellElement
-      ..onFocus.listen((e) {
-        if(isHighlightPeersKeyPressed && !peersHighlighted) {
-          togglePeerHighlighting();
-        }
-      })
-      ..onBlur.listen((e) {
-        if(peersHighlighted) {
-          togglePeerHighlighting();
-        }
-      })
-      ..onKeyDown.listen((e) {
-        if(isHighlightPeersKey(e) && !peersHighlighted) {
-          togglePeerHighlighting();
-        }
-      })
-      ..onKeyUp.listen((e) {
-        if(isHighlightPeersKeyPressed && peersHighlighted) {
-          togglePeerHighlighting();
-        }
-      });
-    });
-  }
 }
 
 /**
@@ -222,9 +134,6 @@ class Unit {
   
   String cssClass = '';
   
-  /**
-   * Adds the given [Cell] to the unit.
-   */
   void add(Cell cell) {
     cells.add(cell);
   }
