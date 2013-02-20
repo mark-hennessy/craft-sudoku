@@ -78,13 +78,13 @@ class BoardUI {
   void moveToNextCell(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
     var row = cell.row;
     var column = cell.column;
-    if(Keyboard.isKey(KeyCode.LEFT, e)) {
+    if(Keyboard.isEventForKey(e, KeyCode.LEFT)) {
       column -= 1;
-    } else if(Keyboard.isKey(KeyCode.UP, e)) {
+    } else if(Keyboard.isEventForKey(e, KeyCode.UP)) {
       row -= 1;
-    } else if(Keyboard.isKey(KeyCode.RIGHT, e)) {
+    } else if(Keyboard.isEventForKey(e, KeyCode.RIGHT)) {
       column += 1;
-    } else if(Keyboard.isKey(KeyCode.DOWN, e)) {
+    } else if(Keyboard.isEventForKey(e, KeyCode.DOWN)) {
       row += 1;
     }
     if(Board.gridCoordinatesInBounds(row, column)) {
@@ -116,7 +116,7 @@ class BoardUI {
       enablePeerHighlighting(false);
     })
     ..onKeyDown.listen((e) {
-      if(Keyboard.isKey(Keyboard.HIGHLIGHT_PEERS, e)) {
+      if(Keyboard.isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
         enablePeerHighlighting(true);
       }
     })

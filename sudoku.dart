@@ -2,17 +2,19 @@ library sudoku;
 
 import 'dart:html';
 import 'packages/unittest/unittest.dart';
+import 'packages/unittest/mock.dart';
 
-part 'board.dart';
-part 'game_state.dart';
-part 'board_ui.dart';
-part 'tests.dart';
+part 'tests/tests.dart';
+
 part 'puzzle_parser.dart';
-part 'io.dart';
+part 'board.dart';
+part 'board_ui.dart';
+part 'game_state.dart';
 
-part 'collection_utils.dart';
-part 'dom_utils.dart';
-part 'keyboard.dart';
+part 'utils/io.dart';
+part 'utils/collection_utils.dart';
+part 'utils/dom_utils.dart';
+part 'utils/keyboard.dart';
 
 void main() {
   runTests();

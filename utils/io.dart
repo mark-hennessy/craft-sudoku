@@ -2,13 +2,15 @@ part of sudoku;
 
 class IO {
   
+  static String debugOutputCssClass = "#debug-output";
+  
   static void printDebugInfo(String text) {
-    query("#debug-output")
+    query(debugOutputCssClass)
     ..appendText(text);
   }
 
   static void clearDebugInfo() {
-    query("#debug-output")
+    query(debugOutputCssClass)
     ..text = "";
   }
   

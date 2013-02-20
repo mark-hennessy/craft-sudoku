@@ -23,7 +23,7 @@ class Keyboard {
     });
   }
   
-  static bool isKey(int key, KeyboardEvent event) {
+  static bool isEventForKey(KeyboardEvent event, int key) {
     return key == event.keyCode;
   }
   
