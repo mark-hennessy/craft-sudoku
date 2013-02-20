@@ -1,0 +1,344 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>BoardUI class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="BoardUI">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/BoardUI.html">BoardUI</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><div class="icon-class"></div><strong>BoardUI</strong></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
+<div class="content">
+        <h2><strong>BoardUI</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class BoardUI {
+ 
+ Board board;
+ Keyboard keyboard;
+ 
+ BoardUI() {
+   board = new Board.empty();
+   keyboard = new Keyboard();
+ }
+ 
+ void renderGameState(GameState gameState) {
+   render(gameState.cellValues, (cell, cellElement) {
+     if(gameState.changedCells.contains(cell)) {
+       cellElement.classes.add('recently-modified-cell');
+     }
+   });
+ }
+ 
+ /**
+  * Tells the board to render itself.
+  */
+ void render(List&lt;int&gt; cellValues, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+   board.cellValues = cellValues;
+   
+   var grid = new TableElement();
+   grid.classes.add('grid');
+   var cellElementMap = new Map&lt;Cell, Element&gt;();
+   for(int r = 0; r &lt; Board.GRID_SIZE; r++) {
+     var rowElement = grid.insertRow(r);
+     for(int c = 0; c &lt; Board.GRID_SIZE; c++) {
+       Cell cell = board.getCell(r, c);
+       Element cellElement = rowElement.insertCell(c);
+       cellElementMap[cell] = cellElement;
+       cellElement.classes.add(cell.boxUnit.cssClass);
+       if(?customCellRenderBehavior) {
+         customCellRenderBehavior(cell, cellElement);
+       }
+       _renderCellValue(cell, cellElementMap);
+       _initializeUserInput(cell, cellElementMap);
+       _initializePeerHighlighting(cell, cellElementMap);
+     }
+   }
+   _addGridToDom(grid);
+ }
+ 
+ void _renderCellValue(Cell cell, Map&lt;Cell, Element&gt; cellElementMap) {
+   cellElementMap[cell].text = cell.hasValidValue ? cell.value.toString() : "";
+ }
+ 
+ void _initializeUserInput(Cell cell, Map&lt;Cell, Element&gt; cellElementMap) {
+   var cellElement = cellElementMap[cell];
+   DomUtils.makeFocusable(cellElement);
+   cellElement
+   ..onMouseOver.listen((e) {
+     selectCellElement(cellElement);
+   })
+   ..onKeyDown.listen((e) {
+     if(Keyboard.isNumericKey(e)) {
+       updateCellValue(cell, cellElementMap, e);
+     } else if(Keyboard.isArrowKey(e)) {
+       moveToNextCell(cell, cellElementMap, e);
+     }
+   });
+ }
+
+ void selectCellElement(Element cellElement) {
+   cellElement.focus();
+ }
+ 
+ void updateCellValue(Cell cell, Map&lt;Cell, Element&gt; cellElementMap, KeyboardEvent e) {
+   var newValue = Keyboard.parseKeyAsInt(e);
+   cell.value = newValue;
+   _renderCellValue(cell, cellElementMap);
+ }
+
+ void moveToNextCell(Cell cell, Map&lt;Cell, Element&gt; cellElementMap, KeyboardEvent e) {
+   var row = cell.row;
+   var column = cell.column;
+   if(Keyboard.isEventForKey(e, KeyCode.LEFT)) {
+     column -= 1;
+   } else if(Keyboard.isEventForKey(e, KeyCode.UP)) {
+     row -= 1;
+   } else if(Keyboard.isEventForKey(e, KeyCode.RIGHT)) {
+     column += 1;
+   } else if(Keyboard.isEventForKey(e, KeyCode.DOWN)) {
+     row += 1;
+   }
+   if(Board.gridCoordinatesInBounds(row, column)) {
+     var nextCell = board.getCell(row, column);
+     selectCellElement(cellElementMap[nextCell]);
+   }
+   //prevent arrow key from moving scrollbar
+   e.preventDefault();
+ }
+ 
+ void _initializePeerHighlighting(Cell cell, Map&lt;Cell, Element&gt; cellElementMap) {
+   var currentHighlightState = false;
+   
+   void highlightPeers(bool highlight) {
+     if(highlight != currentHighlightState) {
+       var peerElements = cell.peers.map((c) =&gt; cellElementMap[c]);
+       peerElements.forEach((e) =&gt; e.classes.toggle('peer-cell'));
+       currentHighlightState = !currentHighlightState;
+     }
+   }
+   
+   cellElementMap[cell]
+   ..onFocus.listen((e) {
+     if(keyboard.isHighlightPeersKeyPressed) {
+       highlightPeers(true);
+     }
+   })
+   ..onBlur.listen((e) {
+     highlightPeers(false);
+   })
+   ..onKeyDown.listen((e) {
+     if(Keyboard.isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+       highlightPeers(true);
+     }
+   })
+   ..onKeyUp.listen((e) {
+     if(keyboard.isHighlightPeersKeyPressed) {
+       highlightPeers(false);
+     }
+   });
+ }
+ 
+ void _addGridToDom(Element grid) {
+   var gridContainer = query('.gridContainer');
+   gridContainer.children
+   ..add(grid)
+   ..add(new BRElement());
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="BoardUI">
+<button class="show-code">Code</button>
+new <strong>BoardUI</strong>() <a class="anchor-link" href="#BoardUI"
+              title="Permalink to BoardUI.BoardUI">#</a></h4>
+<div class="doc">
+<pre class="source">
+BoardUI() {
+ board = new Board.empty();
+ keyboard = new Keyboard();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="board">
+<button class="show-code">Code</button>
+<a href="../sudoku/Board.html">Board</a>         <strong>board</strong> <a class="anchor-link"
+            href="#board"
+            title="Permalink to BoardUI.board">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+board
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="keyboard">
+<button class="show-code">Code</button>
+<a href="../sudoku/Keyboard.html">Keyboard</a>         <strong>keyboard</strong> <a class="anchor-link"
+            href="#keyboard"
+            title="Permalink to BoardUI.keyboard">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+keyboard
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="moveToNextCell">
+<button class="show-code">Code</button>
+void <strong>moveToNextCell</strong>(<a href="../sudoku/Cell.html">Cell</a> cell, <a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&lt;<a href="../sudoku/Cell.html">Cell</a>, <a href="http://api.dartlang.org/dart_html/Element.html">Element</a>&gt; cellElementMap, <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> e) <a class="anchor-link" href="#moveToNextCell"
+              title="Permalink to BoardUI.moveToNextCell">#</a></h4>
+<div class="doc">
+<pre class="source">
+void moveToNextCell(Cell cell, Map&lt;Cell, Element&gt; cellElementMap, KeyboardEvent e) {
+ var row = cell.row;
+ var column = cell.column;
+ if(Keyboard.isEventForKey(e, KeyCode.LEFT)) {
+   column -= 1;
+ } else if(Keyboard.isEventForKey(e, KeyCode.UP)) {
+   row -= 1;
+ } else if(Keyboard.isEventForKey(e, KeyCode.RIGHT)) {
+   column += 1;
+ } else if(Keyboard.isEventForKey(e, KeyCode.DOWN)) {
+   row += 1;
+ }
+ if(Board.gridCoordinatesInBounds(row, column)) {
+   var nextCell = board.getCell(row, column);
+   selectCellElement(cellElementMap[nextCell]);
+ }
+ //prevent arrow key from moving scrollbar
+ e.preventDefault();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="render">
+<button class="show-code">Code</button>
+void <strong>render</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; cellValues, [void customCellRenderBehavior(<a href="../sudoku/Cell.html">Cell</a> cell, <a href="http://api.dartlang.org/dart_html/Element.html">Element</a> cellElement)]) <a class="anchor-link" href="#render"
+              title="Permalink to BoardUI.render">#</a></h4>
+<div class="doc">
+<p>Tells the board to render itself.</p>
+<pre class="source">
+void render(List&lt;int&gt; cellValues, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+ board.cellValues = cellValues;
+ 
+ var grid = new TableElement();
+ grid.classes.add('grid');
+ var cellElementMap = new Map&lt;Cell, Element&gt;();
+ for(int r = 0; r &lt; Board.GRID_SIZE; r++) {
+   var rowElement = grid.insertRow(r);
+   for(int c = 0; c &lt; Board.GRID_SIZE; c++) {
+     Cell cell = board.getCell(r, c);
+     Element cellElement = rowElement.insertCell(c);
+     cellElementMap[cell] = cellElement;
+     cellElement.classes.add(cell.boxUnit.cssClass);
+     if(?customCellRenderBehavior) {
+       customCellRenderBehavior(cell, cellElement);
+     }
+     _renderCellValue(cell, cellElementMap);
+     _initializeUserInput(cell, cellElementMap);
+     _initializePeerHighlighting(cell, cellElementMap);
+   }
+ }
+ _addGridToDom(grid);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="renderGameState">
+<button class="show-code">Code</button>
+void <strong>renderGameState</strong>(<a href="../sudoku/GameState.html">GameState</a> gameState) <a class="anchor-link" href="#renderGameState"
+              title="Permalink to BoardUI.renderGameState">#</a></h4>
+<div class="doc">
+<pre class="source">
+void renderGameState(GameState gameState) {
+ render(gameState.cellValues, (cell, cellElement) {
+   if(gameState.changedCells.contains(cell)) {
+     cellElement.classes.add('recently-modified-cell');
+   }
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="selectCellElement">
+<button class="show-code">Code</button>
+void <strong>selectCellElement</strong>(<a href="http://api.dartlang.org/dart_html/Element.html">Element</a> cellElement) <a class="anchor-link" href="#selectCellElement"
+              title="Permalink to BoardUI.selectCellElement">#</a></h4>
+<div class="doc">
+<pre class="source">
+void selectCellElement(Element cellElement) {
+ cellElement.focus();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateCellValue">
+<button class="show-code">Code</button>
+void <strong>updateCellValue</strong>(<a href="../sudoku/Cell.html">Cell</a> cell, <a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&lt;<a href="../sudoku/Cell.html">Cell</a>, <a href="http://api.dartlang.org/dart_html/Element.html">Element</a>&gt; cellElementMap, <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> e) <a class="anchor-link" href="#updateCellValue"
+              title="Permalink to BoardUI.updateCellValue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateCellValue(Cell cell, Map&lt;Cell, Element&gt; cellElementMap, KeyboardEvent e) {
+ var newValue = Keyboard.parseKeyAsInt(e);
+ cell.value = newValue;
+ _renderCellValue(cell, cellElementMap);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-19 22:32:18.045</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

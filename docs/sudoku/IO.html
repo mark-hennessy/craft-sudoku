@@ -2,19 +2,19 @@
         <html>
         <head>
                 <meta charset="utf-8">
-        <title>Unit class / sudoku Library / Dart Documentation</title>
+        <title>IO class / sudoku Library / Dart Documentation</title>
         <link rel="stylesheet" type="text/css"
             href="../styles.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="../favicon.ico">
         
         </head>
-        <body data-library="sudoku" data-type="Unit">
+        <body data-library="sudoku" data-type="IO">
         <div class="page">
         <div class="header">
           <a href="../index.html"><div class="logo"></div></a>
           <a href="../index.html">Dart Documentation</a>
-         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Unit.html">Unit</a>        <div id="search-box">
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/IO.html">IO</a>        <div id="search-box">
           <input type="search" name="q" id="q" autocomplete="off"
               class="search-input" placeholder="Search API">
         </div>
@@ -31,72 +31,78 @@
 <li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
 <li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
 <li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
-<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><div class="icon-class"></div><strong>IO</strong></li>
 <li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
 <li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
-<li><div class="icon-class"></div><strong>Unit</strong></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
 </ul>
 <h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
 <div class="content">
-        <h2><strong>Unit</strong>
+        <h2><strong>IO</strong>
           class
         </h2>
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
-<p>A grouping of cells such as a row, column or block.</p>
 <pre class="source">
-class Unit {
- List&lt;Cell&gt; cells = [];
+class IO {
  
- String cssClass = '';
+ static String debugOutputCssClass = "#debug-output";
  
- void add(Cell cell) {
-   cells.add(cell);
+ static void printDebugInfo(String text) {
+   query(debugOutputCssClass)
+   ..appendText(text);
+ }
+
+ static void clearDebugInfo() {
+   query(debugOutputCssClass)
+   ..text = "";
  }
  
 }
 </pre>
 </div>
 <div>
-<h3>Properties</h3>
-<div class="field"><h4 id="cells">
+<h3>Static Properties</h3>
+<div class="field"><h4 id="debugOutputCssClass">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>cells</strong> <a class="anchor-link"
-            href="#cells"
-            title="Permalink to Unit.cells">#</a>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>debugOutputCssClass</strong> <a class="anchor-link"
+            href="#debugOutputCssClass"
+            title="Permalink to IO.debugOutputCssClass">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-cells = []
-</pre>
-</div>
-</div>
-<div class="field"><h4 id="cssClass">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>cssClass</strong> <a class="anchor-link"
-            href="#cssClass"
-            title="Permalink to Unit.cssClass">#</a>
-        </h4>
-        <div class="doc">
-<pre class="source">
-cssClass = ''
+debugOutputCssClass = "#debug-output"
 </pre>
 </div>
 </div>
 </div>
 <div>
-<h3>Methods</h3>
-<div class="method"><h4 id="add">
+<h3>Static Methods</h3>
+<div class="method"><h4 id="printDebugInfo">
 <button class="show-code">Code</button>
-void <strong>add</strong>(<a href="../sudoku/Cell.html">Cell</a> cell) <a class="anchor-link" href="#add"
-              title="Permalink to Unit.add">#</a></h4>
+void <strong>printDebugInfo</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> text) <a class="anchor-link" href="#printDebugInfo"
+              title="Permalink to IO.printDebugInfo">#</a></h4>
 <div class="doc">
 <pre class="source">
-void add(Cell cell) {
- cells.add(cell);
+static void printDebugInfo(String text) {
+ query(debugOutputCssClass)
+ ..appendText(text);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="clearDebugInfo">
+<button class="show-code">Code</button>
+void <strong>clearDebugInfo</strong>() <a class="anchor-link" href="#clearDebugInfo"
+              title="Permalink to IO.clearDebugInfo">#</a></h4>
+<div class="doc">
+<pre class="source">
+static void clearDebugInfo() {
+ query(debugOutputCssClass)
+ ..text = "";
 }
 </pre>
 </div>
@@ -106,7 +112,7 @@ void add(Cell cell) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-19 22:32:18.055</div>
+          <div>This page was generated at 2013-02-19 22:32:18.038</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

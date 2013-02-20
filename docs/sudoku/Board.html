@@ -26,9 +26,14 @@
         
 <h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
 <li><div class="icon-class"></div><strong>Board</strong></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
 <li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
-<li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
 <li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -45,10 +50,41 @@
 <pre class="source">
 class Board {
  static const int GRID_SIZE = 9;
- static const int BOX_SIZE = 3; 
+ static const int BOX_SIZE = 3;
+ static const int CELL_COUNT = GRID_SIZE * GRID_SIZE;
  
- List&lt;Cell&gt; cells = [];
+ /**
+  * Converts two-dimensional [row] and [column] coordinates and converts 
+  * them to a one-dimensional list index. 
+  */
+ static int indexAtGridCoordinates(int row, int column) {
+   return row * Board.GRID_SIZE + column;
+ }
+ 
+ static bool gridCoordinatesInBounds(int row, int column) {
+   return [row, column].every((coord) 
+       =&gt; (coord &gt;= 0 &amp;&amp; coord &lt; GRID_SIZE));
+ }
+ 
  List&lt;int&gt; cellValues = [];
+ 
+ List&lt;Unit&gt; units = [];
+ List&lt;Cell&gt; cells = [];
+ 
+ List&lt;Cell&gt; get emptyCells =&gt; 
+     cells.where((c) =&gt; !c.hasValidValue).toList();
+ 
+ List&lt;Cell&gt; get emptyCellsWithOnlyOnePossibleValue =&gt; 
+     cells.where((c) =&gt; !c.hasValidValue &amp;&amp; c.availableValues.length == 1).toList();
+ 
+ List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
+   var sortedList = emptyCells;
+   sortedList.sort((c1, c2) =&gt; 
+       CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+   return sortedList;
+ }
+ 
+ bool get isSolved =&gt; emptyCells.isEmpty;
  
  /**
   * Returns a [Cell] at the given [row] and [column].
@@ -57,54 +93,61 @@ class Board {
    return cells[indexAtGridCoordinates(row, column)];
  }
  
- /**
-  * The process of calculating and storing information about cells and 
-  * their relationships is slow and memory intensive. Although the values 
-  * of cells change, the relationships between cells do not.
-  * 
-  * In order to combat performance issues, this constructor uses the 
-  * singleton pattern to construct a single instance of a [Board]. 
-  * The board is a flyweight object, and its only state/context is
-  * a list [cellValues].
-  */
- static Board _board;
- factory Board(List&lt;int&gt; cellValues) {
-   if(_board == null) {
-     _board = new Board._internal();
-   }
-   _board.cellValues = cellValues;
-   return _board;
- }
+ Board.empty() : this(new List&lt;int&gt;.fixedLength(CELL_COUNT, fill: 0));
  
  /**
   * Constructs the [Board], [Cell]s and [Unit]s.
+  * 
+  * The process of calculating and storing information about cells and 
+  * their relationships is slow and memory intensive. Although the values 
+  * of cells change, the relationships between cells do not. Because of this,
+  * the board is designed as a flyweight object. Its only state/context is
+  * a list [cellValues].
   */
- Board._internal() {
-   //Initialize grid
+ Board(List&lt;int&gt; this.cellValues) {
+   if(cellValues.length != CELL_COUNT)
+     throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
+   
+   _initializeGrid();
+   _defineRowAndColumnUnits();
+   _defineBoxes();
+   _calculatePeersForEachCell();
+ }
+
+ void _initializeGrid() {
    for(int r = 0; r &lt; GRID_SIZE; r++) {
      for(int c = 0; c &lt; GRID_SIZE; c++) {
        cells.add(new Cell._internal(this, r, c));
      }
-   }  
-   //Define row and column units
+   }
+ }
+
+ void _defineRowAndColumnUnits() {
    for(int i = 0; i &lt; GRID_SIZE; i++) {
+     
      var rowUnit = new Unit();
+     units.add(rowUnit);
      _traverseCells((cell) {
        rowUnit.add(cell);
        cell.rowUnit = rowUnit;
      }, row: i, columnSpan: GRID_SIZE);
      
      var columnUnit = new Unit();
+     units.add(columnUnit);
      _traverseCells((cell) {
        columnUnit.add(cell);
        cell.columnUnit = columnUnit;
      }, column: i, rowSpan: GRID_SIZE);
+     
    }
-   //Define boxes
+ }
+
+ void _defineBoxes() {
    var grayBox = false;
-   for(int r = 0; r &lt; GRID_SIZE; r+= 3) {
-     for(int c = 0; c &lt; GRID_SIZE; c+= 3) {
+   for(int r = 0; r &lt; GRID_SIZE; r+= BOX_SIZE) {
+     for(int c = 0; c &lt; GRID_SIZE; c+= BOX_SIZE) {
        var boxUnit = new Unit();
+       units.add(boxUnit);
        if(grayBox) {
          boxUnit.cssClass = 'grid-gray';
        }
@@ -115,39 +158,21 @@ class Board {
        }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
      }
    }
-   //Calculate peers for each cell
+ }
+
+ void _calculatePeersForEachCell() {
    cells.forEach((c) =&gt; c._calculatePeers());
  }
  
  /**
-  * Executes the given [CellFunction] for the given area of the board.
+  * Executes the given [cellFunc] for the given area of the board.
   */
- void _traverseCells(CellFunction cellFunc, {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+ void _traverseCells(void cellFunc(Cell cell), {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
    for(int r = row; r &lt; row + rowSpan; r++) {
      for(int c = column; c &lt; column + columnSpan; c++) {
        cellFunc(getCell(r, c));
      }
    }
- }
- 
- /**
-  * Tells the board to render itself. An optional [containerSelector] can 
-  * be specified to select the container DOM element for the board.
-  */
- void render([String containerSelector = '.grid']) {
-   var tableElement = new TableElement();
-   for(int r = 0; r &lt; GRID_SIZE; r++) {
-     var rowElement = tableElement.insertRow(r);
-     for(int c = 0; c &lt; GRID_SIZE; c++) {
-       Cell cell = getCell(r, c);
-       rowElement.insertCell(c)
-       ..text = cell.hasValidValue ? cell.value.toString() : "0"
-       ..classes.add(cell.boxUnit.cssClass);
-     }
-   }
-   var gridContainer = query(containerSelector);
-   gridContainer.children.clear();
-   gridContainer.children.add(tableElement);
  }
  
 }
@@ -167,6 +192,18 @@ BOX_SIZE = 3
 </pre>
 </div>
 </div>
+<div class="field"><h4 id="CELL_COUNT">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>CELL_COUNT</strong> <a class="anchor-link"
+            href="#CELL_COUNT"
+            title="Permalink to Board.CELL_COUNT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+CELL_COUNT = GRID_SIZE * GRID_SIZE
+</pre>
+</div>
+</div>
 <div class="field"><h4 id="GRID_SIZE">
 <button class="show-code">Code</button>
 const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>GRID_SIZE</strong> <a class="anchor-link"
@@ -181,20 +218,71 @@ GRID_SIZE = 9
 </div>
 </div>
 <div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="indexAtGridCoordinates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>indexAtGridCoordinates</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#indexAtGridCoordinates"
+              title="Permalink to Board.indexAtGridCoordinates">#</a></h4>
+<div class="doc">
+<p>Converts two-dimensional 
+<span class="param">row</span> and 
+<span class="param">column</span> coordinates and converts 
+them to a one-dimensional list index. </p>
+<pre class="source">
+static int indexAtGridCoordinates(int row, int column) {
+ return row * Board.GRID_SIZE + column;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="gridCoordinatesInBounds">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>gridCoordinatesInBounds</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#gridCoordinatesInBounds"
+              title="Permalink to Board.gridCoordinatesInBounds">#</a></h4>
+<div class="doc">
+<pre class="source">
+static bool gridCoordinatesInBounds(int row, int column) {
+ return [row, column].every((coord) 
+     =&gt; (coord &gt;= 0 &amp;&amp; coord &lt; GRID_SIZE));
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
 <h3>Constructors</h3>
 <div class="method"><h4 id="Board">
 <button class="show-code">Code</button>
-factory <strong>Board</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; cellValues) <a class="anchor-link" href="#Board"
+new <strong>Board</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; cellValues) <a class="anchor-link" href="#Board"
               title="Permalink to Board.Board">#</a></h4>
 <div class="doc">
+<p>Constructs the <a class="crossref" href="../sudoku/Board.html#Board">Board</a>, <a class="crossref" href="../sudoku/Cell.html">Cell</a>s and <a class="crossref" href="../sudoku/Unit.html">Unit</a>s.</p>
+<p>The process of calculating and storing information about cells and 
+their relationships is slow and memory intensive. Although the values 
+of cells change, the relationships between cells do not. Because of this,
+the board is designed as a flyweight object. Its only state/context is
+a list 
+<span class="param">cellValues</span>.</p>
 <pre class="source">
-factory Board(List&lt;int&gt; cellValues) {
- if(_board == null) {
-   _board = new Board._internal();
- }
- _board.cellValues = cellValues;
- return _board;
+Board(List&lt;int&gt; this.cellValues) {
+ if(cellValues.length != CELL_COUNT)
+   throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
+ 
+ _initializeGrid();
+ _defineRowAndColumnUnits();
+ _defineBoxes();
+ _calculatePeersForEachCell();
 }
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Board.empty">
+<button class="show-code">Code</button>
+new <strong>Board.empty</strong>() <a class="anchor-link" href="#Board.empty"
+              title="Permalink to Board.Board.empty">#</a></h4>
+<div class="doc">
+<pre class="source">
+Board.empty() : this(new List&lt;int&gt;.fixedLength(CELL_COUNT, fill: 0));
 </pre>
 </div>
 </div>
@@ -225,6 +313,73 @@ cellValues = []
 </pre>
 </div>
 </div>
+<div class="field"><h4 id="emptyCells">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCells</strong> <a class="anchor-link"
+            href="#emptyCells"
+            title="Permalink to Board.emptyCells">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCells =&gt; 
+   cells.where((c) =&gt; !c.hasValidValue).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="emptyCellsSortedByAvailableValuesAscending">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsSortedByAvailableValuesAscending</strong> <a class="anchor-link"
+            href="#emptyCellsSortedByAvailableValuesAscending"
+            title="Permalink to Board.emptyCellsSortedByAvailableValuesAscending">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
+ var sortedList = emptyCells;
+ sortedList.sort((c1, c2) =&gt; 
+     CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+ return sortedList;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="emptyCellsWithOnlyOnePossibleValue">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsWithOnlyOnePossibleValue</strong> <a class="anchor-link"
+            href="#emptyCellsWithOnlyOnePossibleValue"
+            title="Permalink to Board.emptyCellsWithOnlyOnePossibleValue">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCellsWithOnlyOnePossibleValue =&gt; 
+   cells.where((c) =&gt; !c.hasValidValue &amp;&amp; c.availableValues.length == 1).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isSolved">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSolved</strong> <a class="anchor-link"
+            href="#isSolved"
+            title="Permalink to Board.isSolved">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool get isSolved =&gt; emptyCells.isEmpty;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="units">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Unit.html">Unit</a>&gt;         <strong>units</strong> <a class="anchor-link"
+            href="#units"
+            title="Permalink to Board.units">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+units = []
+</pre>
+</div>
+</div>
 </div>
 <div>
 <h3>Methods</h3>
@@ -243,39 +398,12 @@ Cell getCell(int row, int column) {
 </pre>
 </div>
 </div>
-<div class="method"><h4 id="render">
-<button class="show-code">Code</button>
-void <strong>render</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> containerSelector = '.grid']) <a class="anchor-link" href="#render"
-              title="Permalink to Board.render">#</a></h4>
-<div class="doc">
-<p>Tells the board to render itself. An optional 
-<span class="param">containerSelector</span> can 
-be specified to select the container DOM element for the board.</p>
-<pre class="source">
-void render([String containerSelector = '.grid']) {
- var tableElement = new TableElement();
- for(int r = 0; r &lt; GRID_SIZE; r++) {
-   var rowElement = tableElement.insertRow(r);
-   for(int c = 0; c &lt; GRID_SIZE; c++) {
-     Cell cell = getCell(r, c);
-     rowElement.insertCell(c)
-     ..text = cell.hasValidValue ? cell.value.toString() : "0"
-     ..classes.add(cell.boxUnit.cssClass);
-   }
- }
- var gridContainer = query(containerSelector);
- gridContainer.children.clear();
- gridContainer.children.add(tableElement);
-}
-</pre>
-</div>
-</div>
 </div>
         </div>
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 22:04:11.446</div>
+          <div>This page was generated at 2013-02-19 22:32:18.064</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

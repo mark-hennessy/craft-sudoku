@@ -98,8 +98,8 @@ class BoardUI {
   void _initializePeerHighlighting(Cell cell, Map<Cell, Element> cellElementMap) {
     var currentHighlightState = false;
     
-    void enablePeerHighlighting(bool enablePeerHighlighting) {
-      if(enablePeerHighlighting != currentHighlightState) {
+    void highlightPeers(bool highlight) {
+      if(highlight != currentHighlightState) {
         var peerElements = cell.peers.map((c) => cellElementMap[c]);
         peerElements.forEach((e) => e.classes.toggle('peer-cell'));
         currentHighlightState = !currentHighlightState;
@@ -109,20 +109,20 @@ class BoardUI {
     cellElementMap[cell]
     ..onFocus.listen((e) {
       if(keyboard.isHighlightPeersKeyPressed) {
-        enablePeerHighlighting(true);
+        highlightPeers(true);
       }
     })
     ..onBlur.listen((e) {
-      enablePeerHighlighting(false);
+      highlightPeers(false);
     })
     ..onKeyDown.listen((e) {
       if(Keyboard.isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
-        enablePeerHighlighting(true);
+        highlightPeers(true);
       }
     })
     ..onKeyUp.listen((e) {
       if(keyboard.isHighlightPeersKeyPressed) {
-        enablePeerHighlighting(false);
+        highlightPeers(false);
       }
     });
   }

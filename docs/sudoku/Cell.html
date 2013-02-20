@@ -26,9 +26,14 @@
         
 <h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
 <li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
 <li><div class="icon-class"></div><strong>Cell</strong></li>
-<li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
 <li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -58,10 +63,10 @@ class Cell {
  Set&lt;Cell&gt; peers;
  
  int get value =&gt; 
-     board.cellValues[indexAtGridCoordinates(row, column)];
+     board.cellValues[Board.indexAtGridCoordinates(row, column)];
  
  set value(int value) =&gt; 
-     board.cellValues[indexAtGridCoordinates(row, column)] = value;
+     board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
  
  /**
   * True if the cell's current value is a number between 1 and 9 inclusive.
@@ -81,23 +86,23 @@ class Cell {
      peers.where((c) =&gt; c.hasValidValue)
      .map((c) =&gt; c.value).toList();
  
- /**
-  * Constructor. A cell is not well-formed
-  * until the [_calculatePeers] method is called.
-  */
  Cell._internal(this.board, this.row, this.column) {
    peers = new Set&lt;Cell&gt;();
  }
  
- /**
-  * This method must be called after the box, row, and column units 
-  * have been set, but before other properties are used.
-  */
  void _calculatePeers() {
    peers.addAll(boxUnit.cells);
    peers.addAll(rowUnit.cells);
    peers.addAll(columnUnit.cells);
    peers.remove(this);
+ }
+ 
+ operator ==(Object other) {
+   Cell otherCell = other as Cell;
+   if(otherCell == null) return false;
+   return otherCell.row == this.row &amp;&amp; 
+       otherCell.column == this.column &amp;&amp; 
+       otherCell.value == this.value;
  }
  
 }
@@ -255,11 +260,38 @@ List&lt;int&gt; get unavailableValues =&gt;
         <div class="doc">
 <pre class="source">
 int get value =&gt; 
-   board.cellValues[indexAtGridCoordinates(row, column)];
+   board.cellValues[Board.indexAtGridCoordinates(row, column)];
 </pre>
 <pre class="source">
 set value(int value) =&gt; 
-   board.cellValues[indexAtGridCoordinates(row, column)] = value;
+   board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Operators</h3>
+<div class="method"><h4 id="==">
+<button class="show-code">Code</button>
+<strong>operator ==</strong>(<a href="http://api.dartlang.org/dart_core/Object.html">Object</a> other) <a class="anchor-link" href="#=="
+              title="Permalink to Cell.operator ==">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>The equality operator.</p>
+<p>The default behavior for all <code>Object</code>s is to return true if and
+only if <code>this</code> and 
+<span class="param">other</span> are the same object.</p>
+<p>If a subclass overrides the equality operator it should override
+the <code>hashCode</code> method as well to maintain consistency.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
+<pre class="source">
+operator ==(Object other) {
+ Cell otherCell = other as Cell;
+ if(otherCell == null) return false;
+ return otherCell.row == this.row &amp;&amp; 
+     otherCell.column == this.column &amp;&amp; 
+     otherCell.value == this.value;
+}
 </pre>
 </div>
 </div>
@@ -268,7 +300,7 @@ set value(int value) =&gt;
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 22:04:11.437</div>
+          <div>This page was generated at 2013-02-19 22:32:18.052</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

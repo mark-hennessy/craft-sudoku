@@ -1,0 +1,224 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Keyboard class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Keyboard">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Keyboard.html">Keyboard</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><div class="icon-class"></div><strong>Keyboard</strong></li>
+<li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
+<div class="content">
+        <h2><strong>Keyboard</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Helper class for Sudoku keyboard input.</p>
+<pre class="source">
+class Keyboard {
+ 
+ static const int HIGHLIGHT_PEERS = KeyCode.SHIFT;
+ 
+ bool isHighlightPeersKeyPressed = false;
+ 
+ Keyboard() {
+   window
+   ..onKeyDown.listen((e) {
+     if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+       isHighlightPeersKeyPressed = true;
+     }
+   })
+   ..onKeyUp.listen((e) {
+     if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+       isHighlightPeersKeyPressed = false;
+     }
+   });
+ }
+ 
+ static bool isEventForKey(KeyboardEvent event, int key) {
+   return key == event.keyCode;
+ }
+ 
+ static bool isNumericKey(KeyboardEvent event) {
+   return event.keyCode &gt;= KeyCode.ZERO &amp;&amp; 
+       event.keyCode &lt;= KeyCode.NINE;
+ }
+ 
+ static bool isArrowKey(KeyboardEvent event) {
+   return event.keyCode &gt;= KeyCode.LEFT &amp;&amp; 
+       event.keyCode &lt;= KeyCode.DOWN;
+ }
+ 
+ static String parseKeyAsString(KeyboardEvent event) {
+   return new String.fromCharCode(event.keyCode);
+ }
+ 
+ static int parseKeyAsInt(KeyboardEvent event) {
+   return int.parse(parseKeyAsString(event));
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="HIGHLIGHT_PEERS">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>HIGHLIGHT_PEERS</strong> <a class="anchor-link"
+            href="#HIGHLIGHT_PEERS"
+            title="Permalink to Keyboard.HIGHLIGHT_PEERS">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+HIGHLIGHT_PEERS = KeyCode.SHIFT
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="isEventForKey">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>isEventForKey</strong>(<a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> event, <a href="http://api.dartlang.org/dart_core/int.html">int</a> key) <a class="anchor-link" href="#isEventForKey"
+              title="Permalink to Keyboard.isEventForKey">#</a></h4>
+<div class="doc">
+<pre class="source">
+static bool isEventForKey(KeyboardEvent event, int key) {
+ return key == event.keyCode;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isNumericKey">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>isNumericKey</strong>(<a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> event) <a class="anchor-link" href="#isNumericKey"
+              title="Permalink to Keyboard.isNumericKey">#</a></h4>
+<div class="doc">
+<pre class="source">
+static bool isNumericKey(KeyboardEvent event) {
+ return event.keyCode &gt;= KeyCode.ZERO &amp;&amp; 
+     event.keyCode &lt;= KeyCode.NINE;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isArrowKey">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>isArrowKey</strong>(<a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> event) <a class="anchor-link" href="#isArrowKey"
+              title="Permalink to Keyboard.isArrowKey">#</a></h4>
+<div class="doc">
+<pre class="source">
+static bool isArrowKey(KeyboardEvent event) {
+ return event.keyCode &gt;= KeyCode.LEFT &amp;&amp; 
+     event.keyCode &lt;= KeyCode.DOWN;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="parseKeyAsString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>parseKeyAsString</strong>(<a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> event) <a class="anchor-link" href="#parseKeyAsString"
+              title="Permalink to Keyboard.parseKeyAsString">#</a></h4>
+<div class="doc">
+<pre class="source">
+static String parseKeyAsString(KeyboardEvent event) {
+ return new String.fromCharCode(event.keyCode);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="parseKeyAsInt">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>parseKeyAsInt</strong>(<a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> event) <a class="anchor-link" href="#parseKeyAsInt"
+              title="Permalink to Keyboard.parseKeyAsInt">#</a></h4>
+<div class="doc">
+<pre class="source">
+static int parseKeyAsInt(KeyboardEvent event) {
+ return int.parse(parseKeyAsString(event));
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Keyboard">
+<button class="show-code">Code</button>
+new <strong>Keyboard</strong>() <a class="anchor-link" href="#Keyboard"
+              title="Permalink to Keyboard.Keyboard">#</a></h4>
+<div class="doc">
+<pre class="source">
+Keyboard() {
+ window
+ ..onKeyDown.listen((e) {
+   if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+     isHighlightPeersKeyPressed = true;
+   }
+ })
+ ..onKeyUp.listen((e) {
+   if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+     isHighlightPeersKeyPressed = false;
+   }
+ });
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="isHighlightPeersKeyPressed">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isHighlightPeersKeyPressed</strong> <a class="anchor-link"
+            href="#isHighlightPeersKeyPressed"
+            title="Permalink to Keyboard.isHighlightPeersKeyPressed">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+isHighlightPeersKeyPressed = false
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-19 22:32:18.027</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

@@ -26,9 +26,14 @@
         
 <h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
 <li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
 <li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
-<li><a href="../sudoku/CellFunction.html"><div class="icon-interface"></div>CellFunction</a></li>
 <li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/MockKeyboardEvent.html"><div class="icon-class"></div>MockKeyboardEvent</a></li>
 <li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
 <li><div class="icon-class"></div><strong>Sudoku</strong></li>
 <li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
@@ -43,26 +48,61 @@
 <div class="doc">
 <pre class="source">
 class Sudoku {
- List&lt;List&lt;int&gt;&gt; previousStates;
- List&lt;int&gt; currentState;
  Board board;
+ BoardUI board_ui;
+ 
+ List&lt;GameState&gt; previousGameStates = [];
+ GameState currentGameState;
  
  Sudoku() {
    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-   previousStates = new List&lt;List&lt;int&gt;&gt;();
-   currentState = puzzles[0];
-   board = new Board(currentState);
+   board = new Board(puzzles[0]);
+   board_ui = new BoardUI();
+   currentGameState = new GameState(board.cellValues);
    initializeUI();
  }
  
  void initializeUI() {
-   query("#tests")
-     ..onClick.listen((e) =&gt; runTests());
+   query("#clear-debug-output")
+   ..onClick.listen((e) =&gt; IO.clearDebugInfo());
    
-   board.render();
+   solve();
+   
+   previousGameStates.forEach((gameState) 
+       =&gt; board_ui.renderGameState(gameState));
  }
  
+ void solve() {
+   // If a cell has only one possible value, then set it. 
+   var freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
+   do {
+     for(var cell in freebieCells) {
+       updateCellValue(cell, cell.availableValues.first);
+       snapshotGameState();
+     }
+     freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
+   } while(freebieCells.length &gt; 0);
+   
+   if(!board.isSolved) {
+     search();
+   }
+ }
  
+ void search() {
+   
+ }
+ 
+ void updateCellValue(Cell cell, int value) {
+   cell.value = value;
+   currentGameState.changedCells.add(cell);
+ }
+ 
+ void snapshotGameState(){
+   currentGameState.freeze();
+   previousGameStates.add(currentGameState);
+   currentGameState = new GameState(board.cellValues);
+ }
+
 }
 </pre>
 </div>
@@ -76,9 +116,9 @@ new <strong>Sudoku</strong>() <a class="anchor-link" href="#Sudoku"
 <pre class="source">
 Sudoku() {
  var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
- previousStates = new List&lt;List&lt;int&gt;&gt;();
- currentState = puzzles[0];
- board = new Board(currentState);
+ board = new Board(puzzles[0]);
+ board_ui = new BoardUI();
+ currentGameState = new GameState(board.cellValues);
  initializeUI();
 }
 </pre>
@@ -99,27 +139,39 @@ board
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="currentState">
+<div class="field"><h4 id="board_ui">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>currentState</strong> <a class="anchor-link"
-            href="#currentState"
-            title="Permalink to Sudoku.currentState">#</a>
+<a href="../sudoku/BoardUI.html">BoardUI</a>         <strong>board_ui</strong> <a class="anchor-link"
+            href="#board_ui"
+            title="Permalink to Sudoku.board_ui">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-currentState
+board_ui
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="previousStates">
+<div class="field"><h4 id="currentGameState">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;&gt;         <strong>previousStates</strong> <a class="anchor-link"
-            href="#previousStates"
-            title="Permalink to Sudoku.previousStates">#</a>
+<a href="../sudoku/GameState.html">GameState</a>         <strong>currentGameState</strong> <a class="anchor-link"
+            href="#currentGameState"
+            title="Permalink to Sudoku.currentGameState">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-previousStates
+currentGameState
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="previousGameStates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/GameState.html">GameState</a>&gt;         <strong>previousGameStates</strong> <a class="anchor-link"
+            href="#previousGameStates"
+            title="Permalink to Sudoku.previousGameStates">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+previousGameStates = []
 </pre>
 </div>
 </div>
@@ -133,10 +185,76 @@ void <strong>initializeUI</strong>() <a class="anchor-link" href="#initializeUI"
 <div class="doc">
 <pre class="source">
 void initializeUI() {
- query("#tests")
-   ..onClick.listen((e) =&gt; runTests());
+ query("#clear-debug-output")
+ ..onClick.listen((e) =&gt; IO.clearDebugInfo());
  
- board.render();
+ solve();
+ 
+ previousGameStates.forEach((gameState) 
+     =&gt; board_ui.renderGameState(gameState));
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="search">
+<button class="show-code">Code</button>
+void <strong>search</strong>() <a class="anchor-link" href="#search"
+              title="Permalink to Sudoku.search">#</a></h4>
+<div class="doc">
+<pre class="source">
+void search() {
+ 
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="snapshotGameState">
+<button class="show-code">Code</button>
+void <strong>snapshotGameState</strong>() <a class="anchor-link" href="#snapshotGameState"
+              title="Permalink to Sudoku.snapshotGameState">#</a></h4>
+<div class="doc">
+<pre class="source">
+void snapshotGameState(){
+ currentGameState.freeze();
+ previousGameStates.add(currentGameState);
+ currentGameState = new GameState(board.cellValues);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="solve">
+<button class="show-code">Code</button>
+void <strong>solve</strong>() <a class="anchor-link" href="#solve"
+              title="Permalink to Sudoku.solve">#</a></h4>
+<div class="doc">
+<pre class="source">
+void solve() {
+ // If a cell has only one possible value, then set it. 
+ var freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
+ do {
+   for(var cell in freebieCells) {
+     updateCellValue(cell, cell.availableValues.first);
+     snapshotGameState();
+   }
+   freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
+ } while(freebieCells.length &gt; 0);
+ 
+ if(!board.isSolved) {
+   search();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="updateCellValue">
+<button class="show-code">Code</button>
+void <strong>updateCellValue</strong>(<a href="../sudoku/Cell.html">Cell</a> cell, <a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#updateCellValue"
+              title="Permalink to Sudoku.updateCellValue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void updateCellValue(Cell cell, int value) {
+ cell.value = value;
+ currentGameState.changedCells.add(cell);
 }
 </pre>
 </div>
@@ -146,7 +264,7 @@ void initializeUI() {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-02-11 22:04:11.457</div>
+          <div>This page was generated at 2013-02-19 22:32:18.104</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

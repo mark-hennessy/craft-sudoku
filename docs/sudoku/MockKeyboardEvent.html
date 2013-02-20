@@ -1,0 +1,905 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>MockKeyboardEvent class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="MockKeyboardEvent">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/MockKeyboardEvent.html">MockKeyboardEvent</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../matcher.html">matcher</a></h2><h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../mock.html">mock</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><div class="icon-class"></div><strong>MockKeyboardEvent</strong></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/Sudoku.html"><div class="icon-class"></div>Sudoku</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../unittest.html">unittest</a></h2></div>
+<div class="content">
+        <h2><strong>MockKeyboardEvent</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class MockKeyboardEvent extends Mock implements KeyboardEvent {
+ 
+ KeyboardEvent _real;
+ 
+ MockKeyboardEvent(String type) {
+   _real = new KeyboardEvent(type);
+ }
+ 
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../mock/Mock.html">Mock</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>MockKeyboardEvent</strong></span></p>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../dart_html/KeyboardEvent.html">KeyboardEvent</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="MockKeyboardEvent">
+<button class="show-code">Code</button>
+new <strong>MockKeyboardEvent</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type) <a class="anchor-link" href="#MockKeyboardEvent"
+              title="Permalink to MockKeyboardEvent.MockKeyboardEvent">#</a></h4>
+<div class="doc">
+<pre class="source">
+MockKeyboardEvent(String type) {
+ _real = new KeyboardEvent(type);
+}
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="$dom_charCode">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>$dom_charCode</strong> <a class="anchor-link"
+            href="#$dom_charCode"
+            title="Permalink to MockKeyboardEvent.$dom_charCode">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@JSName('charCode')
+@DomName('UIEvent.charCode')
+@DocsEditable
+final int $dom_charCode
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="$dom_keyCode">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>$dom_keyCode</strong> <a class="anchor-link"
+            href="#$dom_keyCode"
+            title="Permalink to MockKeyboardEvent.$dom_keyCode">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@JSName('keyCode')
+@DomName('UIEvent.keyCode')
+@DocsEditable
+final int $dom_keyCode
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="$dom_keyIdentifier">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>$dom_keyIdentifier</strong> <a class="anchor-link"
+            href="#$dom_keyIdentifier"
+            title="Permalink to MockKeyboardEvent.$dom_keyIdentifier">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@JSName('keyIdentifier')
+@DomName('KeyboardEvent.keyIdentifier')
+@DocsEditable
+final String $dom_keyIdentifier
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="altGraphKey">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>altGraphKey</strong> <a class="anchor-link"
+            href="#altGraphKey"
+            title="Permalink to MockKeyboardEvent.altGraphKey">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.altGraphKey')
+@DocsEditable
+final bool altGraphKey
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="altKey">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>altKey</strong> <a class="anchor-link"
+            href="#altKey"
+            title="Permalink to MockKeyboardEvent.altKey">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.altKey')
+@DocsEditable
+final bool altKey
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="bubbles">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>bubbles</strong> <a class="anchor-link"
+            href="#bubbles"
+            title="Permalink to MockKeyboardEvent.bubbles">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.bubbles')
+@DocsEditable
+final bool bubbles
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="cancelable">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>cancelable</strong> <a class="anchor-link"
+            href="#cancelable"
+            title="Permalink to MockKeyboardEvent.cancelable">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.cancelable')
+@DocsEditable
+final bool cancelable
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="cancelBubble">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>cancelBubble</strong> <a class="anchor-link"
+            href="#cancelBubble"
+            title="Permalink to MockKeyboardEvent.cancelBubble">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.cancelBubble')
+@DocsEditable
+bool cancelBubble
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="charCode">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>charCode</strong> <a class="anchor-link"
+            href="#charCode"
+            title="Permalink to MockKeyboardEvent.charCode">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.charCode')
+int get charCode =&gt; $dom_charCode;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="clipboardData">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_html/DataTransfer.html">DataTransfer</a>         <strong>clipboardData</strong> <a class="anchor-link"
+            href="#clipboardData"
+            title="Permalink to MockKeyboardEvent.clipboardData">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.clipboardData')
+@DocsEditable
+final DataTransfer clipboardData
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="ctrlKey">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>ctrlKey</strong> <a class="anchor-link"
+            href="#ctrlKey"
+            title="Permalink to MockKeyboardEvent.ctrlKey">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.ctrlKey')
+@DocsEditable
+final bool ctrlKey
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="currentTarget">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_html/EventTarget.html">EventTarget</a>         <strong>currentTarget</strong> <a class="anchor-link"
+            href="#currentTarget"
+            title="Permalink to MockKeyboardEvent.currentTarget">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+EventTarget get currentTarget =&gt; _convertNativeToDart_EventTarget(this._currentTarget);
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="defaultPrevented">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>defaultPrevented</strong> <a class="anchor-link"
+            href="#defaultPrevented"
+            title="Permalink to MockKeyboardEvent.defaultPrevented">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.defaultPrevented')
+@DocsEditable
+final bool defaultPrevented
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="detail">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>detail</strong> <a class="anchor-link"
+            href="#detail"
+            title="Permalink to MockKeyboardEvent.detail">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.detail')
+@DocsEditable
+final int detail
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="eventPhase">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>eventPhase</strong> <a class="anchor-link"
+            href="#eventPhase"
+            title="Permalink to MockKeyboardEvent.eventPhase">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.eventPhase')
+@DocsEditable
+final int eventPhase
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="keyCode">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>keyCode</strong> <a class="anchor-link"
+            href="#keyCode"
+            title="Permalink to MockKeyboardEvent.keyCode">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.keyCode')
+int get keyCode =&gt; $dom_keyCode;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="keyLocation">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>keyLocation</strong> <a class="anchor-link"
+            href="#keyLocation"
+            title="Permalink to MockKeyboardEvent.keyLocation">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.keyLocation')
+@DocsEditable
+final int keyLocation
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="layerX">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>layerX</strong> <a class="anchor-link"
+            href="#layerX"
+            title="Permalink to MockKeyboardEvent.layerX">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.layerX')
+@DocsEditable
+final int layerX
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="layerY">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>layerY</strong> <a class="anchor-link"
+            href="#layerY"
+            title="Permalink to MockKeyboardEvent.layerY">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.layerY')
+@DocsEditable
+final int layerY
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="log">
+<button class="show-code">Code</button>
+<a href="../mock/LogEntryList.html">LogEntryList</a>         <strong>log</strong> <a class="anchor-link"
+            href="#log"
+            title="Permalink to MockKeyboardEvent.log">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<pre class="source">
+log
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="logging">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>logging</strong> <a class="anchor-link"
+            href="#logging"
+            title="Permalink to MockKeyboardEvent.logging">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<pre class="source">
+bool get logging =&gt; _logging;
+</pre>
+<pre class="source">
+set logging(bool value) {
+ if (value &amp;&amp; log == null) {
+   log = new LogEntryList();
+ }
+ _logging = value;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="metaKey">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>metaKey</strong> <a class="anchor-link"
+            href="#metaKey"
+            title="Permalink to MockKeyboardEvent.metaKey">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.metaKey')
+@DocsEditable
+final bool metaKey
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="name">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to MockKeyboardEvent.name">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<pre class="source">
+name
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pageX">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>pageX</strong> <a class="anchor-link"
+            href="#pageX"
+            title="Permalink to MockKeyboardEvent.pageX">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.pageX')
+@DocsEditable
+final int pageX
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="pageY">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>pageY</strong> <a class="anchor-link"
+            href="#pageY"
+            title="Permalink to MockKeyboardEvent.pageY">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.pageY')
+@DocsEditable
+final int pageY
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="returnValue">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>returnValue</strong> <a class="anchor-link"
+            href="#returnValue"
+            title="Permalink to MockKeyboardEvent.returnValue">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.returnValue')
+@DocsEditable
+bool returnValue
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="shiftKey">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>shiftKey</strong> <a class="anchor-link"
+            href="#shiftKey"
+            title="Permalink to MockKeyboardEvent.shiftKey">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.shiftKey')
+@DocsEditable
+final bool shiftKey
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="target">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_html/EventTarget.html">EventTarget</a>         <strong>target</strong> <a class="anchor-link"
+            href="#target"
+            title="Permalink to MockKeyboardEvent.target">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+EventTarget get target =&gt; _convertNativeToDart_EventTarget(this._target);
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="timeStamp">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>timeStamp</strong> <a class="anchor-link"
+            href="#timeStamp"
+            title="Permalink to MockKeyboardEvent.timeStamp">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.timeStamp')
+@DocsEditable
+final int timeStamp
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="type">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>type</strong> <a class="anchor-link"
+            href="#type"
+            title="Permalink to MockKeyboardEvent.type">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.type')
+@DocsEditable
+final String type
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="view">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_html/WindowBase.html">WindowBase</a>         <strong>view</strong> <a class="anchor-link"
+            href="#view"
+            title="Permalink to MockKeyboardEvent.view">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+WindowBase get view =&gt; _convertNativeToDart_Window(this._view);
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="which">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>which</strong> <a class="anchor-link"
+            href="#which"
+            title="Permalink to MockKeyboardEvent.which">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('UIEvent.which')
+@DocsEditable
+final int which
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="calls">
+<button class="show-code">Code</button>
+<a href="../mock/LogEntryList.html">LogEntryList</a> <strong>calls</strong>(method, [arg0 = _noArg, arg1 = _noArg, arg2 = _noArg, arg3 = _noArg, arg4 = _noArg, arg5 = _noArg, arg6 = _noArg, arg7 = _noArg, arg8 = _noArg, arg9 = _noArg]) <a class="anchor-link" href="#calls"
+              title="Permalink to MockKeyboardEvent.calls">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p>Useful shorthand method that creates a <code>CallMatcher</code> from its arguments
+and then calls <code>getLogs</code>.</p>
+<pre class="source">
+LogEntryList calls(method,
+                   [arg0 = _noArg,
+                    arg1 = _noArg,
+                    arg2 = _noArg,
+                    arg3 = _noArg,
+                    arg4 = _noArg,
+                    arg5 = _noArg,
+                    arg6 = _noArg,
+                    arg7 = _noArg,
+                    arg8 = _noArg,
+                    arg9 = _noArg]) =&gt;
+   getLogs(callsTo(method, arg0, arg1, arg2, arg3, arg4,
+       arg5, arg6, arg7, arg8, arg9));
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="clearLogs">
+<button class="show-code">Code</button>
+void <strong>clearLogs</strong>() <a class="anchor-link" href="#clearLogs"
+              title="Permalink to MockKeyboardEvent.clearLogs">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p>Clear the logs for the Mock. </p>
+<pre class="source">
+void clearLogs() {
+ if (log != null) {
+   if (name == null) { // This log is not shared.
+     log.logs.clear();
+   } else { // This log may be shared.
+     log.logs = log.logs.where((e) =&gt; e.mockName != name).toList();
+   }
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="getLogs">
+<button class="show-code">Code</button>
+<a href="../mock/LogEntryList.html">LogEntryList</a> <strong>getLogs</strong>([<a href="../mock/CallMatcher.html">CallMatcher</a> logFilter, <a href="../matcher/Matcher.html">Matcher</a> actionMatcher, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> destructive = false]) <a class="anchor-link" href="#getLogs"
+              title="Permalink to MockKeyboardEvent.getLogs">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p><code>getLogs</code> extracts all calls from the call log that match the
+
+<span class="param">logFilter</span>, and returns the matching list of <code>LogEntry</code>s. If
+
+<span class="param">destructive</span> is false (the default) the matching calls are left
+in the log, else they are removed. Removal allows us to verify a
+set of interactions and then verify that there are no other
+interactions left. 
+<span class="param">actionMatcher</span> can be used to further
+restrict the returned logs based on the action the mock performed.
+
+<span class="param">logFilter</span> can be a <code>CallMatcher</code> or a predicate function that
+takes a <code>LogEntry</code> and returns a bool.</p>
+<p>Typical usage:</p>
+<pre><span class="i ">getLogs</span><span class="p ">(</span><span class="i ">callsTo</span><span class="p ">(</span>...<span class="p ">)</span><span class="p ">)</span><span class="p ">.</span><span class="i ">verify</span><span class="p ">(</span>...<span class="p ">)</span><span class="p ">;</span></pre>
+<pre class="source">
+LogEntryList getLogs([CallMatcher logFilter,
+                     Matcher actionMatcher,
+                     bool destructive = false]) {
+ if (log == null) {
+   // This means we created the mock with logging off and have never turned
+   // it on, so it doesn't make sense to get logs from such a mock.
+   throw new
+       Exception("Can't retrieve logs when logging was never enabled.");
+ } else {
+   return log.getMatches(name, logFilter, actionMatcher, destructive);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="noSuchMethod">
+<button class="show-code">Code</button>
+<strong>noSuchMethod</strong>(<a href="http://api.dartlang.org/dart_core/InvocationMirror.html">InvocationMirror</a> invocation) <a class="anchor-link" href="#noSuchMethod"
+              title="Permalink to MockKeyboardEvent.noSuchMethod">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p>This is the handler for method calls. We loop through the list
+of <code>Behavior</code>s, and find the first match that still has return
+values available, and then do the action specified by that
+return value. If we find no <code>Behavior</code> to apply an exception is
+thrown.</p>
+<pre class="source">
+noSuchMethod(InvocationMirror invocation) {
+ var method = invocation.memberName;
+ var args = invocation.positionalArguments;
+ if (invocation.isGetter) {
+   method = 'get $method';
+ } else if (method.startsWith('get:')) {
+   // TODO(gram): Remove this when VM handles the isGetter version above.
+   method = 'get ${method.substring(4)}';
+ }
+ bool matchedMethodName = false;
+ MatchState matchState = new MatchState();
+ for (String k in _behaviors.keys) {
+   Behavior b = _behaviors[k];
+   if (b.matcher.nameFilter.matches(method, matchState)) {
+     matchedMethodName = true;
+   }
+   if (b.matches(method, args)) {
+     List actions = b.actions;
+     if (actions == null || actions.length == 0) {
+       continue; // No return values left in this Behavior.
+     }
+     // Get the first response.
+     Responder response = actions[0];
+     // If it is exhausted, remove it from the list.
+     // Note that for endlessly repeating values, we started the count at
+     // 0, so we get a potentially useful value here, which is the
+     // (negation of) the number of times we returned the value.
+     if (--response.count == 0) {
+       actions.removeRange(0, 1);
+     }
+     // Do the response.
+     Action action = response.action;
+     var value = response.value;
+     if (action == Action.RETURN) {
+       if (_logging &amp;&amp; b.logging) {
+         log.add(new LogEntry(name, method, args, action, value));
+       }
+       return value;
+     } else if (action == Action.THROW) {
+       if (_logging &amp;&amp; b.logging) {
+         log.add(new LogEntry(name, method, args, action, value));
+       }
+       throw value;
+     } else if (action == Action.PROXY) {
+       // TODO(gram): Replace all this with:
+       //     var rtn = invocation.invokeOn(value);
+       // once that is supported.
+       var rtn;
+       switch (args.length) {
+         case 0:
+           rtn = value();
+           break;
+         case 1:
+           rtn = value(args[0]);
+           break;
+         case 2:
+           rtn = value(args[0], args[1]);
+           break;
+         case 3:
+           rtn = value(args[0], args[1], args[2]);
+           break;
+         case 4:
+           rtn = value(args[0], args[1], args[2], args[3]);
+           break;
+         case 5:
+           rtn = value(args[0], args[1], args[2], args[3], args[4]);
+           break;
+         case 6:
+           rtn = value(args[0], args[1], args[2], args[3],
+               args[4], args[5]);
+           break;
+         case 7:
+           rtn = value(args[0], args[1], args[2], args[3],
+               args[4], args[5], args[6]);
+           break;
+         case 8:
+           rtn = value(args[0], args[1], args[2], args[3],
+               args[4], args[5], args[6], args[7]);
+           break;
+         case 9:
+           rtn = value(args[0], args[1], args[2], args[3],
+               args[4], args[5], args[6], args[7], args[8]);
+           break;
+         case 9:
+           rtn = value(args[0], args[1], args[2], args[3],
+               args[4], args[5], args[6], args[7], args[8], args[9]);
+           break;
+         default:
+           throw new Exception(
+               "Cannot proxy calls with more than 10 parameters.");
+       }
+       if (_logging &amp;&amp; b.logging) {
+         log.add(new LogEntry(name, method, args, action, rtn));
+       }
+       return rtn;
+     }
+   }
+ }
+ if (matchedMethodName) {
+   // User did specify behavior for this method, but all the
+   // actions are exhausted. This is considered an error.
+   throw new Exception('No more actions for method '
+       '${_qualifiedName(name, method)}.');
+ } else if (_throwIfNoBehavior) {
+   throw new Exception('No behavior specified for method '
+       '${_qualifiedName(name, method)}.');
+ }
+ // Otherwise user hasn't specified behavior for this method; we don't throw
+ // so we can underspecify.
+ if (_logging) {
+   log.add(new LogEntry(name, method, args, Action.IGNORE));
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="preventDefault">
+<button class="show-code">Code</button>
+void <strong>preventDefault</strong>() <a class="anchor-link" href="#preventDefault"
+              title="Permalink to MockKeyboardEvent.preventDefault">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.preventDefault')
+@DocsEditable
+void preventDefault() native;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="reset">
+<button class="show-code">Code</button>
+void <strong>reset</strong>() <a class="anchor-link" href="#reset"
+              title="Permalink to MockKeyboardEvent.reset">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p>Clear both logs and behavior. </p>
+<pre class="source">
+void reset() {
+ resetBehavior();
+ clearLogs();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="resetBehavior">
+<button class="show-code">Code</button>
+void <strong>resetBehavior</strong>() <a class="anchor-link" href="#resetBehavior"
+              title="Permalink to MockKeyboardEvent.resetBehavior">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p>Clear the behaviors for the Mock. </p>
+<pre class="source">
+void resetBehavior() =&gt; _behaviors.clear();
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="stopImmediatePropagation">
+<button class="show-code">Code</button>
+void <strong>stopImmediatePropagation</strong>() <a class="anchor-link" href="#stopImmediatePropagation"
+              title="Permalink to MockKeyboardEvent.stopImmediatePropagation">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.stopImmediatePropagation')
+@DocsEditable
+void stopImmediatePropagation() native;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="stopPropagation">
+<button class="show-code">Code</button>
+void <strong>stopPropagation</strong>() <a class="anchor-link" href="#stopPropagation"
+              title="Permalink to MockKeyboardEvent.stopPropagation">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@DomName('Event.stopPropagation')
+@DocsEditable
+void stopPropagation() native;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="verifyZeroInteractions">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>verifyZeroInteractions</strong>() <a class="anchor-link" href="#verifyZeroInteractions"
+              title="Permalink to MockKeyboardEvent.verifyZeroInteractions">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p><code>verifyZeroInteractions</code> returns true if no calls were made </p>
+<pre class="source">
+bool verifyZeroInteractions() {
+ if (log == null) {
+   // This means we created the mock with logging off and have never turned
+   // it on, so it doesn't make sense to verify behavior on such a mock.
+   throw new
+       Exception("Can't verify behavior when logging was never enabled.");
+ }
+ return log.logs.length == 0;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="when">
+<button class="show-code">Code</button>
+<a href="../mock/Behavior.html">Behavior</a> <strong>when</strong>(<a href="../mock/CallMatcher.html">CallMatcher</a> logFilter) <a class="anchor-link" href="#when"
+              title="Permalink to MockKeyboardEvent.when">#</a></h4>
+<div class="inherited-from">inherited from <a href="../mock/Mock.html">Mock</a> </div><div class="doc">
+<p><code>when</code> is used to create a new or extend an existing <code>Behavior</code>.
+A [CallMatcher] [filter] must be supplied, and the <code>Behavior</code>s for
+that signature are returned (being created first if needed).</p>
+<p>Typical use case:</p>
+<pre><span class="i ">mock</span><span class="p ">.</span><span class="i ">when</span><span class="p ">(</span><span class="i ">callsTo</span><span class="p ">(</span>...<span class="p ">)</span><span class="p ">)</span><span class="p ">.</span><span class="i ">alwaysReturn</span><span class="p ">(</span>...<span class="p ">)</span><span class="p ">;</span></pre>
+<pre class="source">
+Behavior when(CallMatcher logFilter) {
+ String key = logFilter.toString();
+ if (!_behaviors.containsKey(key)) {
+   Behavior b = new Behavior(logFilter);
+   _behaviors[key] = b;
+   return b;
+ } else {
+   return _behaviors[key];
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="$dom_initEvent">
+<button class="show-code">Code</button>
+void <strong>$dom_initEvent</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> eventTypeArg, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> canBubbleArg, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> cancelableArg) <a class="anchor-link" href="#$dom_initEvent"
+              title="Permalink to MockKeyboardEvent.$dom_initEvent">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/Event.html">Event</a> </div><div class="doc">
+<pre class="source">
+@JSName('initEvent')
+@DomName('Event.initEvent')
+@DocsEditable
+void $dom_initEvent(String eventTypeArg, bool canBubbleArg, bool cancelableArg) native;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="$dom_initKeyboardEvent">
+<button class="show-code">Code</button>
+void <strong>$dom_initKeyboardEvent</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> canBubble, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> cancelable, <a href="http://api.dartlang.org/dart_html/Window.html">Window</a> view, <a href="http://api.dartlang.org/dart_core/String.html">String</a> keyIdentifier, <a href="http://api.dartlang.org/dart_core/int.html">int</a> keyLocation, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> ctrlKey, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> altKey, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> shiftKey, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> metaKey, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> altGraphKey) <a class="anchor-link" href="#$dom_initKeyboardEvent"
+              title="Permalink to MockKeyboardEvent.$dom_initKeyboardEvent">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/KeyboardEvent.html">KeyboardEvent</a> </div><div class="doc">
+<pre class="source">
+@DomName('KeyboardEvent.initKeyboardEvent')
+void $dom_initKeyboardEvent(String type, bool canBubble, bool cancelable,
+   Window view, String keyIdentifier, int keyLocation, bool ctrlKey,
+   bool altKey, bool shiftKey, bool metaKey, bool altGraphKey) {
+ if (JS('bool', 'typeof(#.initKeyEvent) == "function"', this)) {
+   // initKeyEvent is only in Firefox (instead of initKeyboardEvent). It has
+   // a slightly different signature, and allows you to specify keyCode and
+   // charCode as the last two arguments, but we just set them as the default
+   // since they can't be specified in other browsers.
+   JS('void', '#.initKeyEvent(#, #, #, #, #, #, #, #, 0, 0)', this,
+       type, canBubble, cancelable, view,
+       ctrlKey, altKey, shiftKey, metaKey);
+ } else {
+   // initKeyboardEvent is for all other browsers.
+   JS('void', '#.initKeyboardEvent(#, #, #, #, #, #, #, #, #, #, #)', this,
+       type, canBubble, cancelable, view, keyIdentifier, keyLocation,
+       ctrlKey, altKey, shiftKey, metaKey, altGraphKey);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="$dom_initUIEvent">
+<button class="show-code">Code</button>
+void <strong>$dom_initUIEvent</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> type, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> canBubble, <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> cancelable, <a href="http://api.dartlang.org/dart_html/Window.html">Window</a> view, <a href="http://api.dartlang.org/dart_core/int.html">int</a> detail) <a class="anchor-link" href="#$dom_initUIEvent"
+              title="Permalink to MockKeyboardEvent.$dom_initUIEvent">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_html/UIEvent.html">UIEvent</a> </div><div class="doc">
+<pre class="source">
+@JSName('initUIEvent')
+@DomName('UIEvent.initUIEvent')
+@DocsEditable
+void $dom_initUIEvent(String type, bool canBubble, bool cancelable, Window view, int detail) native;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-02-19 22:32:18.098</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

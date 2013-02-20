@@ -12,12 +12,12 @@ class Keyboard {
   Keyboard() {
     window
     ..onKeyDown.listen((e) {
-      if(isKey(Keyboard.HIGHLIGHT_PEERS, e)) {
+      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
         isHighlightPeersKeyPressed = true;
       }
     })
     ..onKeyUp.listen((e) {
-      if(isKey(Keyboard.HIGHLIGHT_PEERS, e)) {
+      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
         isHighlightPeersKeyPressed = false;
       }
     });
