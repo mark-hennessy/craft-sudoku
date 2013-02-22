@@ -91,8 +91,11 @@ class BoardUI {
       var nextCell = board.getCell(row, column);
       selectCellElement(cellElementMap[nextCell]);
     }
-    //prevent arrow key from moving scrollbar
-    e.preventDefault();
+    _preventScrollbarFromMoving(e);
+  }
+  
+  void _preventScrollbarFromMoving(KeyboardEvent event) {
+    event.preventDefault();
   }
   
   void _initializePeerHighlighting(Cell cell, Map<Cell, Element> cellElementMap) {

@@ -47,15 +47,14 @@ class Sudoku {
   }
   
   void solve() {
-    // If a cell has only one possible value, then set it. 
-    var freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
+    var emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     do {
-      for(var cell in freebieCells) {
+      for(var cell in emptyCellsWithOnlyOnePossibleValue) {
         updateCellValue(cell, cell.availableValues.first);
         snapshotGameState();
       }
-      freebieCells = board.emptyCellsWithOnlyOnePossibleValue;
-    } while(freebieCells.length > 0);
+      emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
+    } while(emptyCellsWithOnlyOnePossibleValue.length > 0);
     
     if(!board.isSolved) {
       search();
