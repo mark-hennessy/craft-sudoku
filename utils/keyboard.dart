@@ -5,19 +5,23 @@ part of sudoku;
  */
 class Keyboard {
   
-  static const int HIGHLIGHT_PEERS = KeyCode.SHIFT;
+  static const int HIGHLIGHT_PEERS_KEY = KeyCode.SHIFT;
   
   bool isHighlightPeersKeyPressed = false;
   
   Keyboard() {
+    _registerHightlightPeersKeyListeners();
+  }
+
+  void _registerHightlightPeersKeyListeners() {
     window
     ..onKeyDown.listen((e) {
-      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS_KEY)) {
         isHighlightPeersKeyPressed = true;
       }
     })
     ..onKeyUp.listen((e) {
-      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+      if(isEventForKey(e, Keyboard.HIGHLIGHT_PEERS_KEY)) {
         isHighlightPeersKeyPressed = false;
       }
     });

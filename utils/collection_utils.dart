@@ -26,7 +26,7 @@ class CollectionUtils {
   /**
    * Comparator function for sorting numeric collections in ascending order.
    */
-  static int compareAscending(a, b) {
+  static int compareAscending(int a, int b) {
     if (a < b) {
       return -1;
     } else if (a > b) {

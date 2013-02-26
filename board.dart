@@ -23,14 +23,17 @@ class Board {
   
   List<int> cellValues = [];
   
-  List<Unit> units = [];
-  List<Cell> cells = [];
+  List<Unit> _units = [];
+  List<Unit> get units => new List.from(_units);
+  
+  List<Cell> _cells = [];
+  List<Cell> get cells => new List.from(_cells);
   
   List<Cell> get emptyCells => 
-      cells.where((c) => !c.hasValidValue).toList();
+      _cells.where((cell) => !cell.hasValidValue).toList();
   
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
-      cells.where((c) => !c.hasValidValue && c.availableValues.length == 1).toList();
+      _cells.where((cell) => !cell.hasValidValue && cell.availableValues.length == 1).toList();
   
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {
     var sortedList = emptyCells;
@@ -45,7 +48,7 @@ class Board {
    * Returns a [Cell] at the given [row] and [column].
    */
   Cell getCell(int row, int column) {
-    return cells[indexAtGridCoordinates(row, column)];
+    return _cells[indexAtGridCoordinates(row, column)];
   }
   
   Board.empty() : this(new List<int>.fixedLength(CELL_COUNT, fill: 0));
@@ -72,7 +75,7 @@ class Board {
   void _initializeGrid() {
     for(int r = 0; r < GRID_SIZE; r++) {
       for(int c = 0; c < GRID_SIZE; c++) {
-        cells.add(new Cell._internal(this, r, c));
+        _cells.add(new Cell._internal(this, r, c));
       }
     }
   }
@@ -81,17 +84,17 @@ class Board {
     for(int i = 0; i < GRID_SIZE; i++) {
       
       var rowUnit = new Unit();
-      units.add(rowUnit);
+      _units.add(rowUnit);
       _traverseCells((cell) {
         rowUnit.add(cell);
-        cell.rowUnit = rowUnit;
+        cell._rowUnit = rowUnit;
       }, row: i, columnSpan: GRID_SIZE);
       
       var columnUnit = new Unit();
-      units.add(columnUnit);
+      _units.add(columnUnit);
       _traverseCells((cell) {
         columnUnit.add(cell);
-        cell.columnUnit = columnUnit;
+        cell._columnUnit = columnUnit;
       }, column: i, rowSpan: GRID_SIZE);
       
     }
@@ -102,21 +105,21 @@ class Board {
     for(int r = 0; r < GRID_SIZE; r+= BOX_SIZE) {
       for(int c = 0; c < GRID_SIZE; c+= BOX_SIZE) {
         var boxUnit = new Unit();
-        units.add(boxUnit);
+        _units.add(boxUnit);
         if(grayBox) {
           boxUnit.cssClass = 'grid-gray';
         }
         grayBox = !grayBox;
         _traverseCells((cell) {
           boxUnit.add(cell);
-          cell.boxUnit = boxUnit;
+          cell._boxUnit = boxUnit;
         }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
       }
     }
   }
 
   void _calculatePeersForEachCell() {
-    cells.forEach((c) => c._calculatePeers());
+    _cells.forEach((cell) => cell._calculatePeers());
   }
   
   /**
@@ -136,12 +139,13 @@ class Board {
  * A grouping of cells such as a row, column or block.
  */
 class Unit {
-  List<Cell> cells = [];
+  List<Cell> _cells = [];
+  List<Cell> get cells => new List.from(_cells);
   
   String cssClass = '';
   
   void add(Cell cell) {
-    cells.add(cell);
+    _cells.add(cell);
   }
   
 }
@@ -153,15 +157,20 @@ class Cell {
   
   static const List<int> VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9];
   
-  Board board;
-  int row;
-  int column;
+  Board _board;
+  Board get board => _board;
   
-  Unit boxUnit;
-  Unit rowUnit;
-  Unit columnUnit;
+  int _row, _column;
+  int get row => _row;
+  int get column => _column;
   
-  Set<Cell> peers;
+  Unit _boxUnit, _rowUnit, _columnUnit;
+  Unit get boxUnit => _boxUnit;
+  Unit get rowUnit => _rowUnit;
+  Unit get columnUnit => _columnUnit;
+  
+  Set<Cell> _peers;
+  Set<Cell> get peers => new Set.from(_peers);
   
   int get value => 
       board.cellValues[Board.indexAtGridCoordinates(row, column)];
@@ -184,18 +193,18 @@ class Cell {
    * Cell values that are already taken by the cell's box, row, or column.
    */
   List<int> get unavailableValues => 
-      peers.where((c) => c.hasValidValue)
+      _peers.where((c) => c.hasValidValue)
       .map((c) => c.value).toList();
   
-  Cell._internal(this.board, this.row, this.column) {
-    peers = new Set<Cell>();
+  Cell._internal(this._board, this._row, this._column) {
+    _peers = new Set<Cell>();
   }
   
   void _calculatePeers() {
-    peers.addAll(boxUnit.cells);
-    peers.addAll(rowUnit.cells);
-    peers.addAll(columnUnit.cells);
-    peers.remove(this);
+    _peers.addAll(boxUnit.cells);
+    _peers.addAll(rowUnit.cells);
+    _peers.addAll(columnUnit.cells);
+    _peers.remove(this);
   }
   
   operator ==(Object other) {

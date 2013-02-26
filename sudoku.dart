@@ -1,24 +1,22 @@
 library sudoku;
 
 import 'dart:html';
-import 'packages/unittest/unittest.dart';
-import 'packages/unittest/mock.dart';
-
-part 'tests/tests.dart';
 
 part 'puzzle_parser.dart';
 part 'board.dart';
 part 'board_ui.dart';
 part 'game_state.dart';
+part 'style/css.dart';
 
 part 'utils/io.dart';
 part 'utils/collection_utils.dart';
+part 'utils/string_utils.dart';
 part 'utils/dom_utils.dart';
 part 'utils/keyboard.dart';
 
 void main() {
-  runTests();
   var sudokuGame = new Sudoku();
+  sudokuGame.run();
 }
 
 class Sudoku {
@@ -37,13 +35,13 @@ class Sudoku {
   }
   
   void initializeUI() {
-    query("#clear-debug-output")
+    query(CSS.CLEAR_DEBUG_OUTPUT_BUTTON_ID)
     ..onClick.listen((e) => IO.clearDebugInfo());
-    
+  }
+  
+  void run() {
     solve();
-    
-    previousGameStates.forEach((gameState) 
-        => board_ui.renderGameState(gameState));
+    displayAllGameStates();
   }
   
   void solve() {
@@ -76,4 +74,9 @@ class Sudoku {
     currentGameState = new GameState(board.cellValues);
   }
  
+  void displayAllGameStates() {
+    previousGameStates.forEach((gameState) 
+        => board_ui.renderGameState(gameState));
+  }
+  
 }

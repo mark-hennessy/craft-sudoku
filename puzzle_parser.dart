@@ -17,8 +17,8 @@ class Parser {
    * Parses a single Sudoku puzzle stored as a string into a list of integer cell values.
    */
   static List<int> _parseCellValues(String puzzle) {
-    return puzzle.replaceAll("\n", "")
-        .splitChars().map((c) => int.parse(c)).toList();
+    return StringUtils.splitChars(puzzle.replaceAll("\n", ""))
+        .map((c) => int.parse(c)).toList();
   }
   
   /**

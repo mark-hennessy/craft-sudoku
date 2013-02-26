@@ -13,7 +13,7 @@ class BoardUI {
   void renderGameState(GameState gameState) {
     render(gameState.cellValues, (cell, cellElement) {
       if(gameState.changedCells.contains(cell)) {
-        cellElement.classes.add('recently-modified-cell');
+        cellElement.classes.add(CSS.RECENTLY_MODIFIED_CELL);
       }
     });
   }
@@ -25,7 +25,7 @@ class BoardUI {
     board.cellValues = cellValues;
     
     var grid = new TableElement();
-    grid.classes.add('grid');
+    grid.classes.add(CSS.GRID);
     var cellElementMap = new Map<Cell, Element>();
     for(int r = 0; r < Board.GRID_SIZE; r++) {
       var rowElement = grid.insertRow(r);
@@ -104,7 +104,7 @@ class BoardUI {
     void highlightPeers(bool highlight) {
       if(highlight != currentHighlightState) {
         var peerElements = cell.peers.map((c) => cellElementMap[c]);
-        peerElements.forEach((e) => e.classes.toggle('peer-cell'));
+        peerElements.forEach((e) => e.classes.toggle(CSS.PEER_CELL));
         currentHighlightState = !currentHighlightState;
       }
     }
@@ -119,7 +119,7 @@ class BoardUI {
       highlightPeers(false);
     })
     ..onKeyDown.listen((e) {
-      if(Keyboard.isEventForKey(e, Keyboard.HIGHLIGHT_PEERS)) {
+      if(Keyboard.isEventForKey(e, Keyboard.HIGHLIGHT_PEERS_KEY)) {
         highlightPeers(true);
       }
     })
@@ -131,7 +131,7 @@ class BoardUI {
   }
   
   void _addGridToDom(Element grid) {
-    var gridContainer = query('.gridContainer');
+    var gridContainer = query(CSS.GRID_CONTAINER_ID);
     gridContainer.children
     ..add(grid)
     ..add(new BRElement());
