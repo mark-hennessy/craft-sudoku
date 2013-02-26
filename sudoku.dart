@@ -65,7 +65,7 @@ class Sudoku {
   
   void updateCellValue(Cell cell, int value) {
     cell.value = value;
-    currentGameState.changedCells.add(cell);
+    currentGameState.addChangedCell(cell);
   }
   
   void snapshotGameState(){
