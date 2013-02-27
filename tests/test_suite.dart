@@ -1,14 +1,14 @@
 library test_suite;
 
 import 'dart:html';
-import '../sudoku.dart';
+import '../sudoku_game.dart';
 import '../packages/unittest/unittest.dart';
 import '../packages/unittest/html_enhanced_config.dart';
 import '../packages/unittest/mock.dart';
 
 part 'mocks/mock_keyboard_event.dart';
 
-part 'sudoku.dart';
+part 'sudoku_game.dart';
 part 'board.dart';
 part 'game_state.dart';
 part 'puzzle_parser.dart';
@@ -25,7 +25,7 @@ void main() {
 }
 
 //Variables that are costly to create and are needed by most tests.
-Sudoku sudoku = new Sudoku();
+SudokuGame sudoku = new SudokuGame();
 BoardUI boardUI = new BoardUI();
 Board board1 = sudoku.board;
 Board board2 = boardUI.board;

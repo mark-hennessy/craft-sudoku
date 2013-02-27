@@ -15,20 +15,20 @@ part 'utils/dom_utils.dart';
 part 'utils/keyboard.dart';
 
 void main() {
-  var sudokuGame = new Sudoku();
+  var sudokuGame = new SudokuGame();
   sudokuGame.run();
 }
 
-class Sudoku {
+class SudokuGame {
   Board board;
   BoardUI board_ui;
   
   List<GameState> previousGameStates = [];
   GameState currentGameState;
   
-  Sudoku() {
+  SudokuGame() {
     var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-    board = new Board(puzzles[0]);
+    board = new Board(puzzles[2]);
     board_ui = new BoardUI();
     currentGameState = new GameState(board.cellValues);
     initializeUI();
@@ -55,11 +55,11 @@ class Sudoku {
     } while(emptyCellsWithOnlyOnePossibleValue.length > 0);
     
     if(!board.isSolved) {
-      search();
+      guess();
     }
   }
   
-  void search() {
+  void guess() {
     
   }
   

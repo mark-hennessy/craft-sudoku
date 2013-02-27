@@ -1,7 +1,7 @@
 part of sudoku;
 
 /**
- * Utilities for working with DOM elements.
+ * Utilities for working with DOM [Element]s.
  */
 class DomUtils {
   

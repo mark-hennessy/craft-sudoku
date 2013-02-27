@@ -8,10 +8,6 @@ class Board {
   static const int BOX_SIZE = 3;
   static const int CELL_COUNT = GRID_SIZE * GRID_SIZE;
   
-  /**
-   * Converts two-dimensional [row] and [column] coordinates and converts 
-   * them to a one-dimensional list index. 
-   */
   static int indexAtGridCoordinates(int row, int column) {
     return row * Board.GRID_SIZE + column;
   }
@@ -44,9 +40,6 @@ class Board {
   
   bool get isSolved => emptyCells.isEmpty;
   
-  /**
-   * Returns a [Cell] at the given [row] and [column].
-   */
   Cell getCell(int row, int column) {
     return _cells[indexAtGridCoordinates(row, column)];
   }

@@ -1,5 +1,8 @@
 part of sudoku;
 
+/**
+ * Utilities for working with IO.
+ */
 class IO {
   
   static void printDebugInfo(String text) {
