@@ -1,6 +1,39 @@
 part of test_suite;
 
 void runBoardTests() {
+  
+  var unsolvedPuzzle = [0, 8, 3, 9, 2, 1, 6, 5, 7, 
+                  9, 6, 7, 3, 4, 5, 8, 2, 1,
+                  2, 5, 1, 8, 7, 6, 4, 9, 3,
+                  5, 4, 8, 1, 3, 2, 9, 7, 6,
+                  7, 2, 9, 5, 6, 4, 1, 3, 8,
+                  1, 3, 6, 7, 9, 8, 2, 4, 5,
+                  3, 7, 2, 6, 8, 9, 5, 1, 4,
+                  8, 1, 4, 2, 5, 3, 7, 6, 9,
+                  6, 9, 5, 4, 1, 7, 3, 8, 2];
+
+  //contradiction at (r:0, c:0, v:4) and (r:3, c:1, v:0) 
+  //caused by incorrect value at(r:0, c:1, v:4)
+  var contradictionPuzzle = [4, 4, 3, 9, 2, 1, 6, 5, 7, 
+                       9, 6, 7, 3, 4, 5, 8, 2, 1,
+                       2, 5, 1, 8, 7, 6, 4, 9, 3,
+                       5, 0, 8, 1, 3, 2, 9, 7, 6,
+                       7, 2, 9, 5, 6, 4, 1, 3, 8,
+                       1, 3, 6, 7, 9, 8, 2, 4, 5,
+                       3, 7, 2, 6, 8, 9, 5, 1, 4,
+                       8, 1, 4, 2, 5, 3, 7, 6, 9,
+                       6, 9, 5, 4, 1, 7, 3, 8, 2];
+  
+  var solvedPuzzle = [4, 8, 3, 9, 2, 1, 6, 5, 7, 
+                9, 6, 7, 3, 4, 5, 8, 2, 1,
+                2, 5, 1, 8, 7, 6, 4, 9, 3,
+                5, 4, 8, 1, 3, 2, 9, 7, 6,
+                7, 2, 9, 5, 6, 4, 1, 3, 8,
+                1, 3, 6, 7, 9, 8, 2, 4, 5,
+                3, 7, 2, 6, 8, 9, 5, 1, 4,
+                8, 1, 4, 2, 5, 3, 7, 6, 9,
+                6, 9, 5, 4, 1, 7, 3, 8, 2];
+  
   group('Board', () {
     
     setUp(() {
@@ -43,7 +76,7 @@ void runBoardTests() {
     test('emptyCellsWithOnlyOnePossibleValue', () {
       for(var cell in board1.emptyCellsWithOnlyOnePossibleValue) {
         expect(cell.hasValidValue, isFalse);
-        expect(cell.availableValues, hasLength(1));
+        expect(cell.possibleValues, hasLength(1));
       }
     });
     
@@ -52,15 +85,37 @@ void runBoardTests() {
       for(var cell in board1.emptyCellsSortedByAvailableValuesAscending) {
         expect(cell.hasValidValue, isFalse);
         if(previousCell != null) {
-          expect(cell.availableValues.length, greaterThanOrEqualTo(previousCell.availableValues.length));
+          expect(cell.possibleValues.length, greaterThanOrEqualTo(previousCell.possibleValues.length));
         }
         previousCell = cell;
       }
     });
     
+    test('hasContradictions', () {
+      board1.cellValues = unsolvedPuzzle;
+      expect(board1.hasContradictions, isFalse);
+      board1.cellValues = contradictionPuzzle;
+      expect(board1.hasContradictions, isTrue);
+      board1.cellValues = solvedPuzzle;
+      expect(board1.hasContradictions, isFalse);
+    });
+    
+    test('isSolved', () {
+      board1.cellValues = unsolvedPuzzle;
+      expect(board1.isSolved, isFalse);
+      board1.cellValues = contradictionPuzzle;
+      expect(board1.isSolved, isFalse);
+      board1.cellValues = solvedPuzzle;
+      expect(board1.isSolved, isTrue);
+    });
   });
   
   group('Cell', () {
+    
+    setUp(() {
+      board1.cellValues = puzzles[0];
+    });
+    
     test('value', () {
       var row = 3, column = 5;
       var cellIndex = Board.indexAtGridCoordinates(row, column);
@@ -91,14 +146,26 @@ void runBoardTests() {
       expect(cell.hasValidValue, isTrue);
     });
     
-    test('availableValues', () {
+    test('possibleValues', () {
       var cell = board1.getCell(0, 0);
-      expect(cell.availableValues, unorderedEquals([4, 5]));
+      expect(cell.possibleValues, unorderedEquals([4, 5]));
     });
     
-    test('unavailableValues', () {
+    test('takenValues', () {
       var cell = board1.getCell(0, 0);
-      expect(cell.unavailableValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
+      expect(cell.takenValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
+    });
+    
+    test('hasContradictions', () {
+      var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
+      for(var cell in contradictionCells) {
+        board1.cellValues = unsolvedPuzzle;
+        expect(cell.hasContradiction, isFalse);
+        board1.cellValues = contradictionPuzzle;
+        expect(cell.hasContradiction, isTrue);
+        board1.cellValues = solvedPuzzle;
+        expect(cell.hasContradiction, isFalse);
+      }
     });
     
     test('equality', () {

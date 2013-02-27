@@ -40,18 +40,19 @@ class SudokuGame {
   }
   
   void run() {
-    prepareGame();
+    var puzzle = selectPuzzle();
+    prepareGame(puzzle);
     solve();
-    displayAllGameStates();
-  }
-  
-  void prepareGame() {
-    board.cellValues = selectPuzzle();
-    resetGameStates();
+    displayGameStates();
   }
   
   List<int> selectPuzzle() {
     return puzzles[2];
+  }
+  
+  void prepareGame(List<int> puzzle) {
+    board.cellValues = puzzle;
+    resetGameStates();
   }
   
   void resetGameStates() {
@@ -71,7 +72,7 @@ class SudokuGame {
     var emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     do {
       for(var cell in emptyCellsWithOnlyOnePossibleValue) {
-        updateCellValue(cell, cell.availableValues.first);
+        updateCellValue(cell, cell.possibleValues.first);
         //snapshotGameState();
       }
       emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
@@ -91,7 +92,7 @@ class SudokuGame {
     currentGameState.addChangedCell(cell);
   }
   
-  void displayAllGameStates() {
+  void displayGameStates() {
     for(var previousGameState in previousGameStates) {
       board_ui.renderGameState(previousGameState);
     }

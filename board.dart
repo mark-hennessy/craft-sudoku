@@ -25,24 +25,32 @@ class Board {
   List<Cell> _cells = [];
   List<Cell> get cells => new List.from(_cells);
   
+  Cell getCell(int row, int column) {
+    return _cells[indexAtGridCoordinates(row, column)];
+  }
+  
   List<Cell> get emptyCells => 
       _cells.where((cell) => !cell.hasValidValue).toList();
   
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
-      _cells.where((cell) => !cell.hasValidValue && cell.availableValues.length == 1).toList();
+      emptyCells.where((cell) => cell.possibleValues.length == 1).toList();
   
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {
     var sortedList = emptyCells;
     sortedList.sort((c1, c2) => 
-        CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+        CollectionUtils.compareAscending(c1.possibleValues.length, c2.possibleValues.length));
     return sortedList;
   }
   
-  bool get isSolved => emptyCells.isEmpty;
+  /**
+   * True if the board contains a cell that has no possible value.
+   */
+  bool get hasContradictions => cells.any((cell) => cell.hasContradiction);
   
-  Cell getCell(int row, int column) {
-    return _cells[indexAtGridCoordinates(row, column)];
-  }
+  /**
+   * True if there are no empty cells and no contradictions.
+   */
+  bool get isSolved => emptyCells.isEmpty && !hasContradictions;
   
   Board.empty() : this(new List<int>.fixedLength(CELL_COUNT, fill: 0));
   
@@ -165,6 +173,13 @@ class Cell {
   Set<Cell> _peers;
   Set<Cell> get peers => new Set.from(_peers);
   
+  /**
+   * Cell values that are already taken by the cell's box, row, or column.
+   */
+  List<int> get takenValues => 
+      _peers.where((cell) => cell.hasValidValue)
+      .map((cell) => cell.value).toList();
+  
   int get value => 
       board.cellValues[Board.indexAtGridCoordinates(row, column)];
   
@@ -179,15 +194,13 @@ class Cell {
   /**
    * Cell values that are not already taken by the cell's box, row, or column [Unit].
    */
-  List<int> get availableValues => 
-      CollectionUtils.subtractListAFromListB(unavailableValues, VALID_VALUES);
+  List<int> get possibleValues => 
+      CollectionUtils.subtractListAFromListB(takenValues, VALID_VALUES);
   
   /**
-   * Cell values that are already taken by the cell's box, row, or column.
+   * True if there are no possible values for this cell.
    */
-  List<int> get unavailableValues => 
-      _peers.where((c) => c.hasValidValue)
-      .map((c) => c.value).toList();
+  bool get hasContradiction => possibleValues.isEmpty;
   
   Cell._internal(this._board, this._row, this._column) {
     _peers = new Set<Cell>();
