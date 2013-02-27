@@ -22,15 +22,15 @@ void main() {
 class SudokuGame {
   Board board;
   BoardUI board_ui;
+  List<List<int>> puzzles;
   
   List<GameState> previousGameStates = [];
   GameState currentGameState;
   
   SudokuGame() {
-    var puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-    board = new Board(puzzles[2]);
+    board = new Board.empty();
     board_ui = new BoardUI();
-    currentGameState = new GameState(board.cellValues);
+    puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
     initializeUI();
   }
   
@@ -40,8 +40,31 @@ class SudokuGame {
   }
   
   void run() {
+    prepareGame();
     solve();
     displayAllGameStates();
+  }
+  
+  void prepareGame() {
+    board.cellValues = selectPuzzle();
+    resetGameStates();
+  }
+  
+  List<int> selectPuzzle() {
+    return puzzles[2];
+  }
+  
+  void resetGameStates() {
+    previousGameStates.clear();
+    currentGameState = new GameState(board.cellValues);
+    //Snapshot the initial state before any cell values have changed.
+    //snapshotGameState();
+  }
+  
+  void snapshotGameState() {
+    currentGameState.freeze();
+    previousGameStates.add(currentGameState);
+    currentGameState = new GameState(board.cellValues);
   }
   
   void solve() {
@@ -49,7 +72,7 @@ class SudokuGame {
     do {
       for(var cell in emptyCellsWithOnlyOnePossibleValue) {
         updateCellValue(cell, cell.availableValues.first);
-        snapshotGameState();
+        //snapshotGameState();
       }
       emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     } while(emptyCellsWithOnlyOnePossibleValue.length > 0);
@@ -68,15 +91,11 @@ class SudokuGame {
     currentGameState.addChangedCell(cell);
   }
   
-  void snapshotGameState(){
-    currentGameState.freeze();
-    previousGameStates.add(currentGameState);
-    currentGameState = new GameState(board.cellValues);
-  }
- 
   void displayAllGameStates() {
-    previousGameStates.forEach((gameState) 
-        => board_ui.renderGameState(gameState));
+    for(var previousGameState in previousGameStates) {
+      board_ui.renderGameState(previousGameState);
+    }
+    board_ui.renderGameState(currentGameState);
   }
   
 }
