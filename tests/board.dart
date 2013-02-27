@@ -156,6 +156,16 @@ void runBoardTests() {
       expect(cell.takenValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
     });
     
+    test('contradictions', () {
+      var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
+      board1.cellValues = unsolvedPuzzle;
+      expect(board1.contradictions, unorderedEquals([]));
+      board1.cellValues = contradictionPuzzle;
+      expect(board1.contradictions, unorderedEquals(contradictionCells));
+      board1.cellValues = solvedPuzzle;
+      expect(board1.contradictions, unorderedEquals([]));
+    });
+    
     test('hasContradictions', () {
       var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
       for(var cell in contradictionCells) {

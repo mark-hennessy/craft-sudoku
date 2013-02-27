@@ -33,7 +33,7 @@ class Board {
       _cells.where((cell) => !cell.hasValidValue).toList();
   
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
-      emptyCells.where((cell) => cell.possibleValues.length == 1).toList();
+      _cells.where((cell) => !cell.hasValidValue && cell.possibleValues.length == 1).toList();
   
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {
     var sortedList = emptyCells;
@@ -41,6 +41,12 @@ class Board {
         CollectionUtils.compareAscending(c1.possibleValues.length, c2.possibleValues.length));
     return sortedList;
   }
+  
+  /**
+   * Returns all cells that have no possible value.
+   */
+  List<Cell> get contradictions => 
+      cells.where((cell) => cell.hasContradiction).toList();
   
   /**
    * True if the board contains a cell that has no possible value.
