@@ -44,9 +44,7 @@ class BoardUI {
           customCellRenderBehavior(cell, cellElement);
         }
         _renderCellValue(cell, cellElementMap);
-        if(!cell.isValueFixed) {
-          _initializeUserInput(cell, cellElementMap);
-        }
+        _initializeUserInput(cell, cellElementMap);
         _initializePeerHighlighting(cell, cellElementMap);
       }
     }
@@ -63,28 +61,35 @@ class BoardUI {
     DomUtils.makeFocusable(cellElement);
     cellElement
     ..onMouseOver.listen((e) {
-      selectCellElement(cellElement);
+      _selectCellElement(cellElement);
+    })
+    ..onMouseOut.listen((e) {
+      _unselectCellElement(cellElement);
     })
     ..onKeyDown.listen((e) {
-      if(Keyboard.isNumericKey(e)) {
-        updateCellValue(cell, cellElementMap, e);
+      if(Keyboard.isNumericKey(e) && !cell.isValueFixed) {
+        _updateCellValue(cell, cellElementMap, e);
       } else if(Keyboard.isArrowKey(e)) {
-        moveToNextCell(cell, cellElementMap, e);
+        _moveToNextCell(cell, cellElementMap, e);
       }
     });
   }
 
-  void selectCellElement(Element cellElement) {
+  void _selectCellElement(Element cellElement) {
     cellElement.focus();
   }
   
-  void updateCellValue(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
+  void _unselectCellElement(Element cellElement) {
+    cellElement.blur();
+  }
+  
+  void _updateCellValue(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
     var newValue = Keyboard.parseKeyAsInt(e);
     cell.value = newValue;
     _renderCellValue(cell, cellElementMap);
   }
 
-  void moveToNextCell(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
+  void _moveToNextCell(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
     var row = cell.row;
     var column = cell.column;
     if(Keyboard.isEventForKey(e, KeyCode.LEFT)) {
@@ -98,7 +103,7 @@ class BoardUI {
     }
     if(Board.gridCoordinatesInBounds(row, column)) {
       var nextCell = boardToRender.getCell(row, column);
-      selectCellElement(cellElementMap[nextCell]);
+      _selectCellElement(cellElementMap[nextCell]);
     }
     _preventScrollbarFromMoving(e);
   }
@@ -113,7 +118,9 @@ class BoardUI {
     void highlightPeers(bool highlight) {
       if(highlight != currentHighlightState) {
         var peerElements = cell.peers.map((c) => cellElementMap[c]);
-        peerElements.forEach((e) => e.classes.toggle(CSS.PEER_CELL));
+        for(Element element in peerElements) {
+          element.classes.toggle(CSS.HIGHLIGHTED_PEER_CELL);
+        }
         currentHighlightState = !currentHighlightState;
       }
     }
@@ -147,4 +154,3 @@ class BoardUI {
   }
   
 }
-

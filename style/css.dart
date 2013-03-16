@@ -10,6 +10,6 @@ class CSS {
   //Cells
   static const String FIXED_VALUE_CELL = "fixed-value-cell";
   static const String RECENTLY_MODIFIED_CELL = "recently-modified-cell";
-  static const String PEER_CELL = "peer-cell";
+  static const String HIGHLIGHTED_PEER_CELL = "highlighted-peer-cell";
   
 }

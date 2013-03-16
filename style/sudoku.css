@@ -55,16 +55,16 @@ table.grid {
 }
 
 .grid-gray { 
-  background-color: #AAAAAA; 
+  background-color: lightgray; 
 }
 
 .fixed-value-cell {
-  
   font-weight:bolder;
+  outline: none;
 }
   
-.peer-cell {
-  background-color: #538792;
+.highlighted-peer-cell {
+  color: blue;
 }
 
 .recently-modified-cell {
