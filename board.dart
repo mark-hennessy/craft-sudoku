@@ -17,7 +17,30 @@ class Board {
         => (coord >= 0 && coord < GRID_SIZE));
   }
   
-  List<int> cellValues = [];
+  List<int> _cellValues = new List<int>.filled(CELL_COUNT, 0);
+ 
+  List<int> get cellValues => _cellValues;
+  
+  set cellValues(List<int> cellValues) {
+    if(cellValues.length != CELL_COUNT)
+      throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
+    
+    _cellValues = cellValues;
+  }
+  
+  List<int> _originalPuzzle;
+  
+  List<int> get originalPuzzle => _originalPuzzle;
+  
+  set puzzle(List<int> puzzle) {
+    _originalPuzzle = puzzle.toList();
+    cellValues = puzzle;
+    
+    //Mark cells with values as "fixed" to indicate that they are part of the original puzzle.
+    for(var cell in _cells) {
+      cell._isValueFixed = cell.hasValue;
+    }
+  }
   
   List<Unit> _units = [];
   List<Unit> get units => new List.from(_units);
@@ -30,15 +53,15 @@ class Board {
   }
   
   List<Cell> get emptyCells => 
-      _cells.where((cell) => !cell.hasValidValue).toList();
+      _cells.where((cell) => !cell.hasValue).toList();
   
   List<Cell> get emptyCellsWithOnlyOnePossibleValue => 
-      _cells.where((cell) => !cell.hasValidValue && cell.possibleValues.length == 1).toList();
+      _cells.where((cell) => !cell.hasValue && cell.availableValues.length == 1).toList();
   
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {
     var sortedList = emptyCells;
     sortedList.sort((c1, c2) => 
-        CollectionUtils.compareAscending(c1.possibleValues.length, c2.possibleValues.length));
+        CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
     return sortedList;
   }
   
@@ -58,8 +81,6 @@ class Board {
    */
   bool get isSolved => emptyCells.isEmpty && !hasContradictions;
   
-  Board.empty() : this(new List<int>.fixedLength(CELL_COUNT, fill: 0));
-  
   /**
    * Constructs the [Board], [Cell]s and [Unit]s.
    * 
@@ -69,10 +90,7 @@ class Board {
    * the board is designed as a flyweight object. Its only state/context is
    * a list [cellValues].
    */
-  Board(List<int> this.cellValues) {
-    if(cellValues.length != CELL_COUNT)
-      throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
-    
+  Board() {
     _initializeGrid();
     _defineRowAndColumnUnits();
     _defineBoxes();
@@ -176,40 +194,55 @@ class Cell {
   Unit get rowUnit => _rowUnit;
   Unit get columnUnit => _columnUnit;
   
-  Set<Cell> _peers;
+  Set<Cell> _peers = new Set<Cell>();
   Set<Cell> get peers => new Set.from(_peers);
   
   /**
    * Cell values that are already taken by the cell's box, row, or column.
    */
-  List<int> get takenValues => 
-      _peers.where((cell) => cell.hasValidValue)
+  List<int> get peerValues => 
+      _peers.where((cell) => cell.hasValue)
       .map((cell) => cell.value).toList();
+  
+  /**
+   * True if the cell's value cannot be changed because it is part of the original puzzle.
+   */
+  bool _isValueFixed;
+  bool get isValueFixed => _isValueFixed;
   
   int get value => 
       board.cellValues[Board.indexAtGridCoordinates(row, column)];
   
-  set value(int value) => 
-      board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
+  /**
+   * Sets the cell's value. Throws an exception if the cell's value is fixed.
+   */
+  set value(int value) {
+    if(isValueFixed) throw "The cell value at [r:${row}, c:${column}]"
+      " cannot be set because it is part of the original puzzle.";
+    
+    board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
+  }
   
   /**
-   * True if the cell's current value is a number between 1 and 9 inclusive.
+   * True if the cell has a valid value. A valid value is a number between 1 and 9 inclusive.
    */
-  bool get hasValidValue => VALID_VALUES.contains(value);
+  bool get hasValue => VALID_VALUES.contains(value);
   
   /**
    * Cell values that are not already taken by the cell's box, row, or column [Unit].
    */
-  List<int> get possibleValues => 
-      CollectionUtils.subtractListAFromListB(takenValues, VALID_VALUES);
+  List<int> get availableValues => 
+      CollectionUtils.subtractListAFromListB(peerValues, VALID_VALUES);
   
   /**
    * True if there are no possible values for this cell.
    */
-  bool get hasContradiction => possibleValues.isEmpty;
+  bool get hasContradiction => availableValues.isEmpty;
   
-  Cell._internal(this._board, this._row, this._column) {
-    _peers = new Set<Cell>();
+  Cell._internal(this._board, this._row, this._column);
+  
+  void clearValue() {
+    value = 0;
   }
   
   void _calculatePeers() {
@@ -219,6 +252,9 @@ class Cell {
     _peers.remove(this);
   }
   
+  /**
+   * Cells are equal if they have the same row, column, and value.
+   */
   operator ==(Object other) {
     Cell otherCell = other as Cell;
     if(otherCell == null) return false;

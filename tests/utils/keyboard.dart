@@ -35,8 +35,7 @@ void runKeyboardTests() {
     });
     
     test('isArrowKey', () {
-      var arrowKeys = [KeyCode.LEFT, KeyCode.UP, KeyCode.RIGHT, KeyCode.DOWN];
-      keyTest(arrowKeys, () {
+      keyTest([KeyCode.LEFT, KeyCode.UP, KeyCode.RIGHT, KeyCode.DOWN], () {
         expect(Keyboard.isArrowKey(event), isTrue);
       });
       keyTest([KeyCode.A, KeyCode.SHIFT], () {

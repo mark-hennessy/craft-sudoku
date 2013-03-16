@@ -2,7 +2,22 @@ part of test_suite;
 
 void runBoardTests() {
   
-  var unsolvedPuzzle = [0, 8, 3, 9, 2, 1, 6, 5, 7, 
+  /*
+   * puzzles[0]
+   * ----------
+   * 003020600
+   * 900305001
+   * 001806400
+   * 008102900
+   * 700000008
+   * 006708200
+   * 002609500
+   * 800203009
+   * 005010300
+   */
+  var puzzle0 = puzzles[0];
+  
+  var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7, 
                   9, 6, 7, 3, 4, 5, 8, 2, 1,
                   2, 5, 1, 8, 7, 6, 4, 9, 3,
                   5, 4, 8, 1, 3, 2, 9, 7, 6,
@@ -14,7 +29,7 @@ void runBoardTests() {
 
   //contradiction at (r:0, c:0, v:4) and (r:3, c:1, v:0) 
   //caused by incorrect value at(r:0, c:1, v:4)
-  var contradictionPuzzle = [4, 4, 3, 9, 2, 1, 6, 5, 7, 
+  var puzzleA_contradiction = [4, 4, 3, 9, 2, 1, 6, 5, 7, 
                        9, 6, 7, 3, 4, 5, 8, 2, 1,
                        2, 5, 1, 8, 7, 6, 4, 9, 3,
                        5, 0, 8, 1, 3, 2, 9, 7, 6,
@@ -24,7 +39,7 @@ void runBoardTests() {
                        8, 1, 4, 2, 5, 3, 7, 6, 9,
                        6, 9, 5, 4, 1, 7, 3, 8, 2];
   
-  var solvedPuzzle = [4, 8, 3, 9, 2, 1, 6, 5, 7, 
+  var puzzleA_solved = [4, 8, 3, 9, 2, 1, 6, 5, 7, 
                 9, 6, 7, 3, 4, 5, 8, 2, 1,
                 2, 5, 1, 8, 7, 6, 4, 9, 3,
                 5, 4, 8, 1, 3, 2, 9, 7, 6,
@@ -37,7 +52,15 @@ void runBoardTests() {
   group('Board', () {
     
     setUp(() {
-      board1.cellValues = puzzles[0];
+      board1.puzzle = puzzle0.toList();
+    });
+    
+    test('originalPuzzle', () {
+      expect(board1.originalPuzzle, equals(puzzle0));
+      board1.cells[0].value = 5;
+      expect(board1.originalPuzzle, equals(puzzle0));
+      board1.cellValues = puzzleA_solved;
+      expect(board1.originalPuzzle, equals(puzzle0));
     });
     
     test('indexAtGridCoordinates', () {
@@ -54,8 +77,8 @@ void runBoardTests() {
     });
     
     test('board initialized cells correctly', () {
-      expect(board1.cellValues, hasLength(81));
-      expect(board1.cells, hasLength(81));
+      expect(board1.cellValues, hasLength(Board.CELL_COUNT));
+      expect(board1.cells, hasLength(Board.CELL_COUNT));
       board1.cells.forEach((c) => expect(c, isNotNull));
     });
     
@@ -75,37 +98,37 @@ void runBoardTests() {
     
     test('emptyCellsWithOnlyOnePossibleValue', () {
       for(var cell in board1.emptyCellsWithOnlyOnePossibleValue) {
-        expect(cell.hasValidValue, isFalse);
-        expect(cell.possibleValues, hasLength(1));
+        expect(cell.hasValue, isFalse);
+        expect(cell.availableValues, hasLength(1));
       }
     });
     
     test('emptyCellsSortedByAvailableValuesAscending', () {
-      var previousCell = null;
+      Cell previousCell = null;
       for(var cell in board1.emptyCellsSortedByAvailableValuesAscending) {
-        expect(cell.hasValidValue, isFalse);
+        expect(cell.hasValue, isFalse);
         if(previousCell != null) {
-          expect(cell.possibleValues.length, greaterThanOrEqualTo(previousCell.possibleValues.length));
+          expect(cell.availableValues.length, greaterThanOrEqualTo(previousCell.availableValues.length));
         }
         previousCell = cell;
       }
     });
     
     test('hasContradictions', () {
-      board1.cellValues = unsolvedPuzzle;
+      board1.cellValues = puzzleA_unsolved;
       expect(board1.hasContradictions, isFalse);
-      board1.cellValues = contradictionPuzzle;
+      board1.cellValues = puzzleA_contradiction;
       expect(board1.hasContradictions, isTrue);
-      board1.cellValues = solvedPuzzle;
+      board1.cellValues = puzzleA_solved;
       expect(board1.hasContradictions, isFalse);
     });
     
     test('isSolved', () {
-      board1.cellValues = unsolvedPuzzle;
+      board1.cellValues = puzzleA_unsolved;
       expect(board1.isSolved, isFalse);
-      board1.cellValues = contradictionPuzzle;
+      board1.cellValues = puzzleA_contradiction;
       expect(board1.isSolved, isFalse);
-      board1.cellValues = solvedPuzzle;
+      board1.cellValues = puzzleA_solved;
       expect(board1.isSolved, isTrue);
     });
   });
@@ -113,11 +136,19 @@ void runBoardTests() {
   group('Cell', () {
     
     setUp(() {
-      board1.cellValues = puzzles[0];
+      board1.puzzle = puzzle0.toList();
+      board2.puzzle = puzzle0.toList();
+    });
+    
+    test('isValueFixed', () {
+      var cellA = board1.getCell(0, 0);
+      var cellB = board1.getCell(0, 2);
+      expect(cellA.isValueFixed, isFalse);
+      expect(cellB.isValueFixed, isTrue);
     });
     
     test('value', () {
-      var row = 3, column = 5;
+      var row = 0, column = 0;
       var cellIndex = Board.indexAtGridCoordinates(row, column);
       var cell = board1.getCell(row, column);
       
@@ -134,56 +165,59 @@ void runBoardTests() {
       expect(board1.cellValues[cellIndex], equals(newValue));
     });
     
-    test('hasValidValue', () {
-      var cell = board1.cells.first;
+    test('setting value when fixed', () {
+      var cell = board1.getCell(0, 2);
+      expect(cell.isValueFixed, isTrue);
+      expect(() => cell.value = 5, throws);
+    });
+    
+    test('hasValue', () {
+      var cell = board1.getCell(0, 0);
       cell.value = null;
-      expect(cell.hasValidValue, isFalse);
+      expect(cell.hasValue, isFalse);
       cell.value = 0;
-      expect(cell.hasValidValue, isFalse);
+      expect(cell.hasValue, isFalse);
       cell.value = 10;
-      expect(cell.hasValidValue, isFalse);
+      expect(cell.hasValue, isFalse);
       cell.value = 5;
-      expect(cell.hasValidValue, isTrue);
+      expect(cell.hasValue, isTrue);
     });
     
-    test('possibleValues', () {
+    test('availableValues', () {
       var cell = board1.getCell(0, 0);
-      expect(cell.possibleValues, unorderedEquals([4, 5]));
+      expect(cell.availableValues, unorderedEquals([4, 5]));
     });
     
-    test('takenValues', () {
+    test('peerValues', () {
       var cell = board1.getCell(0, 0);
-      expect(cell.takenValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
+      expect(cell.peerValues, unorderedEquals([1, 2, 3, 6, 7, 8, 9]));
     });
     
     test('contradictions', () {
       var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
-      board1.cellValues = unsolvedPuzzle;
+      board1.cellValues = puzzleA_unsolved;
       expect(board1.contradictions, unorderedEquals([]));
-      board1.cellValues = contradictionPuzzle;
+      board1.cellValues = puzzleA_contradiction;
       expect(board1.contradictions, unorderedEquals(contradictionCells));
-      board1.cellValues = solvedPuzzle;
+      board1.cellValues = puzzleA_solved;
       expect(board1.contradictions, unorderedEquals([]));
     });
     
     test('hasContradictions', () {
       var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
       for(var cell in contradictionCells) {
-        board1.cellValues = unsolvedPuzzle;
+        board1.cellValues = puzzleA_unsolved;
         expect(cell.hasContradiction, isFalse);
-        board1.cellValues = contradictionPuzzle;
+        board1.cellValues = puzzleA_contradiction;
         expect(cell.hasContradiction, isTrue);
-        board1.cellValues = solvedPuzzle;
+        board1.cellValues = puzzleA_solved;
         expect(cell.hasContradiction, isFalse);
       }
     });
     
     test('equality', () {
-      var value = 5;
       var cell1 = board1.getCell(0, 0);
       var cell2 = board2.getCell(0, 0);
-      cell1.value = value;
-      cell2.value = value;
       expect(cell1, equals(cell2));
     });
     

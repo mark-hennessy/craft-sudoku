@@ -24,31 +24,17 @@ void main() {
   testSuite.runTests();
 }
 
-//Variables that are costly to create and are needed by most tests.
 SudokuGame sudoku = new SudokuGame();
 BoardUI boardUI = new BoardUI();
 Board board1 = sudoku.board;
-Board board2 = boardUI.board;
+Board board2 = boardUI.boardToRender;
 
-/*
- * puzzles.first
- * ----------
- * 003020600
- * 900305001
- * 001806400
- * 008102900
- * 700000008
- * 006708200
- * 002609500
- * 800203009
- * 005010300
- */
 List<List<int>> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
 
 class TestSuite {
   
   void runTests() {
-//    useHtmlEnhancedConfiguration();
+//  useHtmlEnhancedConfiguration();
     runPuzzleParserTests();
     runBoardTests();
     runSudokuTests();

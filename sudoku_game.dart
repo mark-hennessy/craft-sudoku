@@ -28,7 +28,7 @@ class SudokuGame {
   GameState currentGameState;
   
   SudokuGame() {
-    board = new Board.empty();
+    board = new Board();
     board_ui = new BoardUI();
     puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
     initializeUI();
@@ -42,7 +42,7 @@ class SudokuGame {
   void run() {
     var puzzle = selectPuzzle();
     prepareGame(puzzle);
-    solve();
+    findSolution();
     displayGameStates();
   }
   
@@ -51,7 +51,7 @@ class SudokuGame {
   }
   
   void prepareGame(List<int> puzzle) {
-    board.cellValues = puzzle;
+    board.puzzle = puzzle;
     resetGameStates();
   }
   
@@ -68,15 +68,44 @@ class SudokuGame {
     currentGameState = new GameState(board.cellValues);
   }
   
-  void solve() {
+  bool findSolution() {
+    findBruteForceSolution();
+    //findHumanSolution();
+  }
+  
+  /**
+   * The algorithm tries all available options for a cell in order. 
+   * If no solution works for the rest of the board, 
+   * the algorithm returns false (for “no solution”).
+   * 
+   * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
+   */
+  bool findBruteForceSolution([int cellIndex = 0]) {
+    if (cellIndex == Board.CELL_COUNT) return true;
+    
+    var cell = board.cells[cellIndex];
+
+    if (cell.hasValue) return findBruteForceSolution(cellIndex + 1);
+    
+    for(int value in cell.availableValues.toList()) {
+      setCellValue(cell, value);
+      if (findBruteForceSolution(cellIndex + 1)) return true;
+    }
+    cell.clearValue;
+    return false;
+  }
+  
+  bool findHumanSolution() {
     var emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     do {
       for(var cell in emptyCellsWithOnlyOnePossibleValue) {
-        updateCellValue(cell, cell.possibleValues.first);
+        setCellValue(cell, cell.availableValues.first);
         //snapshotGameState();
       }
       emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     } while(emptyCellsWithOnlyOnePossibleValue.length > 0);
+    
+    if(board.hasContradictions) return false;
     
     if(!board.isSolved) {
       guess();
@@ -87,16 +116,16 @@ class SudokuGame {
     
   }
   
-  void updateCellValue(Cell cell, int value) {
+  void setCellValue(Cell cell, int value) {
     cell.value = value;
     currentGameState.addChangedCell(cell);
   }
   
   void displayGameStates() {
     for(var previousGameState in previousGameStates) {
-      board_ui.renderGameState(previousGameState);
+      board_ui.renderGameState(board, previousGameState);
     }
-    board_ui.renderGameState(currentGameState);
+    board_ui.renderGameState(board, currentGameState);
   }
   
 }

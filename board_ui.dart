@@ -2,43 +2,51 @@ part of sudoku;
 
 class BoardUI {
   
-  Board board;
+  Board boardToRender;
   Keyboard keyboard;
   
   BoardUI() {
-    board = new Board.empty();
+    boardToRender = new Board();
     keyboard = new Keyboard();
   }
   
-  void renderGameState(GameState gameState) {
-    render(gameState.cellValues, (cell, cellElement) {
+  void renderGameState(Board gameBoard, GameState gameState) {
+    boardToRender.puzzle = gameBoard.originalPuzzle;
+    boardToRender.cellValues = gameState.cellValues;
+    
+    void highlightRecentlyModifiedCells(Cell cell, Element cellElement) {
       if(gameState.changedCells.contains(cell)) {
         cellElement.classes.add(CSS.RECENTLY_MODIFIED_CELL);
       }
-    });
+    }
+    
+    render(boardToRender, highlightRecentlyModifiedCells);
   }
   
   /**
    * Tells the board to render itself.
    */
-  void render(List<int> cellValues, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
-    board.cellValues = cellValues;
-    
+  void render(Board board, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
     var grid = new TableElement();
     grid.classes.add(CSS.GRID);
     var cellElementMap = new Map<Cell, Element>();
     for(int r = 0; r < Board.GRID_SIZE; r++) {
       var rowElement = grid.insertRow(r);
       for(int c = 0; c < Board.GRID_SIZE; c++) {
-        Cell cell = board.getCell(r, c);
+        Cell cell = boardToRender.getCell(r, c);
         Element cellElement = rowElement.insertCell(c);
         cellElementMap[cell] = cellElement;
         cellElement.classes.add(cell.boxUnit.cssClass);
+        if(cell.isValueFixed) {
+          cellElement.classes.add(CSS.FIXED_VALUE_CELL);
+        }
         if(?customCellRenderBehavior) {
           customCellRenderBehavior(cell, cellElement);
         }
         _renderCellValue(cell, cellElementMap);
-        _initializeUserInput(cell, cellElementMap);
+        if(!cell.isValueFixed) {
+          _initializeUserInput(cell, cellElementMap);
+        }
         _initializePeerHighlighting(cell, cellElementMap);
       }
     }
@@ -46,7 +54,8 @@ class BoardUI {
   }
   
   void _renderCellValue(Cell cell, Map<Cell, Element> cellElementMap) {
-    cellElementMap[cell].text = cell.hasValidValue ? cell.value.toString() : "";
+    cellElementMap[cell]
+    ..text = cell.hasValue ? cell.value.toString() : "";
   }
   
   void _initializeUserInput(Cell cell, Map<Cell, Element> cellElementMap) {
@@ -88,7 +97,7 @@ class BoardUI {
       row += 1;
     }
     if(Board.gridCoordinatesInBounds(row, column)) {
-      var nextCell = board.getCell(row, column);
+      var nextCell = boardToRender.getCell(row, column);
       selectCellElement(cellElementMap[nextCell]);
     }
     _preventScrollbarFromMoving(e);

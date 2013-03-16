@@ -25,7 +25,7 @@ void runSudokuTests() {
     
     test('solve', () {
       sudoku.prepareGame(unsolvedPuzzle0);
-      sudoku.solve();
+      sudoku.findSolution();
       expect(sudoku.board.isSolved, true);
       expect(sudoku.board.cellValues, orderedEquals(solvedPuzzle0));
       expect(sudoku.currentGameState.cellValues, orderedEquals(solvedPuzzle0));
