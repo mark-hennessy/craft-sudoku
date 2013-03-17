@@ -81,11 +81,6 @@ class SudokuGame {
    * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
    */
   bool findBruteForceSolution([int cellIndex = 0]) {
-    
-    
-    if(cellIndex == 19) {
-    }
-    
     if (cellIndex == Board.CELL_COUNT) return true;
     
     var cell = board.cells[cellIndex];
@@ -98,6 +93,11 @@ class SudokuGame {
     
     var available = cell.availableValues.toList();
     for(int value in available) {
+      
+      if(cellIndex == 7) {
+        IO.printDebugInfo("Hi");
+      }
+      
       setCellValue(cell, value);
       if (findBruteForceSolution(cellIndex + 1)) {
         IO.printDebugInfo("${cellIndex}\n");

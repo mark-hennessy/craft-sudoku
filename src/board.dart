@@ -9,7 +9,7 @@ class Board {
   static const int CELL_COUNT = GRID_SIZE * GRID_SIZE;
   
   static int indexAtGridCoordinates(int row, int column) {
-    return row * Board.GRID_SIZE + column;
+    return row * GRID_SIZE + column;
   }
   
   static bool gridCoordinatesInBounds(int row, int column) {
@@ -94,7 +94,6 @@ class Board {
     _initializeGrid();
     _defineRowAndColumnUnits();
     _defineBoxes();
-    _calculatePeersForEachCell();
   }
 
   void _initializeGrid() {
@@ -143,10 +142,6 @@ class Board {
     }
   }
 
-  void _calculatePeersForEachCell() {
-    _cells.forEach((cell) => cell._calculatePeers());
-  }
-  
   /**
    * Executes the given [cellFunc] for the given area of the board.
    */
@@ -165,7 +160,7 @@ class Board {
  */
 class Unit {
   List<Cell> _cells = [];
-  List<Cell> get cells => new List.from(_cells);
+  List<Cell> get cells => _cells.toList();
   
   String cssClass = '';
   
@@ -194,14 +189,31 @@ class Cell {
   Unit get rowUnit => _rowUnit;
   Unit get columnUnit => _columnUnit;
   
-  Set<Cell> _peers = new Set<Cell>();
-  Set<Cell> get peers => _peers.toSet();
+  Set<Cell> _peers;
+  
+  /**
+   * The unique set of cells in the same box, row, or column as this cell.
+   */
+  Set<Cell> get peers {
+    if(_peers == null) {
+      _calculatePeers();
+    }
+    return _peers.toSet();
+  }
+  
+  void _calculatePeers() {
+    _peers = new Set<Cell>();
+    _peers.addAll(boxUnit.cells);
+    _peers.addAll(rowUnit.cells);
+    _peers.addAll(columnUnit.cells);
+    _peers.remove(this);
+  }
   
   /**
    * Cell values that are already taken by the cell's box, row, or column.
    */
   List<int> get peerValues => 
-      _peers.where((cell) => cell.hasValue)
+      peers.where((cell) => cell.hasValue)
       .map((cell) => cell.value).toList();
   
   /**
@@ -243,13 +255,6 @@ class Cell {
   
   void clearValue() {
     value = 0;
-  }
-  
-  void _calculatePeers() {
-    _peers.addAll(boxUnit.cells);
-    _peers.addAll(rowUnit.cells);
-    _peers.addAll(columnUnit.cells);
-    _peers.remove(this);
   }
   
   /**

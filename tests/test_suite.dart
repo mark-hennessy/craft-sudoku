@@ -1,7 +1,7 @@
 library test_suite;
 
 import 'dart:html';
-import '../sudoku_game.dart';
+import '../src/sudoku_game.dart';
 import '../packages/unittest/unittest.dart';
 import '../packages/unittest/html_enhanced_config.dart';
 import '../packages/unittest/mock.dart';

@@ -137,6 +137,57 @@ void runBoardTests() {
     });
   });
   
+  group('Unit', () {
+    
+    /*
+     * puzzles[0]
+     * ----------
+     * 003020600
+     * 900305001
+     * 001806400
+     * 008102900
+     * 700000008
+     * 006708200
+     * 002609500
+     * 800203009
+     * 005010300
+     */
+    setUp(() {
+      board1.puzzle = testPuzzle.toList();
+    });
+    
+    test('boxUnit', () {
+      var boxUnit = board1.getCell(0, 0).boxUnit;
+      List<Cell> firstBox = [];
+      for(int row = 0; row < Board.BOX_SIZE; row++) {
+        for(int column = 0; column < Board.BOX_SIZE; column++) {
+          firstBox.add(board1.getCell(row, column));
+        }
+      }
+      expect(boxUnit.cells, orderedEquals(firstBox));
+    });
+    
+    test('rowUnit', () {
+      var rowUnit = board1.getCell(0, 0).rowUnit;
+      List<Cell> firstRow = [];
+      for(int column = 0; column < Board.GRID_SIZE; column++) {
+        firstRow.add(board1.getCell(0, column));
+      }
+      expect(rowUnit.cells, orderedEquals(firstRow));
+    });
+    
+    test('columnUnit', () {
+      var columnUnit = board1.getCell(0, 0).columnUnit;
+      List<Cell> firstColumn = [];
+      for(int row = 0; row < Board.GRID_SIZE; row++) {
+        firstColumn.add(board1.getCell(row, 0));
+      }
+      expect(columnUnit.cells, orderedEquals(firstColumn));
+    });
+
+    
+  });
+  
   group('Cell', () {
     
     setUp(() {
