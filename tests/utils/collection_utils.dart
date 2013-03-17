@@ -2,6 +2,7 @@ part of test_suite;
 
 void runCollectionUtilsTests() {
   group('CollectionUtils', () {
+    
     test('subtractListAFromListB', () {
       var list1 = [1, 3, 2, -5];
       var list2 = [1, 3];
@@ -30,6 +31,7 @@ void runCollectionUtilsTests() {
       list1.sort(CollectionUtils.compareDecending);
       expect(list1, orderedEquals([3, 2, 1, -5]));
     });
+    
   });
 }
 

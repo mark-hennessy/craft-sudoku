@@ -25,9 +25,8 @@ void main() {
 }
 
 SudokuGame sudoku = new SudokuGame();
-BoardUI boardUI = new BoardUI();
 Board board1 = sudoku.board;
-Board board2 = boardUI.boardToRender;
+Board board2 = new Board();
 
 List<List<int>> puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
 

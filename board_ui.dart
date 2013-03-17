@@ -2,17 +2,21 @@ part of sudoku;
 
 class BoardUI {
   
-  Board boardToRender;
-  Keyboard keyboard;
+  Board _internalBoard;
+  Keyboard _keyboard;
   
   BoardUI() {
-    boardToRender = new Board();
-    keyboard = new Keyboard();
+    _internalBoard = new Board();
+    _keyboard = new Keyboard();
   }
   
-  void renderGameState(Board gameBoard, GameState gameState) {
-    boardToRender.puzzle = gameBoard.originalPuzzle;
-    boardToRender.cellValues = gameState.cellValues;
+  void renderGame(Board board, [String puzzleTitle]) {
+    _render(board, puzzleTitle);
+  }
+  
+  void renderGameState(GameState gameState, [String puzzleTitle]) {
+    _internalBoard.puzzle = gameState.board.puzzle;
+    _internalBoard.cellValues = gameState.cellValues;
     
     void highlightRecentlyModifiedCells(Cell cell, Element cellElement) {
       if(gameState.changedCells.contains(cell)) {
@@ -20,20 +24,44 @@ class BoardUI {
       }
     }
     
-    render(boardToRender, highlightRecentlyModifiedCells);
+    _render(_internalBoard, puzzleTitle, highlightRecentlyModifiedCells);
   }
   
-  /**
-   * Tells the board to render itself.
-   */
-  void render(Board board, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+  void _render(Board board, [String puzzleTitle, void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+    var elements = new List<Element>();
+    
+    if(?puzzleTitle) {
+      var title = new HeadingElement.h3()
+      ..text = puzzleTitle;
+      elements.add(title);
+    }
+    
+    var grid = constructGrid(board, customCellRenderBehavior);
+    elements.add(grid);
+    
+    _addGridElementsToDom(elements);
+  }
+  
+  void _addGridElementsToDom(List<Element> gridElements) {
+    var div = new DivElement();
+    for(var element in gridElements) {
+      div.children.add(element);
+    }
+    div.children.add(new BRElement());
+    
+    var puzzleContainer = query(CSS.PUZZLE_CONTAINER_ID);
+    puzzleContainer.children
+    ..add(div);
+  }
+  
+  Element constructGrid(Board board, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
     var grid = new TableElement();
     grid.classes.add(CSS.GRID);
     var cellElementMap = new Map<Cell, Element>();
     for(int r = 0; r < Board.GRID_SIZE; r++) {
       var rowElement = grid.insertRow(r);
       for(int c = 0; c < Board.GRID_SIZE; c++) {
-        Cell cell = boardToRender.getCell(r, c);
+        Cell cell = board.getCell(r, c);
         Element cellElement = rowElement.insertCell(c);
         cellElementMap[cell] = cellElement;
         cellElement.classes.add(cell.boxUnit.cssClass);
@@ -48,7 +76,7 @@ class BoardUI {
         _initializePeerHighlighting(cell, cellElementMap);
       }
     }
-    _addGridToDom(grid);
+    return grid;
   }
   
   void _renderCellValue(Cell cell, Map<Cell, Element> cellElementMap) {
@@ -102,7 +130,7 @@ class BoardUI {
       row += 1;
     }
     if(Board.gridCoordinatesInBounds(row, column)) {
-      var nextCell = boardToRender.getCell(row, column);
+      var nextCell = _internalBoard.getCell(row, column);
       _selectCellElement(cellElementMap[nextCell]);
     }
     _preventScrollbarFromMoving(e);
@@ -127,7 +155,7 @@ class BoardUI {
     
     cellElementMap[cell]
     ..onFocus.listen((e) {
-      if(keyboard.isHighlightPeersKeyPressed) {
+      if(_keyboard.isHighlightPeersKeyPressed) {
         highlightPeers(true);
       }
     })
@@ -140,17 +168,10 @@ class BoardUI {
       }
     })
     ..onKeyUp.listen((e) {
-      if(keyboard.isHighlightPeersKeyPressed) {
+      if(_keyboard.isHighlightPeersKeyPressed) {
         highlightPeers(false);
       }
     });
-  }
-  
-  void _addGridToDom(Element grid) {
-    var gridContainer = query(CSS.GRID_CONTAINER_ID);
-    gridContainer.children
-    ..add(grid)
-    ..add(new BRElement());
   }
   
 }

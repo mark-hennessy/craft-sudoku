@@ -2,6 +2,7 @@ part of test_suite;
 
 void runDomUtilsTests() {
   group('DomUtils', () {
+    
     test('makeFocusable', () {
       var divElement = new DivElement();
       expect(divElement.tabIndex, -1);
@@ -14,6 +15,7 @@ void runDomUtilsTests() {
       DomUtils.makeFocusable(divElement);
       expect(divElement.tabIndex, equals(customTabIndex));
     });
+    
   });
 }
 

@@ -15,7 +15,7 @@ void runBoardTests() {
    * 800203009
    * 005010300
    */
-  var puzzle0 = puzzles[0];
+  var testPuzzle = puzzles[0];
   
   var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7, 
                   9, 6, 7, 3, 4, 5, 8, 2, 1,
@@ -52,15 +52,15 @@ void runBoardTests() {
   group('Board', () {
     
     setUp(() {
-      board1.puzzle = puzzle0.toList();
+      board1.puzzle = testPuzzle.toList();
     });
     
     test('originalPuzzle', () {
-      expect(board1.originalPuzzle, equals(puzzle0));
+      expect(board1.puzzle, equals(testPuzzle));
       board1.cells[0].value = 5;
-      expect(board1.originalPuzzle, equals(puzzle0));
+      expect(board1.puzzle, equals(testPuzzle));
       board1.cellValues = puzzleA_solved;
-      expect(board1.originalPuzzle, equals(puzzle0));
+      expect(board1.puzzle, equals(testPuzzle));
     });
     
     test('indexAtGridCoordinates', () {
@@ -117,8 +117,10 @@ void runBoardTests() {
     test('hasContradictions', () {
       board1.cellValues = puzzleA_unsolved;
       expect(board1.hasContradictions, isFalse);
+      
       board1.cellValues = puzzleA_contradiction;
       expect(board1.hasContradictions, isTrue);
+      
       board1.cellValues = puzzleA_solved;
       expect(board1.hasContradictions, isFalse);
     });
@@ -126,8 +128,10 @@ void runBoardTests() {
     test('isSolved', () {
       board1.cellValues = puzzleA_unsolved;
       expect(board1.isSolved, isFalse);
+      
       board1.cellValues = puzzleA_contradiction;
       expect(board1.isSolved, isFalse);
+      
       board1.cellValues = puzzleA_solved;
       expect(board1.isSolved, isTrue);
     });
@@ -136,8 +140,8 @@ void runBoardTests() {
   group('Cell', () {
     
     setUp(() {
-      board1.puzzle = puzzle0.toList();
-      board2.puzzle = puzzle0.toList();
+      board1.puzzle = testPuzzle.toList();
+      board2.puzzle = testPuzzle.toList();
     });
     
     test('isValueFixed', () {
@@ -173,14 +177,31 @@ void runBoardTests() {
     
     test('hasValue', () {
       var cell = board1.getCell(0, 0);
+      
       cell.value = null;
       expect(cell.hasValue, isFalse);
+      
       cell.value = 0;
       expect(cell.hasValue, isFalse);
+      
       cell.value = 10;
       expect(cell.hasValue, isFalse);
+      
       cell.value = 5;
       expect(cell.hasValue, isTrue);
+    });
+    
+    test('clearValue', () {
+      var cell = board1.getCell(0, 0);
+      
+      var newValue = 5;
+      cell.value = newValue;
+      expect(cell.value, equals(newValue));
+      expect(cell.hasValue, isTrue);
+      
+      cell.clearValue();
+      expect(cell.value, equals(0));
+      expect(cell.hasValue, isFalse);
     });
     
     test('availableValues', () {
@@ -197,8 +218,10 @@ void runBoardTests() {
       var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
       board1.cellValues = puzzleA_unsolved;
       expect(board1.contradictions, unorderedEquals([]));
+      
       board1.cellValues = puzzleA_contradiction;
       expect(board1.contradictions, unorderedEquals(contradictionCells));
+      
       board1.cellValues = puzzleA_solved;
       expect(board1.contradictions, unorderedEquals([]));
     });
@@ -208,8 +231,10 @@ void runBoardTests() {
       for(var cell in contradictionCells) {
         board1.cellValues = puzzleA_unsolved;
         expect(cell.hasContradiction, isFalse);
+        
         board1.cellValues = puzzleA_contradiction;
         expect(cell.hasContradiction, isTrue);
+        
         board1.cellValues = puzzleA_solved;
         expect(cell.hasContradiction, isFalse);
       }

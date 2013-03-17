@@ -61,6 +61,7 @@ void runKeyboardTests() {
         expect(Keyboard.parseKeyAsInt(event), 9);
       });
     });
+    
   });
 }
 

@@ -41,13 +41,18 @@ class SudokuGame {
   
   void run() {
     var puzzle = selectPuzzle();
-    prepareGame(puzzle);
-    findSolution();
-    displayGameStates();
+    solve(puzzle, findHumanSolution, "Human Algorithm");
+    solve(puzzle, findBruteForceSolution, "Brute Force Algorithm");
   }
   
   List<int> selectPuzzle() {
-    return puzzles[2];
+    return puzzles[0];
+  }
+  
+  void solve(List<int> puzzle, bool findSolution(), [String title]) {
+    prepareGame(puzzle);
+    findSolution();
+    displayGame(title);
   }
   
   void prepareGame(List<int> puzzle) {
@@ -57,7 +62,7 @@ class SudokuGame {
   
   void resetGameStates() {
     previousGameStates.clear();
-    currentGameState = new GameState(board.cellValues);
+    currentGameState = new GameState(board);
     //Snapshot the initial state before any cell values have changed.
     //snapshotGameState();
   }
@@ -65,12 +70,7 @@ class SudokuGame {
   void snapshotGameState() {
     currentGameState.freeze();
     previousGameStates.add(currentGameState);
-    currentGameState = new GameState(board.cellValues);
-  }
-  
-  bool findSolution() {
-    findBruteForceSolution();
-    //findHumanSolution();
+    currentGameState = new GameState(board);
   }
   
   /**
@@ -81,17 +81,32 @@ class SudokuGame {
    * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
    */
   bool findBruteForceSolution([int cellIndex = 0]) {
+    
+    
+    if(cellIndex == 19) {
+    }
+    
     if (cellIndex == Board.CELL_COUNT) return true;
     
     var cell = board.cells[cellIndex];
 
-    if (cell.hasValue) return findBruteForceSolution(cellIndex + 1);
+    if (cell.hasValue) {
+      bool result = findBruteForceSolution(cellIndex + 1);
+      IO.printDebugInfo("${cellIndex}\n");
+      return result;
+    }
     
-    for(int value in cell.availableValues.toList()) {
+    var available = cell.availableValues.toList();
+    for(int value in available) {
       setCellValue(cell, value);
-      if (findBruteForceSolution(cellIndex + 1)) return true;
+      if (findBruteForceSolution(cellIndex + 1)) {
+        IO.printDebugInfo("${cellIndex}\n");
+        return true;
+      }
     }
     cell.clearValue;
+    
+    IO.printDebugInfo("${cellIndex}\n");
     return false;
   }
   
@@ -121,11 +136,11 @@ class SudokuGame {
     currentGameState.addChangedCell(cell);
   }
   
-  void displayGameStates() {
-    for(var previousGameState in previousGameStates) {
-      board_ui.renderGameState(board, previousGameState);
+  void displayGame([String title = ""]) {
+    for(int i = 0; i < previousGameStates.length; i++) {
+      board_ui.renderGameState(previousGameStates[i], "$title - State $i");
     }
-    board_ui.renderGameState(board, currentGameState);
+    board_ui.renderGameState(currentGameState, "$title - Current State");
   }
   
 }

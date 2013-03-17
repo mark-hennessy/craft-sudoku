@@ -1,12 +1,16 @@
 part of sudoku;
 
 class GameState {
-  List<int> cellValues = [];
+  Board _board;
+  Board get board => _board;
+  
+  List<int> _cellValues;
+  List<int> get cellValues => _cellValues == null ? board.cellValues : _cellValues;
   
   List<Cell> _changedCells = [];
-  List<Cell> get changedCells => new List.from(_changedCells);
+  List<Cell> get changedCells => _changedCells.toList();
   
-  GameState(List<int> this.cellValues);
+  GameState(this._board);
   
   void addChangedCell(Cell cell) {
     _changedCells.add(cell);
@@ -17,7 +21,7 @@ class GameState {
    * do not effect this state object.
    */
   void freeze() {
-    cellValues = new List.from(cellValues);
+    _cellValues = board.cellValues.toList();
   }
   
 }

@@ -17,30 +17,30 @@ class Board {
         => (coord >= 0 && coord < GRID_SIZE));
   }
   
-  List<int> _cellValues = new List<int>.filled(CELL_COUNT, 0);
- 
-  List<int> get cellValues => _cellValues;
+  List<int> _puzzle = new List.filled(CELL_COUNT, 0);
   
-  set cellValues(List<int> cellValues) {
-    if(cellValues.length != CELL_COUNT)
-      throw new ArgumentError("cellValues must have length ${CELL_COUNT}, but was ${cellValues.length}.");
-    
-    _cellValues = cellValues;
-  }
-  
-  List<int> _originalPuzzle;
-  
-  List<int> get originalPuzzle => _originalPuzzle;
+  /**
+   * The puzzle that was last set on the board.
+   */
+  List<int> get puzzle => _puzzle.toList();
   
   set puzzle(List<int> puzzle) {
-    _originalPuzzle = puzzle.toList();
-    cellValues = puzzle;
+    if(puzzle.length != CELL_COUNT)
+      throw new ArgumentError("Puzzle must have length ${CELL_COUNT}, but was ${puzzle.length}.");
+    
+    _puzzle = puzzle.toList();
+    cellValues = puzzle.toList();
     
     //Mark cells with values as "fixed" to indicate that they are part of the original puzzle.
     for(var cell in _cells) {
       cell._isValueFixed = cell.hasValue;
     }
   }
+  
+  /**
+   * The current cell values of the board.
+   */
+  List<int> cellValues = new List.filled(CELL_COUNT, 0);
   
   List<Unit> _units = [];
   List<Unit> get units => new List.from(_units);
@@ -195,7 +195,7 @@ class Cell {
   Unit get columnUnit => _columnUnit;
   
   Set<Cell> _peers = new Set<Cell>();
-  Set<Cell> get peers => new Set.from(_peers);
+  Set<Cell> get peers => _peers.toSet();
   
   /**
    * Cell values that are already taken by the cell's box, row, or column.
