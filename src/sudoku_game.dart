@@ -67,46 +67,33 @@ class SudokuGame {
     //snapshotGameState();
   }
   
-  void snapshotGameState() {
-    currentGameState.freeze();
-    previousGameStates.add(currentGameState);
-    currentGameState = new GameState(board);
+  void displayGame([String title = ""]) {
+    for(int i = 0; i < previousGameStates.length; i++) {
+      board_ui.renderGameState(previousGameStates[i], "$title - State $i");
+    }
+    board_ui.renderGameState(currentGameState, "$title - Current State");
   }
   
   /**
    * The algorithm tries all available options for a cell in order. 
-   * If no solution works for the rest of the board, 
-   * the algorithm returns false (for “no solution”).
+   * If no solution works for the rest of the board, the algorithm 
+   * returns false (for “no solution”).
    * 
    * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
    */
   bool findBruteForceSolution([int cellIndex = 0]) {
-    if (cellIndex == Board.CELL_COUNT) return true;
+    if (cellIndex >= Board.CELL_COUNT) return true;
     
     var cell = board.cells[cellIndex];
 
-    if (cell.hasValue) {
-      bool result = findBruteForceSolution(cellIndex + 1);
-      IO.printDebugInfo("${cellIndex}\n");
-      return result;
-    }
+    if (cell.hasValue) return findBruteForceSolution(cellIndex + 1);
     
-    var available = cell.availableValues.toList();
-    for(int value in available) {
-      
-      if(cellIndex == 7) {
-        IO.printDebugInfo("Hi");
-      }
-      
+    for(int value in cell.availableValues) {
       setCellValue(cell, value);
-      if (findBruteForceSolution(cellIndex + 1)) {
-        IO.printDebugInfo("${cellIndex}\n");
-        return true;
-      }
+      if (findBruteForceSolution(cellIndex + 1)) return true;
     }
-    cell.clearValue;
     
-    IO.printDebugInfo("${cellIndex}\n");
+    cell.clearValue();
     return false;
   }
   
@@ -136,11 +123,9 @@ class SudokuGame {
     currentGameState.addChangedCell(cell);
   }
   
-  void displayGame([String title = ""]) {
-    for(int i = 0; i < previousGameStates.length; i++) {
-      board_ui.renderGameState(previousGameStates[i], "$title - State $i");
-    }
-    board_ui.renderGameState(currentGameState, "$title - Current State");
+  void snapshotGameState() {
+    currentGameState.freeze();
+    previousGameStates.add(currentGameState);
+    currentGameState = new GameState(board);
   }
-  
 }

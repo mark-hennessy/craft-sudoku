@@ -34,10 +34,12 @@ class TestSuite {
   
   void runTests() {
 //  useHtmlEnhancedConfiguration();
+    
     runPuzzleParserTests();
     runBoardTests();
     runSudokuTests();
     runGameStateTests();
+    
     runStringUtilsTests();
     runCollectionUtilsTests();
     runDomUtilsTests();

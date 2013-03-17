@@ -60,6 +60,7 @@ table.grid {
 
 .fixed-value-cell {
   font-weight:bolder;
+  font-size: 115%;
   outline: none;
 }
   

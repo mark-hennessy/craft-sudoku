@@ -1,7 +1,6 @@
 part of sudoku;
 
 class BoardUI {
-  
   Board _internalBoard;
   Keyboard _keyboard;
   

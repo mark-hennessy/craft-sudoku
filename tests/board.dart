@@ -57,8 +57,10 @@ void runBoardTests() {
     
     test('originalPuzzle', () {
       expect(board1.puzzle, equals(testPuzzle));
+      
       board1.cells[0].value = 5;
       expect(board1.puzzle, equals(testPuzzle));
+      
       board1.cellValues = puzzleA_solved;
       expect(board1.puzzle, equals(testPuzzle));
     });
@@ -139,19 +141,6 @@ void runBoardTests() {
   
   group('Unit', () {
     
-    /*
-     * puzzles[0]
-     * ----------
-     * 003020600
-     * 900305001
-     * 001806400
-     * 008102900
-     * 700000008
-     * 006708200
-     * 002609500
-     * 800203009
-     * 005010300
-     */
     setUp(() {
       board1.puzzle = testPuzzle.toList();
     });
@@ -185,6 +174,10 @@ void runBoardTests() {
       expect(columnUnit.cells, orderedEquals(firstColumn));
     });
 
+    test('cellValues', () {
+      var cell = board1.getCell(0, 0).rowUnit;
+      expect(cell.cellValues, unorderedEquals([3, 2, 6]));
+    });
     
   });
   
@@ -243,16 +236,21 @@ void runBoardTests() {
     });
     
     test('clearValue', () {
-      var cell = board1.getCell(0, 0);
+      var row = 0;
+      var column = 0;
+      var index = Board.indexAtGridCoordinates(row, column);
+      var cell = board1.getCell(row, column);
       
       var newValue = 5;
       cell.value = newValue;
       expect(cell.value, equals(newValue));
       expect(cell.hasValue, isTrue);
+      expect(board1.cellValues[index], newValue);
       
       cell.clearValue();
       expect(cell.value, equals(0));
       expect(cell.hasValue, isFalse);
+      expect(board1.cellValues[index], 0);
     });
     
     test('availableValues', () {

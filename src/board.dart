@@ -162,6 +162,10 @@ class Unit {
   List<Cell> _cells = [];
   List<Cell> get cells => _cells.toList();
   
+  List<int> get cellValues => 
+      _cells.where((cell) => cell.hasValue)
+      .map((cell) => cell.value).toList();
+  
   String cssClass = '';
   
   void add(Cell cell) {
@@ -174,7 +178,6 @@ class Unit {
  * Represents a single cell in the 81 cell [Board].
  */
 class Cell {
-  
   static const List<int> VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9];
   
   Board _board;
