@@ -64,7 +64,7 @@ table.grid {
 }
   
 .highlighted-peer-cell {
-  color: blue;
+  font-size: 200%;
 }
 
 .recently-modified-cell {
