@@ -41,17 +41,17 @@ class SudokuGame {
   
   void run() {
     var puzzle = selectPuzzle();
-    solve(puzzle, findHumanSolution, "Human Algorithm");
-    solve(puzzle, findBruteForceSolution, "Brute Force Algorithm");
+    solve(puzzle, humanSolveAlgorithm, "Human Algorithm");
+    solve(puzzle, bruteForceSolveAlgorithm, "Brute Force Algorithm");
   }
   
   List<int> selectPuzzle() {
     return puzzles[0];
   }
   
-  void solve(List<int> puzzle, bool findSolution(), [String title]) {
+  void solve(List<int> puzzle, bool solveAlgorithm(), [String title]) {
     prepareGame(puzzle);
-    findSolution();
+    solveAlgorithm();
     displayGame(title);
   }
   
@@ -81,23 +81,23 @@ class SudokuGame {
    * 
    * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
    */
-  bool findBruteForceSolution([int cellIndex = 0]) {
+  bool bruteForceSolveAlgorithm([int cellIndex = 0]) {
     if (cellIndex >= Board.CELL_COUNT) return true;
     
     var cell = board.cells[cellIndex];
 
-    if (cell.hasValue) return findBruteForceSolution(cellIndex + 1);
+    if (cell.hasValue) return bruteForceSolveAlgorithm(cellIndex + 1);
     
     for(int value in cell.availableValues) {
       setCellValue(cell, value);
-      if (findBruteForceSolution(cellIndex + 1)) return true;
+      if (bruteForceSolveAlgorithm(cellIndex + 1)) return true;
     }
     
     cell.clearValue();
     return false;
   }
   
-  bool findHumanSolution() {
+  bool humanSolveAlgorithm() {
     var emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     do {
       for(var cell in emptyCellsWithOnlyOnePossibleValue) {
@@ -128,4 +128,5 @@ class SudokuGame {
     previousGameStates.add(currentGameState);
     currentGameState = new GameState(board);
   }
+  
 }

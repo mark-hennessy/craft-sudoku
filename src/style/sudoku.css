@@ -33,7 +33,7 @@ p {
   margin-top: 140px;
 }
 
-table.grid { 
+.grid { 
   border: 3px solid black;
   border-collapse: collapse;
   border-spacing: 0;
@@ -43,7 +43,12 @@ table.grid {
   width: 39px; 
   height: 39px;
   border: 1px solid black;
-  text-align: center;  
+  text-align: center;
+  
+  /* Disable text highlighting */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;  
 }
 
 .grid td:nth-child(3n) { 

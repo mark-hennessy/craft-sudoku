@@ -15,7 +15,7 @@ void runBoardTests() {
    * 800203009
    * 005010300
    */
-  var testPuzzle = puzzles[0];
+  var testPuzzle = puzzles_easy50[0];
   
   var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7, 
                   9, 6, 7, 3, 4, 5, 8, 2, 1,
