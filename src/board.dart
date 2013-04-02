@@ -82,20 +82,32 @@ class Board {
   bool get isSolved => emptyCells.isEmpty && !hasContradictions;
   
   /**
-   * Constructs the [Board], [Cell]s and [Unit]s.
+   * Constructs a board.
    * 
    * The process of calculating and storing information about cells and 
    * their relationships is slow and memory intensive. Although the values 
    * of cells change, the relationships between cells do not. Because of this,
    * the board is designed as a flyweight object. Its only state/context is
-   * a list [cellValues].
+   * the [cellValues] property, which can be changed at any time.
    */
   Board() {
+    _initialize();
+  }
+
+  /**
+   * Constructs a board for the given puzzle.
+   */
+  Board.fromPuzzle(List<int> puzzle) {
+    _initialize();
+    this.puzzle = puzzle;
+  }
+  
+  void _initialize() {
     _initializeGrid();
     _defineRowAndColumnUnits();
     _defineBoxes();
   }
-
+  
   void _initializeGrid() {
     for(int r = 0; r < GRID_SIZE; r++) {
       for(int c = 0; c < GRID_SIZE; c++) {

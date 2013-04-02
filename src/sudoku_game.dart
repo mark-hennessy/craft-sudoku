@@ -24,17 +24,20 @@ class SudokuGame {
   BoardUI board_ui;
   List<List<int>> puzzles;
   
-  List<GameState> previousGameStates = [];
-  GameState currentGameState;
+  List<GameState> gameStates = [];
+  GameState get currentGameState => gameStates.last;
   
   SudokuGame() {
     board = new Board();
-    board_ui = new BoardUI();
     puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
-    initializeUI();
+    _initializeUI();
   }
   
-  void initializeUI() {
+  void _initializeUI() {
+    _initializeDebugInfo();
+  }
+  
+  void _initializeDebugInfo() {
     query(CSS.CLEAR_DEBUG_OUTPUT_BUTTON_ID)
     ..onClick.listen((e) => IO.clearDebugInfo());
   }
@@ -46,7 +49,7 @@ class SudokuGame {
   }
   
   List<int> selectPuzzle() {
-    return puzzles[0];
+    return puzzles[1];
   }
   
   void solve(List<int> puzzle, bool solveAlgorithm(), [String title]) {
@@ -61,17 +64,18 @@ class SudokuGame {
   }
   
   void resetGameStates() {
-    previousGameStates.clear();
-    currentGameState = new GameState(board);
+    gameStates.clear();
+    gameStates.add(new GameState(board));
     //Snapshot the initial state before any cell values have changed.
     //snapshotGameState();
   }
   
   void displayGame([String title = ""]) {
-    for(int i = 0; i < previousGameStates.length; i++) {
-      board_ui.renderGameState(previousGameStates[i], "$title - State $i");
+    for(int i = 0; i < gameStates.length; i++) {
+      board.cellValues = gameStates[i].cellValues;
+      board_ui = new BoardUI(board);
+      board_ui.render("$title - State $i");
     }
-    board_ui.renderGameState(currentGameState, "$title - Current State");
   }
   
   /**
@@ -102,7 +106,6 @@ class SudokuGame {
     do {
       for(var cell in emptyCellsWithOnlyOnePossibleValue) {
         setCellValue(cell, cell.availableValues.first);
-        //snapshotGameState();
       }
       emptyCellsWithOnlyOnePossibleValue = board.emptyCellsWithOnlyOnePossibleValue;
     } while(emptyCellsWithOnlyOnePossibleValue.length > 0);
@@ -123,10 +126,14 @@ class SudokuGame {
     currentGameState.addChangedCell(cell);
   }
   
-  void snapshotGameState() {
-    currentGameState.freeze();
-    previousGameStates.add(currentGameState);
-    currentGameState = new GameState(board);
+  void addGameState() {
+    currentGameState.freezeCellValues();
+    gameStates.add(new GameState(board));
+  }
+  
+  void removeLastGameState() {
+    gameStates.removeLast();
+    currentGameState.unfreezeCellValues();
   }
   
 }

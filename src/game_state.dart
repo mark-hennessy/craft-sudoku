@@ -4,8 +4,10 @@ class GameState {
   Board _board;
   Board get board => _board;
   
+  bool isFrozen = false;
+  
   List<int> _cellValues;
-  List<int> get cellValues => _cellValues == null ? board.cellValues : _cellValues;
+  List<int> get cellValues => isFrozen ? _cellValues : board.cellValues;
   
   List<Cell> _changedCells = [];
   List<Cell> get changedCells => _changedCells.toList();
@@ -18,11 +20,19 @@ class GameState {
   
   /**
    * Freeze/snapshot the game state, so that modifications to the board 
-   * do not effect this state object.
+   * do not effect the [cellValues] property of this state object.
    */
-  void freeze() {
+  void freezeCellValues() {
+    isFrozen = true;
     _cellValues = board.cellValues.toList();
   }
   
+  /**
+   * Unfreezing the game state will make the [cellValues] property
+   * return the current cell values of the board.
+   */
+  void unfreezeCellValues() {
+    isFrozen = false;
+  }
 }
 

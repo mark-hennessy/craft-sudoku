@@ -1,32 +1,29 @@
 part of sudoku;
 
 class BoardUI {
-  Board _internalBoard;
+  Board _board;
+  Map<Cell, Element> _cellElementMap;
   Keyboard _keyboard;
   
-  BoardUI() {
-    _internalBoard = new Board();
+  BoardUI(Board board) {
+    _board = board;
+    _cellElementMap = new Map<Cell, Element>();
     _keyboard = new Keyboard();
   }
   
-  void renderGame(Board board, [String puzzleTitle]) {
-    _render(board, puzzleTitle);
-  }
+//  void renderGameState(GameState gameState, [String puzzleTitle]) {
+//    _board.puzzle = gameState.board.puzzle;
+//    _board.cellValues = gameState.cellValues;
+//    
+//    render(puzzleTitle);
+//    for(Cell cell in _cellElementMap.keys) {
+//      if(gameState.changedCells.contains(cell)) {
+//        _cellElementMap[cell].classes.add(CSS.RECENTLY_MODIFIED_CELL);
+//      }
+//    }
+//  }
   
-  void renderGameState(GameState gameState, [String puzzleTitle]) {
-    _internalBoard.puzzle = gameState.board.puzzle;
-    _internalBoard.cellValues = gameState.cellValues;
-    
-    void highlightRecentlyModifiedCells(Cell cell, Element cellElement) {
-      if(gameState.changedCells.contains(cell)) {
-        cellElement.classes.add(CSS.RECENTLY_MODIFIED_CELL);
-      }
-    }
-    
-    _render(_internalBoard, puzzleTitle, highlightRecentlyModifiedCells);
-  }
-  
-  void _render(Board board, [String puzzleTitle, void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+  void render([String puzzleTitle]) {
     var elements = new List<Element>();
     
     if(?puzzleTitle) {
@@ -35,7 +32,7 @@ class BoardUI {
       elements.add(title);
     }
     
-    var grid = constructGrid(board, customCellRenderBehavior);
+    var grid = constructGrid();
     elements.add(grid);
     
     _addGridElementsToDom(elements);
@@ -53,38 +50,34 @@ class BoardUI {
     ..add(div);
   }
   
-  Element constructGrid(Board board, [void customCellRenderBehavior(Cell cell, Element cellElement)]) {
+  Element constructGrid() {
     var grid = new TableElement();
     grid.classes.add(CSS.GRID);
-    var cellElementMap = new Map<Cell, Element>();
     for(int r = 0; r < Board.GRID_SIZE; r++) {
       var rowElement = grid.insertRow(r);
       for(int c = 0; c < Board.GRID_SIZE; c++) {
-        Cell cell = board.getCell(r, c);
+        Cell cell = _board.getCell(r, c);
         Element cellElement = rowElement.insertCell(c);
-        cellElementMap[cell] = cellElement;
+        _cellElementMap[cell] = cellElement;
         cellElement.classes.add(cell.boxUnit.cssClass);
         if(cell.isValueFixed) {
           cellElement.classes.add(CSS.FIXED_VALUE_CELL);
         }
-        if(?customCellRenderBehavior) {
-          customCellRenderBehavior(cell, cellElement);
-        }
-        _renderCellValue(cell, cellElementMap);
-        _initializeUserInput(cell, cellElementMap);
-        _initializePeerHighlighting(cell, cellElementMap);
+        _renderCellValue(cell);
+        _initializeUserInput(cell);
+        _initializePeerHighlighting(cell);
       }
     }
     return grid;
   }
   
-  void _renderCellValue(Cell cell, Map<Cell, Element> cellElementMap) {
-    cellElementMap[cell]
+  void _renderCellValue(Cell cell) {
+    _cellElementMap[cell]
     ..text = cell.hasValue ? cell.value.toString() : "";
   }
   
-  void _initializeUserInput(Cell cell, Map<Cell, Element> cellElementMap) {
-    var cellElement = cellElementMap[cell];
+  void _initializeUserInput(Cell cell) {
+    var cellElement = _cellElementMap[cell];
     DomUtils.makeFocusable(cellElement);
     cellElement
     ..onMouseOver.listen((e) {
@@ -95,9 +88,9 @@ class BoardUI {
     })
     ..onKeyDown.listen((e) {
       if(Keyboard.isNumericKey(e) && !cell.isValueFixed) {
-        _updateCellValue(cell, cellElementMap, e);
+        _updateCellValue(cell, e);
       } else if(Keyboard.isArrowKey(e)) {
-        _moveToNextCell(cell, cellElementMap, e);
+        _moveToNextCell(cell, e);
       }
     });
   }
@@ -110,13 +103,13 @@ class BoardUI {
     cellElement.blur();
   }
   
-  void _updateCellValue(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
+  void _updateCellValue(Cell cell, KeyboardEvent e) {
     var newValue = Keyboard.parseKeyAsInt(e);
     cell.value = newValue;
-    _renderCellValue(cell, cellElementMap);
+    _renderCellValue(cell);
   }
 
-  void _moveToNextCell(Cell cell, Map<Cell, Element> cellElementMap, KeyboardEvent e) {
+  void _moveToNextCell(Cell cell, KeyboardEvent e) {
     var row = cell.row;
     var column = cell.column;
     if(Keyboard.isEventForKey(e, KeyCode.LEFT)) {
@@ -129,8 +122,8 @@ class BoardUI {
       row += 1;
     }
     if(Board.gridCoordinatesInBounds(row, column)) {
-      var nextCell = _internalBoard.getCell(row, column);
-      _selectCellElement(cellElementMap[nextCell]);
+      var nextCell = _board.getCell(row, column);
+      _selectCellElement(_cellElementMap[nextCell]);
     }
     _preventScrollbarFromMoving(e);
   }
@@ -139,12 +132,12 @@ class BoardUI {
     event.preventDefault();
   }
   
-  void _initializePeerHighlighting(Cell cell, Map<Cell, Element> cellElementMap) {
+  void _initializePeerHighlighting(Cell cell) {
     var currentHighlightState = false;
     
     void highlightPeers(bool highlight) {
       if(highlight != currentHighlightState) {
-        var peerElements = cell.peers.map((c) => cellElementMap[c]);
+        var peerElements = cell.peers.map((c) => _cellElementMap[c]);
         for(Element element in peerElements) {
           element.classes.toggle(CSS.HIGHLIGHTED_PEER_CELL);
         }
@@ -152,7 +145,7 @@ class BoardUI {
       }
     }
     
-    cellElementMap[cell]
+    _cellElementMap[cell]
     ..onFocus.listen((e) {
       if(_keyboard.isHighlightPeersKeyPressed) {
         highlightPeers(true);
