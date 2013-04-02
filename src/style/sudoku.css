@@ -20,7 +20,7 @@ p {
 }
 
 #debug {
-  visibility: hidden;  
+  display: none;  
 }
 
 #debug-output {

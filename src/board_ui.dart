@@ -4,52 +4,53 @@ class BoardUI {
   Board _board;
   Map<Cell, Element> _cellElementMap;
   Keyboard _keyboard;
-  
+
   BoardUI(Board board) {
     _board = board;
+
     _cellElementMap = new Map<Cell, Element>();
     _keyboard = new Keyboard();
   }
-  
-//  void renderGameState(GameState gameState, [String puzzleTitle]) {
-//    _board.puzzle = gameState.board.puzzle;
-//    _board.cellValues = gameState.cellValues;
-//    
-//    render(puzzleTitle);
-//    for(Cell cell in _cellElementMap.keys) {
-//      if(gameState.changedCells.contains(cell)) {
-//        _cellElementMap[cell].classes.add(CSS.RECENTLY_MODIFIED_CELL);
-//      }
-//    }
-//  }
-  
+
+  void renderGameState(GameState gameState, [String puzzleTitle]) {
+    _board.cellValues = gameState.cellValues;
+
+    render(puzzleTitle);
+
+    for(Cell cell in _cellElementMap.keys) {
+      if(gameState.changedCells.contains(cell)) {
+        _cellElementMap[cell].classes.add(CSS.RECENTLY_MODIFIED_CELL);
+      }
+    }
+  }
+
   void render([String puzzleTitle]) {
     var elements = new List<Element>();
-    
+
     if(?puzzleTitle) {
       var title = new HeadingElement.h3()
       ..text = puzzleTitle;
       elements.add(title);
     }
-    
+
     var grid = constructGrid();
     elements.add(grid);
-    
+
     _addGridElementsToDom(elements);
   }
-  
+
   void _addGridElementsToDom(List<Element> gridElements) {
     var div = new DivElement();
     for(var element in gridElements) {
       div.children.add(element);
     }
     div.children.add(new BRElement());
-    
+
     var puzzleContainer = query(CSS.PUZZLE_CONTAINER_ID);
     puzzleContainer.children
     ..add(div);
   }
-  
+
   Element constructGrid() {
     var grid = new TableElement();
     grid.classes.add(CSS.GRID);
@@ -70,12 +71,12 @@ class BoardUI {
     }
     return grid;
   }
-  
+
   void _renderCellValue(Cell cell) {
     _cellElementMap[cell]
     ..text = cell.hasValue ? cell.value.toString() : "";
   }
-  
+
   void _initializeUserInput(Cell cell) {
     var cellElement = _cellElementMap[cell];
     DomUtils.makeFocusable(cellElement);
@@ -98,11 +99,11 @@ class BoardUI {
   void _selectCellElement(Element cellElement) {
     cellElement.focus();
   }
-  
+
   void _unselectCellElement(Element cellElement) {
     cellElement.blur();
   }
-  
+
   void _updateCellValue(Cell cell, KeyboardEvent e) {
     var newValue = Keyboard.parseKeyAsInt(e);
     cell.value = newValue;
@@ -127,14 +128,14 @@ class BoardUI {
     }
     _preventScrollbarFromMoving(e);
   }
-  
+
   void _preventScrollbarFromMoving(KeyboardEvent event) {
     event.preventDefault();
   }
-  
+
   void _initializePeerHighlighting(Cell cell) {
     var currentHighlightState = false;
-    
+
     void highlightPeers(bool highlight) {
       if(highlight != currentHighlightState) {
         var peerElements = cell.peers.map((c) => _cellElementMap[c]);
@@ -144,7 +145,7 @@ class BoardUI {
         currentHighlightState = !currentHighlightState;
       }
     }
-    
+
     _cellElementMap[cell]
     ..onFocus.listen((e) {
       if(_keyboard.isHighlightPeersKeyPressed) {
@@ -165,5 +166,5 @@ class BoardUI {
       }
     });
   }
-  
+
 }
