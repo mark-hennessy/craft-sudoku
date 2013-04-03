@@ -32,21 +32,21 @@ List<List<int>> puzzles_easy50 = Parser.parseSudokuData(PUZZLES_EASY_50, separat
 List<List<int>> puzzles_hardest11 = Parser.parseSudokuData(PUZZLES_HARDEST_11);
 
 class TestSuite {
-  
+
   void runTests() {
-//  useHtmlEnhancedConfiguration();
-    
+    useHtmlEnhancedConfiguration();
+
     runPuzzleParserTests();
     runBoardTests();
     runSudokuTests();
     runGameStateTests();
-    
+
     runStringUtilsTests();
     runCollectionUtilsTests();
     runDomUtilsTests();
     runIOTests();
     runKeyboardTests();
   }
-  
+
 }
 

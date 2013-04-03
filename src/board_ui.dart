@@ -13,6 +13,9 @@ class BoardUI {
   }
 
   void renderGameState(GameState gameState, [String puzzleTitle]) {
+    if(_board != gameState.board)
+      throw "The board for which the UI was created must match the board of the game state";
+
     _board.cellValues = gameState.cellValues;
 
     render(puzzleTitle);

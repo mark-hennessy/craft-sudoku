@@ -56,7 +56,7 @@ class SudokuGame {
   void solve(List<int> puzzle, bool solveAlgorithm(Board board), [String title]) {
     prepareGame(puzzle);
     solveAlgorithm(board);
-    displayGame(title);
+    displayAllGameStates(title);
   }
 
   void prepareGame(List<int> puzzle) {
@@ -71,7 +71,7 @@ class SudokuGame {
     snapshotGameState();
   }
 
-  void displayGame([String title = ""]) {
+  void displayAllGameStates([String title = ""]) {
     for(int i = 0; i < gameStates.length; i++) {
       var gameState = gameStates[i];
 
@@ -110,9 +110,10 @@ class SudokuGame {
 
   bool humanSolve(Board board) {
     var solvedBoard = new Board.fromPuzzle(board.puzzle);
-    bruteForceSolve(solvedBoard);
+    var puzzleHasContradictions = !bruteForceSolve(solvedBoard);
+    if(puzzleHasContradictions) return false;
 
-    while(!board.isSolved) {
+    while(true) {
       var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
       while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
         for(var cell in emptyCellsWithOnlyOneAvailableValue) {
@@ -123,49 +124,15 @@ class SudokuGame {
       snapshotGameState("Empty cells w/ 1 val");
 
       var emptyCellsSorted = board.emptyCellsSortedByAvailableValuesAscending;
-      if(emptyCellsSorted.length > 0) {
-        var cellToGuess = emptyCellsSorted.first;
-        var solvedCellToGuess = solvedBoard.getCell(cellToGuess.row, cellToGuess.column);
-        setCellValue(cellToGuess, solvedCellToGuess.value);
-        snapshotGameState("Guess");
-      }
-    }
-    return true;
-  }
+      var solved = emptyCellsSorted.isEmpty;
+      if(solved) return true;
 
-//  bool humanSolve(Board board) {
-//    var modifiedCells = [];
-//    var emptyCells = board.emptyCellsSortedByAvailableValuesAscending;
-//
-//    var isSolved = emptyCells.isEmpty;
-//    if(isSolved) return true;
-//
-//    var firstEmptyCell = emptyCells.first;
-//    var firstEmptyCellAvailableValues = firstEmptyCell.availableValues;
-//
-//    var hasConstradiction = firstEmptyCellAvailableValues.length == 0;
-//    if(hasConstradiction) return false;
-//
-//    for(var cell in emptyCells) {
-//      var availableValues = cell.availableValues;
-//      if(availableValues.length != 1) break;
-//      setCellValue(cell, availableValues.first);
-//      modifiedCells.add(cell);
-//    }
-//
-//    if(modifiedCells.length > 0) {
-//      if(humanSolve(board)) return true;
-//    } else {
-//      for(var value in firstEmptyCellAvailableValues) {
-//        setCellValue(firstEmptyCell, value);
-//        modifiedCells.add(firstEmptyCell);
-//        if(humanSolve(board)) return true;
-//      }
-//    }
-//
-//    modifiedCells.forEach((Cell c) => c.clearValue());
-//    return false;
-//  }
+      var cellToFill = emptyCellsSorted.first;
+      var value = solvedBoard.getCell(cellToFill.row, cellToFill.column).value;
+      setCellValue(cellToFill, value);
+      snapshotGameState("Guess");
+    }
+  }
 
   void setCellValue(Cell cell, int value) {
     cell.value = value;
