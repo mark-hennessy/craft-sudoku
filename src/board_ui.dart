@@ -2,14 +2,31 @@ part of sudoku;
 
 class BoardUI {
   Board _board;
+
+  String boardTitle;
+
+  HeadingElement _titleElement;
+  HeadingElement get titleElement => _titleElement;
+
   Map<Cell, Element> _cellElementMap;
   Keyboard _keyboard;
+
+  bool _isRendered = false;
+  bool get isRendered => _isRendered;
 
   BoardUI(Board board) {
     _board = board;
 
     _cellElementMap = new Map<Cell, Element>();
     _keyboard = new Keyboard();
+  }
+
+  void update([String puzzleTitle]) {
+    if(isRendered) {
+      refresh(boardTitle);
+    } else {
+      render(boardTitle);
+    }
   }
 
   void renderGameState(GameState gameState, [String puzzleTitle]) {
@@ -30,16 +47,34 @@ class BoardUI {
   void render([String puzzleTitle]) {
     var elements = new List<Element>();
 
-    if(?puzzleTitle) {
-      var title = new HeadingElement.h3()
-      ..text = puzzleTitle;
-      elements.add(title);
-    }
+    _titleElement = new HeadingElement.h3();
+    elements.add(titleElement);
 
     var grid = constructGrid();
     elements.add(grid);
 
     _addGridElementsToDom(elements);
+    _isRendered = true;
+    refresh(puzzleTitle);
+  }
+
+  void refresh([String puzzleTitle]) {
+    _setTitle(puzzleTitle);
+    for(var cell in _cellElementMap.keys) {
+      var cellElement = _cellElementMap[cell];
+
+      if(cell.isValueFixed) {
+        cellElement.classes.add(CSS.FIXED_VALUE_CELL);
+      } else {
+        cellElement.classes.remove(CSS.FIXED_VALUE_CELL);
+      }
+
+      _renderCellValue(cell);
+    }
+  }
+
+  void _setTitle(String title) {
+    titleElement.text = title != null ? title : "";
   }
 
   void _addGridElementsToDom(List<Element> gridElements) {
@@ -49,7 +84,7 @@ class BoardUI {
     }
     div.children.add(new BRElement());
 
-    var puzzleContainer = query(CSS.PUZZLE_CONTAINER_ID);
+    var puzzleContainer = query(CSS.PUZZLE_CONTAINER);
     puzzleContainer.children
     ..add(div);
   }
@@ -64,10 +99,6 @@ class BoardUI {
         Element cellElement = rowElement.insertCell(c);
         _cellElementMap[cell] = cellElement;
         cellElement.classes.add(cell.boxUnit.cssClass);
-        if(cell.isValueFixed) {
-          cellElement.classes.add(CSS.FIXED_VALUE_CELL);
-        }
-        _renderCellValue(cell);
         _initializeUserInput(cell);
         _initializePeerHighlighting(cell);
       }

@@ -2,7 +2,9 @@ library sudoku;
 
 import 'dart:html';
 import 'dart:async';
+import 'dart:math';
 
+part 'sudoku_solver.dart';
 part 'puzzle_parser.dart';
 part 'board.dart';
 part 'board_ui.dart';
@@ -21,128 +23,139 @@ void main() {
 }
 
 class SudokuGame {
-  Board board;
-  BoardUI board_ui;
-  List<List<int>> puzzles;
+  Random _randomGenerator;
 
-  List<GameState> gameStates = [];
-  GameState get currentGameState => gameStates.last;
+  String _puzzleDifficulty;
+  String get puzzleDifficulty => _puzzleDifficulty;
+
+  int _puzzleIndex;
+  int get puzzleIndex => _puzzleIndex;
+  set puzzleIndex(int index) {
+    _puzzleIndex = index % puzzlesAtDifficulty.length;
+  }
+
+  String get gameTitle => "$puzzleDifficulty $puzzleIndex";
+
+  Map _puzzles;
+  List<List<int>> get puzzlesAtDifficulty => _puzzles[puzzleDifficulty];
+  List<int> get puzzle => _puzzles[puzzleDifficulty][puzzleIndex];
+
+  Board _gameBoard;
+  Board get gameBoard => _gameBoard;
+
+  BoardUI _boardUI;
+
+  SudokuSolver _solver;
+  Board _solvedBoard;
 
   SudokuGame() {
-    board = new Board();
-    puzzles = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+    _randomGenerator = new Random();
+
+    _puzzleDifficulty = "easy";
+    _puzzleIndex = 0;
+
+    _puzzles = new Map();
+    _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+    _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
+    _puzzles["hard"] = Parser.parseSudokuData(PUZZLES_HARDEST_11);
+
+    _gameBoard = new Board();
+    _boardUI = new BoardUI(gameBoard);
+
+    _solvedBoard = new Board();
+    _solver = new SudokuSolver(_solvedBoard);
+
     _initializeUI();
+    resetGame();
   }
 
   void _initializeUI() {
+    _initializePuzzleSelection();
+    _initializePuzzleControl();
     _initializeDebugInfo();
   }
 
+  void _initializePuzzleSelection() {
+    var selectElement = query(CSS.PUZZLE_DIFFICULTY_SELECT);
+    selectElement
+    ..onChange.listen((e) {
+      selectDifficulty(selectElement.value);
+    });
+
+    query(CSS.FIRST_PUZZLE_BTN)
+    ..onClick.listen((e) => firstPuzzle());
+    query(CSS.PREV_PUZZLE_BTN)
+    ..onClick.listen((e) => previousPuzzle());
+    query(CSS.NEXT_PUZZLE_BTN)
+    ..onClick.listen((e) => nextPuzzle());
+    query(CSS.LAST_PUZZLE_BTN)
+    ..onClick.listen((e) => lastPuzzle());
+    query(CSS.RANDOM_PUZZLE_BTN)
+    ..onClick.listen((e) => randomPuzzle());
+  }
+
+  void _initializePuzzleControl() {
+    query(CSS.CLEAR_PUZZLE_BTN)
+    ..onClick.listen((e) => clearPuzzle());
+    query(CSS.SOLVE_PUZZLE_BTN)
+    ..onClick.listen((e) => solvePuzzle());
+  }
+
   void _initializeDebugInfo() {
-    query(CSS.CLEAR_DEBUG_OUTPUT_BUTTON_ID)
+    query(CSS.CLEAR_DEBUG_OUTPUT_BTN)
     ..onClick.listen((e) => IO.clearDebugInfo());
   }
 
-  void run() {
-    var puzzle = selectPuzzle();
-    solve(puzzle, humanSolve, "Human Algorithm");
-//    solve(puzzle, bruteForceSolve, "Brute Force Algorithm");
+  void selectDifficulty(String difficulty) {
+    _puzzleDifficulty = difficulty;
+    _puzzleIndex = 0;
+    resetGame();
   }
 
-  List<int> selectPuzzle() {
-    return puzzles[1];
+  void firstPuzzle() {
+    puzzleIndex = 0;
+    resetGame();
   }
 
-  void solve(List<int> puzzle, bool solveAlgorithm(Board board), [String title]) {
-    prepareGame(puzzle);
-    solveAlgorithm(board);
-    displayAllGameStates(title);
+  void previousPuzzle() {
+    puzzleIndex -= 1;
+    resetGame();
   }
 
-  void prepareGame(List<int> puzzle) {
-    board.puzzle = puzzle;
-    resetGameStates();
+  void nextPuzzle() {
+    puzzleIndex += 1;
+    resetGame();
   }
 
-  void resetGameStates() {
-    gameStates.clear();
-    gameStates.add(new GameState(board));
-    //Snapshot the initial state before any cell values have changed.
-    snapshotGameState();
+  void lastPuzzle() {
+    puzzleIndex = puzzlesAtDifficulty.length - 1;
+    resetGame();
   }
 
-  void displayAllGameStates([String title = ""]) {
-    for(int i = 0; i < gameStates.length; i++) {
-      var gameState = gameStates[i];
-
-      var label = "$title - State $i";
-      if(gameState.title != null) {
-        label += " - ${gameState.title}";
-      }
-
-      board_ui = new BoardUI(board);
-      board_ui.renderGameState(gameState, label);
-    }
+  void randomPuzzle() {
+    puzzleIndex = _randomGenerator.nextInt(puzzlesAtDifficulty.length);
+    resetGame();
   }
 
-  /**
-   * The algorithm tries all available options for a cell in order.
-   * If no solution works for the rest of the board, the algorithm
-   * returns false (for “no solution”).
-   *
-   * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
-   */
-  bool bruteForceSolve(Board board, [int cellIndex = 0]) {
-    if (cellIndex >= Board.CELL_COUNT) return true;
-
-    var cell = board.cells[cellIndex];
-
-    if (cell.hasValue) return bruteForceSolve(board, cellIndex + 1);
-
-    for(int value in cell.availableValues) {
-      setCellValue(cell, value);
-      if (bruteForceSolve(board, cellIndex + 1)) return true;
-    }
-
-    cell.clearValue();
-    return false;
+  void resetGame() {
+    gameBoard.puzzle = puzzle;
+    _boardUI.boardTitle = gameTitle;
+    _boardUI.update();
   }
 
-  bool humanSolve(Board board) {
-    var solvedBoard = new Board.fromPuzzle(board.puzzle);
-    var puzzleHasContradictions = !bruteForceSolve(solvedBoard);
-    if(puzzleHasContradictions) return false;
-
-    while(true) {
-      var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
-      while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
-        for(var cell in emptyCellsWithOnlyOneAvailableValue) {
-          setCellValue(cell, cell.availableValues.first);
-        }
-        emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
-      }
-      snapshotGameState("Empty cells w/ 1 val");
-
-      var emptyCellsSorted = board.emptyCellsSortedByAvailableValuesAscending;
-      var solved = emptyCellsSorted.isEmpty;
-      if(solved) return true;
-
-      var cellToFill = emptyCellsSorted.first;
-      var value = solvedBoard.getCell(cellToFill.row, cellToFill.column).value;
-      setCellValue(cellToFill, value);
-      snapshotGameState("Guess");
-    }
+  void clearPuzzle() {
+    gameBoard.clear();
+    _boardUI.update();
   }
 
-  void setCellValue(Cell cell, int value) {
-    cell.value = value;
-    currentGameState.addChangedCell(cell);
-  }
-
-  void snapshotGameState([String title]) {
-    currentGameState.title = title;
-    currentGameState.freezeCellValues();
-    gameStates.add(new GameState(board));
+  void solvePuzzle() {
+    // Runs async
+    new Future.of(() {
+      _solvedBoard.puzzle = gameBoard.puzzle;
+      _solver.bruteForceSolve();
+      gameBoard.cellValues = _solvedBoard.cellValues;
+      _boardUI.update();
+    });
   }
 
 }

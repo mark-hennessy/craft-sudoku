@@ -165,6 +165,10 @@ class Board {
     }
   }
 
+  void clear() {
+    cellValues = puzzle;
+  }
+
 }
 
 /**
@@ -269,7 +273,9 @@ class Cell {
   Cell._internal(this._board, this._row, this._column);
 
   void clearValue() {
-    value = 0;
+    if(!isValueFixed) {
+      value = 0;
+    }
   }
 
   /**

@@ -20,7 +20,7 @@ p {
 }
 
 #debug {
-  display: none;  
+  display: none;
 }
 
 #debug-output {
@@ -37,34 +37,34 @@ p {
   margin-top: 140px;
 }
 
-.grid { 
+.grid {
   border: 3px solid black;
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-.grid td { 
-  width: 39px; 
+.grid td {
+  width: 39px;
   height: 39px;
   border: 1px solid black;
   text-align: center;
-  
+
   /* Disable text highlighting */
   -moz-user-select: none;
   -webkit-user-select: none;
-  user-select: none;  
+  user-select: none;
 }
 
-.grid td:nth-child(3n) { 
-  border-right-width: 3px; 
+.grid td:nth-child(3n) {
+  border-right-width: 3px;
 }
 
-.grid tr:nth-child(3n) td { 
-  border-bottom-width: 3px; 
+.grid tr:nth-child(3n) td {
+  border-bottom-width: 3px;
 }
 
-.grid-gray { 
-  background-color: lightgray; 
+.grid-gray {
+  background-color: lightgray;
 }
 
 .fixed-value-cell {
@@ -72,7 +72,7 @@ p {
   font-size: 115%;
   outline: none;
 }
-  
+
 .highlighted-peer-cell {
   font-size: 200%;
 }
