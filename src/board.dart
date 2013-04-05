@@ -165,7 +165,7 @@ class Board {
     }
   }
 
-  void clear() {
+  void clearPuzzle() {
     cellValues = puzzle;
   }
 
@@ -238,7 +238,7 @@ class Cell {
   /**
    * True if the cell's value cannot be changed because it is part of the original puzzle.
    */
-  bool _isValueFixed;
+  bool _isValueFixed = false;
   bool get isValueFixed => _isValueFixed;
 
   int get value =>

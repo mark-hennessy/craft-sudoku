@@ -18,15 +18,23 @@ part 'utils/dom_utils.dart';
 part 'utils/keyboard.dart';
 
 void main() {
-  var sudokuGame = new SudokuGame();
-  sudokuGame.run();
+  var game = new SudokuGame();
+//  game.run();
+
+  game.puzzleDifficulty = "easy";
+  game.puzzleIndex = 1;
+  var solver = new SudokuSolver(new Board.fromPuzzle(game.puzzle));
+  solver.visualizeAlgorithm(solver.humanSequenceSolve, "Human Sequence");
 }
 
 class SudokuGame {
   Random _randomGenerator;
 
-  String _puzzleDifficulty;
-  String get puzzleDifficulty => _puzzleDifficulty;
+  Map _puzzles;
+  List<List<int>> get puzzlesAtDifficulty => _puzzles[puzzleDifficulty];
+  List<int> get puzzle => _puzzles[puzzleDifficulty][puzzleIndex];
+
+  String puzzleDifficulty;
 
   int _puzzleIndex;
   int get puzzleIndex => _puzzleIndex;
@@ -35,10 +43,6 @@ class SudokuGame {
   }
 
   String get gameTitle => "$puzzleDifficulty $puzzleIndex";
-
-  Map _puzzles;
-  List<List<int>> get puzzlesAtDifficulty => _puzzles[puzzleDifficulty];
-  List<int> get puzzle => _puzzles[puzzleDifficulty][puzzleIndex];
 
   Board _gameBoard;
   Board get gameBoard => _gameBoard;
@@ -51,13 +55,13 @@ class SudokuGame {
   SudokuGame() {
     _randomGenerator = new Random();
 
-    _puzzleDifficulty = "easy";
-    _puzzleIndex = 0;
-
     _puzzles = new Map();
     _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
     _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
     _puzzles["hard"] = Parser.parseSudokuData(PUZZLES_HARDEST_11);
+
+    puzzleDifficulty = "easy";
+    puzzleIndex = 0;
 
     _gameBoard = new Board();
     _boardUI = new BoardUI(gameBoard);
@@ -66,6 +70,9 @@ class SudokuGame {
     _solver = new SudokuSolver(_solvedBoard);
 
     _initializeUI();
+  }
+
+  void run() {
     resetGame();
   }
 
@@ -107,8 +114,8 @@ class SudokuGame {
   }
 
   void selectDifficulty(String difficulty) {
-    _puzzleDifficulty = difficulty;
-    _puzzleIndex = 0;
+    puzzleDifficulty = difficulty;
+    puzzleIndex = 0;
     resetGame();
   }
 
@@ -144,13 +151,13 @@ class SudokuGame {
   }
 
   void clearPuzzle() {
-    gameBoard.clear();
+    gameBoard.clearPuzzle();
     _boardUI.update();
   }
 
-  void solvePuzzle() {
+  Future solvePuzzle() {
     // Runs async
-    new Future.of(() {
+    return new Future.of(() {
       _solvedBoard.puzzle = gameBoard.puzzle;
       _solver.bruteForceSolve();
       gameBoard.cellValues = _solvedBoard.cellValues;

@@ -9,6 +9,7 @@ import '../packages/unittest/mock.dart';
 part 'mocks/mock_keyboard_event.dart';
 
 part 'sudoku_game.dart';
+part 'sudoku_solver.dart';
 part 'board.dart';
 part 'game_state.dart';
 part 'puzzle_parser.dart';
@@ -24,8 +25,8 @@ void main() {
   testSuite.runTests();
 }
 
-SudokuGame sudoku = new SudokuGame();
-Board board1 = sudoku.board;
+SudokuGame game = new SudokuGame();
+Board board1 = game.gameBoard;
 Board board2 = new Board();
 
 List<List<int>> puzzles_easy50 = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
@@ -38,7 +39,8 @@ class TestSuite {
 
     runPuzzleParserTests();
     runBoardTests();
-    runSudokuTests();
+    runSolverTests();
+    runGameTests();
     runGameStateTests();
 
     runStringUtilsTests();

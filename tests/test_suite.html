@@ -3,18 +3,44 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Sudoku Tests</title>
+    <title>Sudoku</title>
     <link rel="stylesheet" href="../src/style/sudoku.css">
   </head>
   <body>
     <h1>Sudoku</h1>
-    
+
+    <div id="puzzle-selection">
+      <h3>Puzzle Selection</h3>
+      <div>
+        <select id="puzzle-difficulty-select">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+         </select>
+        <span>difficulty</span>
+      </div>
+      <div>
+        <input id="first-puzzle-btn" type="button" value="<<">
+        <input id="prev-puzzle-btn" type="button" value="<">
+        <input id="next-puzzle-btn" type="button" value=">" />
+        <input id="last-puzzle-btn" type="button" value=">>" />
+        <input id="random-puzzle-btn" type="button" value="Random" />
+      </div>
+    </div>
+
     <div id="puzzle-container"></div>
-    
-    <h3>Debug Info</h3>
-    <textarea id="debug-output" readonly></textarea>
-    <br />
-    <input id="clear-debug-output" type="button" value="Clear" />
+
+    <div id="puzzle-control">
+      <input id="clear-puzzle-btn" type="button" value="Clear">
+      <input id="solve-puzzle-btn" type="button" value="Solve">
+    </div>
+
+    <div id="debug">
+      <h3>Debug Info</h3>
+      <textarea id="debug-output" readonly></textarea>
+      <br />
+      <input id="clear-debug-output-btn" type="button" value="Clear" />
+    </div>
 
     <script type="application/dart" src="test_suite.dart"></script>
     <script src="../packages/browser/dart.js"></script>

@@ -11,13 +11,7 @@ class SudokuSolver {
     _resetGameStates();
   }
 
-  void run() {
-    var puzzle = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==')[0];
-    solve(puzzle, humanSequenceSolve, "Human Algorithm");
-    solve(puzzle, bruteForceSolve, "Brute Force Algorithm");
-  }
-
-  void solve(List<int> puzzle, bool solveAlgorithm(), [String title]) {
+  void visualizeAlgorithm(bool solveAlgorithm(), [String title]) {
     _resetGameStates();
     solveAlgorithm();
     displayAllGameStates(title);
@@ -38,7 +32,7 @@ class SudokuSolver {
     if (cell.hasValue) return bruteForceSolve(cellIndex + 1);
 
     for(int value in cell.availableValues) {
-      setCellValue(cell, value);
+      _setCellValue(cell, value);
       if (bruteForceSolve(cellIndex + 1)) return true;
     }
 
@@ -46,16 +40,24 @@ class SudokuSolver {
     return false;
   }
 
+  /**
+   * Fills in cells that only have one possible value until there are none left,
+   * and then brute force the algorithm if it is not solved.
+   */
   bool humanSolve() {
     var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
     while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
       for(var cell in emptyCellsWithOnlyOneAvailableValue) {
-        setCellValue(cell, cell.availableValues.first);
+        _setCellValue(cell, cell.availableValues.first);
       }
+      _snapshotGameState("Iteration");
       emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
     }
 
-    if(!board.isSolved) return bruteForceSolve();
+    if(!board.isSolved) {
+      _snapshotGameState("Brute Force");
+      return bruteForceSolve();
+    }
     return true;
   }
 
@@ -66,19 +68,21 @@ class SudokuSolver {
    * quite slow and inefficient.
    */
   bool humanSequenceSolve() {
-    var solvedBoard = new Board.fromPuzzle(board.puzzle);
     var puzzleHasContradictions = !bruteForceSolve();
     if(puzzleHasContradictions) return false;
+    var solvedBoard = new Board.fromPuzzle(board.cellValues);
+    board.clearPuzzle();
+    _snapshotGameState("Cells brute forced, then cleared");
 
     while(true) {
       var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
       while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
         for(var cell in emptyCellsWithOnlyOneAvailableValue) {
-          setCellValue(cell, cell.availableValues.first);
+          _setCellValue(cell, cell.availableValues.first);
         }
         emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
       }
-      snapshotGameState("Empty cells w/ 1 val");
+      _snapshotGameState("Empty cells w/ 1 val");
 
       var emptyCellsSorted = board.emptyCellsSortedByAvailableValuesAscending;
       var solved = emptyCellsSorted.isEmpty;
@@ -86,27 +90,9 @@ class SudokuSolver {
 
       var cellToFill = emptyCellsSorted.first;
       var value = solvedBoard.getCell(cellToFill.row, cellToFill.column).value;
-      setCellValue(cellToFill, value);
-      snapshotGameState("Guess");
+      _setCellValue(cellToFill, value);
+      _snapshotGameState("Guess");
     }
-  }
-
-  void setCellValue(Cell cell, int value) {
-    cell.value = value;
-    currentGameState.addChangedCell(cell);
-  }
-
-  void _resetGameStates() {
-    gameStates.clear();
-    gameStates.add(new GameState(board));
-    //Snapshot the initial state before any cell values have changed.
-    snapshotGameState();
-  }
-
-  void snapshotGameState([String title]) {
-    currentGameState.title = title;
-    currentGameState.freezeCellValues();
-    gameStates.add(new GameState(board));
   }
 
   void displayAllGameStates([String title = ""]) {
@@ -121,6 +107,24 @@ class SudokuSolver {
       var boardUI = new BoardUI(board);
       boardUI.renderGameState(gameState, gameTitle);
     }
+  }
+
+  void _setCellValue(Cell cell, int value) {
+    cell.value = value;
+    currentGameState.addChangedCell(cell);
+  }
+
+  void _resetGameStates() {
+    gameStates.clear();
+    gameStates.add(new GameState(board));
+    //Snapshot the initial state before any cell values have changed.
+    _snapshotGameState();
+  }
+
+  void _snapshotGameState([String title]) {
+    currentGameState.title = title;
+    currentGameState.freezeCellValues();
+    gameStates.add(new GameState(board));
   }
 
 }

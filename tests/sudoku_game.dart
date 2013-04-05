@@ -1,28 +1,103 @@
 part of test_suite;
 
-void runSudokuTests() {
-  group('Sudoku', () {
+void runGameTests() {
+  group('Game', () {
 
-    void testSolve(List<int> puzzle, bool solveAlgorithm(Board board)) {
-      sudoku.prepareGame(puzzle);
-      solveAlgorithm(board1);
-      expect(sudoku.board.isSolved, true);
-    }
+    var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7,
+                            9, 6, 7, 3, 4, 5, 8, 2, 1,
+                            2, 5, 1, 8, 7, 6, 4, 9, 3,
+                            5, 4, 8, 1, 3, 2, 9, 7, 6,
+                            7, 2, 9, 5, 6, 4, 1, 3, 8,
+                            1, 3, 6, 7, 9, 8, 2, 4, 5,
+                            3, 7, 2, 6, 8, 9, 5, 1, 4,
+                            8, 1, 4, 2, 5, 3, 7, 6, 9,
+                            6, 9, 5, 4, 1, 7, 3, 8, 2];
 
-    test('bruteForceSolveAlgorithm easy', () {
-      testSolve(puzzles_easy50[0], sudoku.bruteForceSolve);
+    var puzzleA_solved = [4, 8, 3, 9, 2, 1, 6, 5, 7,
+                          9, 6, 7, 3, 4, 5, 8, 2, 1,
+                          2, 5, 1, 8, 7, 6, 4, 9, 3,
+                          5, 4, 8, 1, 3, 2, 9, 7, 6,
+                          7, 2, 9, 5, 6, 4, 1, 3, 8,
+                          1, 3, 6, 7, 9, 8, 2, 4, 5,
+                          3, 7, 2, 6, 8, 9, 5, 1, 4,
+                          8, 1, 4, 2, 5, 3, 7, 6, 9,
+                          6, 9, 5, 4, 1, 7, 3, 8, 2];
+
+    test('selectDifficulty', () {
+      game.puzzleDifficulty = "easy";
+      game.puzzleIndex = 2;
+
+      game.selectDifficulty("medium");
+      expect(game.puzzleDifficulty, equals("medium"));
+      expect(game.puzzleIndex, equals(0));
     });
 
-    test('bruteForceSolveAlgorithm hard', () {
-      testSolve(puzzles_hardest11[7], sudoku.bruteForceSolve);
+    test('firstPuzzle', () {
+      game.puzzleIndex = 2;
+
+      game.firstPuzzle();
+      expect(game.puzzleIndex, equals(0));
     });
 
-    test('humanSolveAlgorithm easy', () {
-      testSolve(puzzles_easy50[0], sudoku.humanSolve);
+    test('previousPuzzle', () {
+      var lastIndex = game.puzzlesAtDifficulty.length - 1;
+      game.puzzleIndex = 1;
+
+      game.previousPuzzle();
+      expect(game.puzzleIndex, equals(0));
+
+      game.previousPuzzle();
+      expect(game.puzzleIndex, equals(lastIndex));
+
+      game.previousPuzzle();
+      expect(game.puzzleIndex, equals(lastIndex - 1));
     });
 
-    test('humanSolveAlgorithm hard', () {
-      testSolve(puzzles_hardest11[7], sudoku.humanSolve);
+    test('nextPuzzle', () {
+      var lastIndex = game.puzzlesAtDifficulty.length - 1;
+      game.puzzleIndex = lastIndex - 1;
+
+      game.nextPuzzle();
+      expect(game.puzzleIndex, equals(lastIndex));
+
+      game.nextPuzzle();
+      expect(game.puzzleIndex, equals(0));
+
+      game.nextPuzzle();
+      expect(game.puzzleIndex, equals(1));
+    });
+
+    test('lastPuzzle', () {
+      var lastIndex = game.puzzlesAtDifficulty.length - 1;
+      game.puzzleIndex = 2;
+
+      game.lastPuzzle();
+      expect(game.puzzleIndex, equals(lastIndex));
+    });
+
+    test('resetGame / clearPuzzle', () {
+      for(var methodCall in [game.resetGame, game.clearPuzzle]) {
+        var gameBoard = game.gameBoard;
+        gameBoard.puzzle = puzzleA_unsolved;
+        gameBoard.cellValues = puzzleA_solved;
+
+        expect(gameBoard.cellValues, isNot(orderedEquals(puzzleA_unsolved)));
+        game.clearPuzzle();
+        expect(gameBoard.cellValues, orderedEquals(puzzleA_unsolved));
+      }
+    });
+
+    test('solvePuzzle', () {
+      // Need to make a game not managed by the setUp method
+      // because we are calling an async method.
+      var game = new SudokuGame();
+      var gameBoard = game.gameBoard;
+      gameBoard.puzzle = puzzleA_unsolved;
+
+      expect(gameBoard.cellValues, orderedEquals(puzzleA_unsolved));
+      game.solvePuzzle().then((unused) {
+        expect(gameBoard.cellValues, orderedEquals(puzzleA_solved));
+      });
     });
 
   });
