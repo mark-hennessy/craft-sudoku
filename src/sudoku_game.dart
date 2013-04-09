@@ -1,8 +1,8 @@
 library sudoku;
 
 import 'dart:html';
-import 'dart:async';
 import 'dart:math';
+import 'dart:async';
 
 part 'sudoku_solver.dart';
 part 'puzzle_parser.dart';
@@ -19,8 +19,13 @@ part 'utils/keyboard.dart';
 
 void main() {
   var game = new SudokuGame();
-//  game.run();
+  game.run();
 
+//  visualizeHumanSequenceAlgorithm();
+}
+
+void visualizeHumanSequenceAlgorithm() {
+  var game = new SudokuGame();
   game.puzzleDifficulty = "easy";
   game.puzzleIndex = 1;
   var solver = new SudokuSolver(new Board.fromPuzzle(game.puzzle));

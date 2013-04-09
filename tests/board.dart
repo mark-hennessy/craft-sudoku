@@ -18,36 +18,46 @@ void runBoardTests() {
   var testPuzzle = puzzles_easy50[0];
 
   var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7,
-                  9, 6, 7, 3, 4, 5, 8, 2, 1,
-                  2, 5, 1, 8, 7, 6, 4, 9, 3,
-                  5, 4, 8, 1, 3, 2, 9, 7, 6,
-                  7, 2, 9, 5, 6, 4, 1, 3, 8,
-                  1, 3, 6, 7, 9, 8, 2, 4, 5,
-                  3, 7, 2, 6, 8, 9, 5, 1, 4,
-                  8, 1, 4, 2, 5, 3, 7, 6, 9,
-                  6, 9, 5, 4, 1, 7, 3, 8, 2];
+                          9, 6, 7, 3, 4, 5, 8, 2, 1,
+                          2, 5, 1, 8, 7, 6, 4, 9, 3,
+                          5, 4, 8, 1, 3, 2, 9, 7, 6,
+                          7, 2, 9, 5, 6, 4, 1, 3, 8,
+                          1, 3, 6, 7, 9, 8, 2, 4, 5,
+                          3, 7, 2, 6, 8, 9, 5, 1, 4,
+                          8, 1, 4, 2, 5, 3, 7, 6, 9,
+                          6, 9, 5, 4, 1, 7, 3, 8, 2];
 
-  //contradiction at (r:0, c:0, v:4) and (r:3, c:1, v:0)
-  //caused by incorrect value at(r:0, c:1, v:4)
+  // Incorrect value at (r:0, c:1, v:4)
+  // Contradiction at (r:0, c:0, v:4), (r:0, c:1, v:4), (r:3, c:1, v:0)
   var puzzleA_contradiction = [4, 4, 3, 9, 2, 1, 6, 5, 7,
-                       9, 6, 7, 3, 4, 5, 8, 2, 1,
-                       2, 5, 1, 8, 7, 6, 4, 9, 3,
-                       5, 0, 8, 1, 3, 2, 9, 7, 6,
-                       7, 2, 9, 5, 6, 4, 1, 3, 8,
-                       1, 3, 6, 7, 9, 8, 2, 4, 5,
-                       3, 7, 2, 6, 8, 9, 5, 1, 4,
-                       8, 1, 4, 2, 5, 3, 7, 6, 9,
-                       6, 9, 5, 4, 1, 7, 3, 8, 2];
+                               9, 6, 7, 3, 4, 5, 8, 2, 1,
+                               2, 5, 1, 8, 7, 6, 4, 9, 3,
+                               5, 0, 8, 1, 3, 2, 9, 7, 6,
+                               7, 2, 9, 5, 6, 4, 1, 3, 8,
+                               1, 3, 6, 7, 9, 8, 2, 4, 5,
+                               3, 7, 2, 6, 8, 9, 5, 1, 4,
+                               8, 1, 4, 2, 5, 3, 7, 6, 9,
+                               6, 9, 5, 4, 1, 7, 3, 8, 2];
 
   var puzzleA_solved = [4, 8, 3, 9, 2, 1, 6, 5, 7,
-                9, 6, 7, 3, 4, 5, 8, 2, 1,
-                2, 5, 1, 8, 7, 6, 4, 9, 3,
-                5, 4, 8, 1, 3, 2, 9, 7, 6,
-                7, 2, 9, 5, 6, 4, 1, 3, 8,
-                1, 3, 6, 7, 9, 8, 2, 4, 5,
-                3, 7, 2, 6, 8, 9, 5, 1, 4,
-                8, 1, 4, 2, 5, 3, 7, 6, 9,
-                6, 9, 5, 4, 1, 7, 3, 8, 2];
+                        9, 6, 7, 3, 4, 5, 8, 2, 1,
+                        2, 5, 1, 8, 7, 6, 4, 9, 3,
+                        5, 4, 8, 1, 3, 2, 9, 7, 6,
+                        7, 2, 9, 5, 6, 4, 1, 3, 8,
+                        1, 3, 6, 7, 9, 8, 2, 4, 5,
+                        3, 7, 2, 6, 8, 9, 5, 1, 4,
+                        8, 1, 4, 2, 5, 3, 7, 6, 9,
+                        6, 9, 5, 4, 1, 7, 3, 8, 2];
+
+  var puzzle_sameValue = [2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,
+                          2, 2, 2, 2, 2, 2, 2, 2, 2,];
 
   group('Board', () {
 
@@ -123,6 +133,9 @@ void runBoardTests() {
       board1.cellValues = puzzleA_contradiction;
       expect(board1.hasContradictions, isTrue);
 
+      board1.cellValues = puzzle_sameValue;
+      expect(board1.hasContradictions, isTrue);
+
       board1.cellValues = puzzleA_solved;
       expect(board1.hasContradictions, isFalse);
     });
@@ -136,6 +149,9 @@ void runBoardTests() {
 
       board1.cellValues = puzzleA_solved;
       expect(board1.isSolved, isTrue);
+
+      board1.cellValues = puzzle_sameValue;
+      expect(board1.isSolved, isFalse);
     });
 
     test('clearPuzzle', () {
@@ -273,7 +289,7 @@ void runBoardTests() {
     });
 
     test('contradictions', () {
-      var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
+      var contradictionCells = [board1.getCell(0, 0), board1.getCell(0, 1), board1.getCell(3, 1)];
       board1.cellValues = puzzleA_unsolved;
       expect(board1.contradictions, unorderedEquals([]));
 
@@ -285,7 +301,7 @@ void runBoardTests() {
     });
 
     test('hasContradictions', () {
-      var contradictionCells = [board1.getCell(0, 0), board1.getCell(3, 1)];
+      var contradictionCells = [board1.getCell(0, 0), board1.getCell(0, 1), board1.getCell(3, 1)];
       for(var cell in contradictionCells) {
         board1.cellValues = puzzleA_unsolved;
         expect(cell.hasContradiction, isFalse);

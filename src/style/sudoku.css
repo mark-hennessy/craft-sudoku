@@ -80,3 +80,11 @@ p {
 .recently-modified-cell {
   background-color: orange;
 }
+
+.contradiction-source-cell {
+  background-color: red;
+}
+
+.contradiction-cell {
+  background-color: lightcoral;
+}

@@ -9,10 +9,15 @@ class BoardUI {
   HeadingElement get titleElement => _titleElement;
 
   Map<Cell, Element> _cellElementMap;
+  List<Cell> get cells => _cellElementMap.keys.toList();
+  List<Element> get cellElements => _cellElementMap.values.toList();
+
   Keyboard _keyboard;
 
   bool _isRendered = false;
   bool get isRendered => _isRendered;
+
+  List<String> _temporaryCellStyles = [CSS.CONTRADICTION_SOURCE_CELL, CSS.CONTRADICTION_CELL];
 
   BoardUI(Board board) {
     _board = board;
@@ -37,9 +42,10 @@ class BoardUI {
 
     render(puzzleTitle);
 
-    for(Cell cell in _cellElementMap.keys) {
+    for(Cell cell in cells) {
       if(gameState.changedCells.contains(cell)) {
-        _cellElementMap[cell].classes.add(CSS.RECENTLY_MODIFIED_CELL);
+        var cellElement = _cellElementMap[cell];
+        cellElement.classes.add(CSS.RECENTLY_MODIFIED_CELL);
       }
     }
   }
@@ -60,21 +66,24 @@ class BoardUI {
 
   void refresh([String puzzleTitle]) {
     _setTitle(puzzleTitle);
-    for(var cell in _cellElementMap.keys) {
-      var cellElement = _cellElementMap[cell];
-
-      if(cell.isValueFixed) {
-        cellElement.classes.add(CSS.FIXED_VALUE_CELL);
-      } else {
-        cellElement.classes.remove(CSS.FIXED_VALUE_CELL);
-      }
-
+    for(var cell in cells) {
       _renderCellValue(cell);
+      _setCellStyle(cell);
+      _clearTemporaryCellStyle(cell);
     }
   }
 
   void _setTitle(String title) {
     titleElement.text = title != null ? title : "";
+  }
+
+  void _setCellStyle(Cell cell) {
+    var cellElement = _cellElementMap[cell];
+    if(cell.isValueFixed) {
+      cellElement.classes.add(CSS.FIXED_VALUE_CELL);
+    } else {
+      cellElement.classes.remove(CSS.FIXED_VALUE_CELL);
+    }
   }
 
   void _addGridElementsToDom(List<Element> gridElements) {
@@ -139,9 +148,37 @@ class BoardUI {
   }
 
   void _updateCellValue(Cell cell, KeyboardEvent e) {
-    var newValue = Keyboard.parseKeyAsInt(e);
-    cell.value = newValue;
+    var value = Keyboard.parseKeyAsInt(e);
+    updateCellValue(cell, value);
+  }
+
+  void updateCellValue(Cell cell, int value) {
+    cell.value = value;
     _renderCellValue(cell);
+    _updateStyle(cell);
+  }
+
+  void _updateStyle(Cell cell) {
+    for(var c in cells) {
+      _clearTemporaryCellStyle(c);
+      var recentlyChanged = (c == cell);
+      _setTemporaryCellStyle(c, recentlyChanged);
+    }
+  }
+
+  void _clearTemporaryCellStyle(Cell cell) {
+    var cellElement = _cellElementMap[cell];
+    for(var style in _temporaryCellStyles) {
+      cellElement.classes.remove(style);
+    }
+  }
+
+  void _setTemporaryCellStyle(Cell cell, bool recentlyChanged) {
+    var cellElement = _cellElementMap[cell];
+    if(cell.hasContradiction) {
+      var contradictionStyle = recentlyChanged ? CSS.CONTRADICTION_SOURCE_CELL : CSS.CONTRADICTION_CELL;
+      cellElement.classes.add(contradictionStyle);
+    }
   }
 
   void _moveToNextCell(Cell cell, KeyboardEvent e) {

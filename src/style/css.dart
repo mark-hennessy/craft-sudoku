@@ -17,6 +17,8 @@ class CSS {
   static const String FIXED_VALUE_CELL = "fixed-value-cell";
   static const String RECENTLY_MODIFIED_CELL = "recently-modified-cell";
   static const String HIGHLIGHTED_PEER_CELL = "highlighted-peer-cell";
+  static const String CONTRADICTION_SOURCE_CELL = "contradiction-source-cell";
+  static const String CONTRADICTION_CELL = "contradiction-cell";
 
   // Puzzle Control
   static const String CLEAR_PUZZLE_BTN = "#clear-puzzle-btn";

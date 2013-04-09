@@ -266,9 +266,22 @@ class Cell {
       CollectionUtils.subtractListAFromListB(peerValues, VALID_VALUES);
 
   /**
-   * True if there are no possible values for this cell.
+   * True if there are no possible values for this cell, or if another cell
+   * in this cell's row, column, or box has the same value.
    */
-  bool get hasContradiction => availableValues.isEmpty;
+  bool get hasContradiction {
+    if(hasValue) {
+      for(var unit in [rowUnit, columnUnit, boxUnit]) {
+        var otherCellsInUnit = unit.cells;
+        otherCellsInUnit.remove(this);
+        var otherValuesInUnit = otherCellsInUnit
+            .where((cell) => cell.hasValue)
+            .map((cell) => cell.value);
+        if(otherValuesInUnit.contains(value)) return true;
+      }
+    }
+    return availableValues.isEmpty;
+  }
 
   Cell._internal(this._board, this._row, this._column);
 
