@@ -143,7 +143,7 @@ class Board {
         var boxUnit = new Unit();
         _units.add(boxUnit);
         if(grayBox) {
-          boxUnit.cssClass = 'grid-gray';
+          boxUnit.cssClass = CSS.GRAY_BOX_UNIT;
         }
         grayBox = !grayBox;
         _traverseCells((cell) {

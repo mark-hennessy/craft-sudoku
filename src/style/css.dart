@@ -14,6 +14,9 @@ class CSS {
   static const String GRID = "grid";
 
   // Cells
+  static const String CELL = "cell";
+  static const String GRAY_BOX_UNIT = "gray-box-unit";
+  static const String SELECTED_CELL = "selected-cell";
   static const String FIXED_VALUE_CELL = "fixed-value-cell";
   static const String RECENTLY_MODIFIED_CELL = "recently-modified-cell";
   static const String HIGHLIGHTED_PEER_CELL = "highlighted-peer-cell";

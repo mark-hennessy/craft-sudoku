@@ -107,6 +107,7 @@ class BoardUI {
         Cell cell = _board.getCell(r, c);
         Element cellElement = rowElement.insertCell(c);
         _cellElementMap[cell] = cellElement;
+        cellElement.classes.add(CSS.CELL);
         cellElement.classes.add(cell.boxUnit.cssClass);
         _initializeUserInput(cell);
         _initializePeerHighlighting(cell);
@@ -141,10 +142,12 @@ class BoardUI {
 
   void _selectCellElement(Element cellElement) {
     cellElement.focus();
+    cellElement.classes.add(CSS.SELECTED_CELL);
   }
 
   void _unselectCellElement(Element cellElement) {
     cellElement.blur();
+    cellElement.classes.remove(CSS.SELECTED_CELL);
   }
 
   void _updateCellValue(Cell cell, KeyboardEvent e) {

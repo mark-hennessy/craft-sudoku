@@ -43,7 +43,15 @@ p {
   border-spacing: 0;
 }
 
-.grid td {
+.grid td:nth-child(3n) {
+  border-right-width: 3px;
+}
+
+.grid tr:nth-child(3n) td {
+  border-bottom-width: 3px;
+}
+
+.cell {
   width: 39px;
   height: 39px;
   border: 1px solid black;
@@ -55,20 +63,21 @@ p {
   user-select: none;
 }
 
-.grid td:nth-child(3n) {
-  border-right-width: 3px;
+.cell:focus {
+  outline:none;
 }
 
-.grid tr:nth-child(3n) td {
-  border-bottom-width: 3px;
-}
-
-.grid-gray {
+.gray-box-unit {
   background-color: lightgray;
 }
 
-.selected-cell {
-  outline: 2px auto -webkit-focus-ring-color;
+/*
+ * Need both selectors so selected cell displays correctly in puzzle and legend.
+ * .cell:focus overrides .selected-cell, but not .selected-cell:focus
+ */
+.selected-cell, .selected-cell:focus {
+  outline: 4px auto -webkit-focus-ring-color;
+  background-color: lightyellow;
 }
 
 .fixed-value-cell {
@@ -93,11 +102,8 @@ p {
   background-color: lightcoral;
 }
 
-.key-legend, .cell-legend {
-
-}
-
-.legend-item {
+#cell-legend .legend-item {
+  /* Cells in legend need space to display correctly */
   height: 35px;
 }
 
@@ -115,7 +121,10 @@ p {
   width: 85%;
   margin-left: 10px;
   float: left;
-  vertical-align: middle;
+
+  /* Vertical center text in cell legend */
+  position: relative;
+  top: 15%;
 }
 
 .legend-cell {
