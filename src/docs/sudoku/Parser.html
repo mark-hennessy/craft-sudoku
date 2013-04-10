@@ -1,0 +1,118 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Parser class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Parser">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Parser.html">Parser</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><div class="icon-class"></div><strong>Parser</strong></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Parser</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A parser that parses Sudoku data in string format.</p>
+<pre class="source">
+class Parser {
+ 
+ /**
+  * Parses a string of Sudoku puzzles separated by a [separator] string.
+  * The [separator], if not provided, defaults to '\n'.
+  */
+ static List&lt;String&gt; _splitBoards(String sudokuData, {String separator : "\n"}) {
+   return sudokuData.trim().replaceAll(".", "0").split(separator);
+ }
+
+ /**
+  * Parses a single Sudoku puzzle stored as a string into a list of integer cell values.
+  */
+ static List&lt;int&gt; _parseCellValues(String puzzle) {
+   return StringUtils.splitChars(puzzle.replaceAll("\n", ""))
+       .map((c) =&gt; int.parse(c)).toList();
+ }
+ 
+ /**
+  * Parses [sudokuData], a string that contains multiple Sudoku puzzles, 
+  * into a list of puzzles. Puzzles are represented as a list of integer cell values.
+  */
+ static List&lt;List&lt;int&gt;&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
+   var stringBoards = _splitBoards(sudokuData, separator: separator);
+   var puzzles = new List&lt;List&lt;int&gt;&gt;();
+   for(var stringBoard in stringBoards) {
+     puzzles.add(_parseCellValues(stringBoard));
+   }
+   return puzzles;
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parseSudokuData">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;&gt; <strong>parseSudokuData</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> sudokuData, {<a href="http://api.dartlang.org/dart_core/String.html">String</a> separator: "\n"}) <a class="anchor-link" href="#parseSudokuData"
+              title="Permalink to Parser.parseSudokuData">#</a></h4>
+<div class="doc">
+<p>Parses 
+<span class="param">sudokuData</span>, a string that contains multiple Sudoku puzzles, 
+into a list of puzzles. Puzzles are represented as a list of integer cell values.</p>
+<pre class="source">
+static List&lt;List&lt;int&gt;&gt; parseSudokuData(String sudokuData, {String separator : "\n"}) {
+ var stringBoards = _splitBoards(sudokuData, separator: separator);
+ var puzzles = new List&lt;List&lt;int&gt;&gt;();
+ for(var stringBoard in stringBoards) {
+   puzzles.add(_parseCellValues(stringBoard));
+ }
+ return puzzles;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-10 09:04:05.483</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

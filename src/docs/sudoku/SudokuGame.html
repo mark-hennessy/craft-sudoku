@@ -1,0 +1,453 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SudokuGame class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="SudokuGame">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/SudokuGame.html">SudokuGame</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><div class="icon-class"></div><strong>SudokuGame</strong></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>SudokuGame</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SudokuGame {
+ Random _randomGenerator;
+
+ Map _puzzles;
+ List&lt;List&lt;int&gt;&gt; get puzzlesAtDifficulty =&gt; _puzzles[puzzleDifficulty];
+ List&lt;int&gt; get puzzle =&gt; _puzzles[puzzleDifficulty][puzzleIndex];
+
+ String puzzleDifficulty;
+
+ int _puzzleIndex;
+ int get puzzleIndex =&gt; _puzzleIndex;
+ set puzzleIndex(int index) {
+   _puzzleIndex = index % puzzlesAtDifficulty.length;
+ }
+
+ String get gameTitle =&gt; "$puzzleDifficulty $puzzleIndex";
+
+ Board _gameBoard;
+ Board get gameBoard =&gt; _gameBoard;
+
+ BoardUI _boardUI;
+
+ SudokuSolver _solver;
+ Board _solvedBoard;
+
+ SudokuGame() {
+   _randomGenerator = new Random();
+
+   _puzzles = new Map();
+   _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+   _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
+   _puzzles["hard"] = Parser.parseSudokuData(PUZZLES_HARDEST_11);
+
+   puzzleDifficulty = "easy";
+   puzzleIndex = 0;
+
+   _gameBoard = new Board();
+   _boardUI = new BoardUI(gameBoard);
+
+   _solvedBoard = new Board();
+   _solver = new SudokuSolver(_solvedBoard);
+
+   _initializeUI();
+ }
+
+ void run() {
+   resetGame();
+ }
+
+ void _initializeUI() {
+   _initializePuzzleSelection();
+   _initializePuzzleControl();
+   _initializeDebugInfo();
+ }
+
+ void _initializePuzzleSelection() {
+   var selectElement = query(CSS.PUZZLE_DIFFICULTY_SELECT);
+   selectElement
+   ..onChange.listen((e) {
+     selectDifficulty(selectElement.value);
+   });
+
+   query(CSS.FIRST_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; firstPuzzle());
+   query(CSS.PREV_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; previousPuzzle());
+   query(CSS.NEXT_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; nextPuzzle());
+   query(CSS.LAST_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; lastPuzzle());
+   query(CSS.RANDOM_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; randomPuzzle());
+ }
+
+ void _initializePuzzleControl() {
+   query(CSS.CLEAR_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; clearPuzzle());
+   query(CSS.SOLVE_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; solvePuzzle());
+ }
+
+ void _initializeDebugInfo() {
+   query(CSS.CLEAR_DEBUG_OUTPUT_BTN)
+   ..onClick.listen((e) =&gt; IO.clearDebugInfo());
+ }
+
+ void selectDifficulty(String difficulty) {
+   puzzleDifficulty = difficulty;
+   puzzleIndex = 0;
+   resetGame();
+ }
+
+ void firstPuzzle() {
+   puzzleIndex = 0;
+   resetGame();
+ }
+
+ void previousPuzzle() {
+   puzzleIndex -= 1;
+   resetGame();
+ }
+
+ void nextPuzzle() {
+   puzzleIndex += 1;
+   resetGame();
+ }
+
+ void lastPuzzle() {
+   puzzleIndex = puzzlesAtDifficulty.length - 1;
+   resetGame();
+ }
+
+ void randomPuzzle() {
+   puzzleIndex = _randomGenerator.nextInt(puzzlesAtDifficulty.length);
+   resetGame();
+ }
+
+ void resetGame() {
+   gameBoard.puzzle = puzzle;
+   _boardUI.boardTitle = gameTitle;
+   _boardUI.update();
+ }
+
+ void clearPuzzle() {
+   gameBoard.clearPuzzle();
+   _boardUI.update();
+ }
+
+ Future solvePuzzle() {
+   // Runs async
+   Future future = new Future.of(() {
+     _solvedBoard.puzzle = gameBoard.puzzle;
+     _solver.bruteForceSolve();
+     gameBoard.cellValues = _solvedBoard.cellValues;
+     _boardUI.update();
+   });
+   return future;
+ }
+
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SudokuGame">
+<button class="show-code">Code</button>
+new <strong>SudokuGame</strong>() <a class="anchor-link" href="#SudokuGame"
+              title="Permalink to SudokuGame.SudokuGame">#</a></h4>
+<div class="doc">
+<pre class="source">
+SudokuGame() {
+ _randomGenerator = new Random();
+
+ _puzzles = new Map();
+ _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
+ _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
+ _puzzles["hard"] = Parser.parseSudokuData(PUZZLES_HARDEST_11);
+
+ puzzleDifficulty = "easy";
+ puzzleIndex = 0;
+
+ _gameBoard = new Board();
+ _boardUI = new BoardUI(gameBoard);
+
+ _solvedBoard = new Board();
+ _solver = new SudokuSolver(_solvedBoard);
+
+ _initializeUI();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="gameBoard">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Board.html">Board</a>         <strong>gameBoard</strong> <a class="anchor-link"
+            href="#gameBoard"
+            title="Permalink to SudokuGame.gameBoard">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Board get gameBoard =&gt; _gameBoard;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="gameTitle">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>gameTitle</strong> <a class="anchor-link"
+            href="#gameTitle"
+            title="Permalink to SudokuGame.gameTitle">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String get gameTitle =&gt; "$puzzleDifficulty $puzzleIndex";
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="puzzle">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>puzzle</strong> <a class="anchor-link"
+            href="#puzzle"
+            title="Permalink to SudokuGame.puzzle">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;int&gt; get puzzle =&gt; _puzzles[puzzleDifficulty][puzzleIndex];
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="puzzleDifficulty">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>puzzleDifficulty</strong> <a class="anchor-link"
+            href="#puzzleDifficulty"
+            title="Permalink to SudokuGame.puzzleDifficulty">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String puzzleDifficulty
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="puzzleIndex">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>puzzleIndex</strong> <a class="anchor-link"
+            href="#puzzleIndex"
+            title="Permalink to SudokuGame.puzzleIndex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get puzzleIndex =&gt; _puzzleIndex;
+</pre>
+<pre class="source">
+set puzzleIndex(int index) {
+ _puzzleIndex = index % puzzlesAtDifficulty.length;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="puzzlesAtDifficulty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;&gt;         <strong>puzzlesAtDifficulty</strong> <a class="anchor-link"
+            href="#puzzlesAtDifficulty"
+            title="Permalink to SudokuGame.puzzlesAtDifficulty">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;List&lt;int&gt;&gt; get puzzlesAtDifficulty =&gt; _puzzles[puzzleDifficulty];
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="clearPuzzle">
+<button class="show-code">Code</button>
+void <strong>clearPuzzle</strong>() <a class="anchor-link" href="#clearPuzzle"
+              title="Permalink to SudokuGame.clearPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void clearPuzzle() {
+ gameBoard.clearPuzzle();
+ _boardUI.update();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="firstPuzzle">
+<button class="show-code">Code</button>
+void <strong>firstPuzzle</strong>() <a class="anchor-link" href="#firstPuzzle"
+              title="Permalink to SudokuGame.firstPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void firstPuzzle() {
+ puzzleIndex = 0;
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="lastPuzzle">
+<button class="show-code">Code</button>
+void <strong>lastPuzzle</strong>() <a class="anchor-link" href="#lastPuzzle"
+              title="Permalink to SudokuGame.lastPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void lastPuzzle() {
+ puzzleIndex = puzzlesAtDifficulty.length - 1;
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="nextPuzzle">
+<button class="show-code">Code</button>
+void <strong>nextPuzzle</strong>() <a class="anchor-link" href="#nextPuzzle"
+              title="Permalink to SudokuGame.nextPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void nextPuzzle() {
+ puzzleIndex += 1;
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="previousPuzzle">
+<button class="show-code">Code</button>
+void <strong>previousPuzzle</strong>() <a class="anchor-link" href="#previousPuzzle"
+              title="Permalink to SudokuGame.previousPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void previousPuzzle() {
+ puzzleIndex -= 1;
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="randomPuzzle">
+<button class="show-code">Code</button>
+void <strong>randomPuzzle</strong>() <a class="anchor-link" href="#randomPuzzle"
+              title="Permalink to SudokuGame.randomPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void randomPuzzle() {
+ puzzleIndex = _randomGenerator.nextInt(puzzlesAtDifficulty.length);
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="resetGame">
+<button class="show-code">Code</button>
+void <strong>resetGame</strong>() <a class="anchor-link" href="#resetGame"
+              title="Permalink to SudokuGame.resetGame">#</a></h4>
+<div class="doc">
+<pre class="source">
+void resetGame() {
+ gameBoard.puzzle = puzzle;
+ _boardUI.boardTitle = gameTitle;
+ _boardUI.update();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="run">
+<button class="show-code">Code</button>
+void <strong>run</strong>() <a class="anchor-link" href="#run"
+              title="Permalink to SudokuGame.run">#</a></h4>
+<div class="doc">
+<pre class="source">
+void run() {
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="selectDifficulty">
+<button class="show-code">Code</button>
+void <strong>selectDifficulty</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> difficulty) <a class="anchor-link" href="#selectDifficulty"
+              title="Permalink to SudokuGame.selectDifficulty">#</a></h4>
+<div class="doc">
+<pre class="source">
+void selectDifficulty(String difficulty) {
+ puzzleDifficulty = difficulty;
+ puzzleIndex = 0;
+ resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="solvePuzzle">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_async/Future.html">Future</a> <strong>solvePuzzle</strong>() <a class="anchor-link" href="#solvePuzzle"
+              title="Permalink to SudokuGame.solvePuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+Future solvePuzzle() {
+ // Runs async
+ Future future = new Future.of(() {
+   _solvedBoard.puzzle = gameBoard.puzzle;
+   _solver.bruteForceSolve();
+   gameBoard.cellValues = _solvedBoard.cellValues;
+   _boardUI.update();
+ });
+ return future;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-10 09:04:05.513</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

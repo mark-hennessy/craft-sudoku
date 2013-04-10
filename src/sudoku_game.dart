@@ -161,11 +161,10 @@ class SudokuGame {
   }
 
   Future solvePuzzle() {
-    _solvedBoard.puzzle = gameBoard.puzzle;
     // Runs async
     Future future = new Future.of(() {
+      _solvedBoard.puzzle = gameBoard.puzzle;
       _solver.bruteForceSolve();
-    }).then((unused) {
       gameBoard.cellValues = _solvedBoard.cellValues;
       _boardUI.update();
     });

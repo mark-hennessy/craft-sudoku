@@ -1,0 +1,183 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>CollectionUtils class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="CollectionUtils">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/CollectionUtils.html">CollectionUtils</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><div class="icon-class"></div><strong>CollectionUtils</strong></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>CollectionUtils</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Utilites for working with collections. </p>
+<pre class="source">
+class CollectionUtils {
+ 
+ /**
+  * Returns the elements in [b] that are not in [a]
+  */
+ static List subtractListAFromListB(List a, List b) {
+   return b.where((v) =&gt; !a.contains(v)).toList();
+ }
+ 
+ /**
+  * Returns a new [List] with the elements in the given [List] in reverse order.
+  */
+ static List reverse(List list) {
+   var reversedList = new List();
+   for(int i = list.length - 1; i &gt;= 0; i--) {
+     reversedList.add(list[i]);
+   }
+   return reversedList;
+ }
+ 
+ /**
+  * Comparator function for sorting numeric collections in ascending order.
+  */
+ static int compareAscending(int a, int b) {
+   if (a &lt; b) {
+     return -1;
+   } else if (a &gt; b) {
+     return 1;
+   } else {
+     return 0;
+   }
+ }
+ 
+ /**
+  * Comparator function for sorting numeric collections in decending order.
+  */
+ static int compareDecending(int a, int b) {
+   if (a &gt; b) {
+     return -1;
+   } else if (a &lt; b) {
+     return 1;
+   } else {
+     return 0;
+   }
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="subtractListAFromListB">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>subtractListAFromListB</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> a, <a href="http://api.dartlang.org/dart_core/List.html">List</a> b) <a class="anchor-link" href="#subtractListAFromListB"
+              title="Permalink to CollectionUtils.subtractListAFromListB">#</a></h4>
+<div class="doc">
+<p>Returns the elements in 
+<span class="param">b</span> that are not in 
+<span class="param">a</span></p>
+<pre class="source">
+static List subtractListAFromListB(List a, List b) {
+ return b.where((v) =&gt; !a.contains(v)).toList();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="reverse">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a> <strong>reverse</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a> list) <a class="anchor-link" href="#reverse"
+              title="Permalink to CollectionUtils.reverse">#</a></h4>
+<div class="doc">
+<p>Returns a new <code>List</code> with the elements in the given <code>List</code> in reverse order.</p>
+<pre class="source">
+static List reverse(List list) {
+ var reversedList = new List();
+ for(int i = list.length - 1; i &gt;= 0; i--) {
+   reversedList.add(list[i]);
+ }
+ return reversedList;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="compareAscending">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareAscending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareAscending"
+              title="Permalink to CollectionUtils.compareAscending">#</a></h4>
+<div class="doc">
+<p>Comparator function for sorting numeric collections in ascending order.</p>
+<pre class="source">
+static int compareAscending(int a, int b) {
+ if (a &lt; b) {
+   return -1;
+ } else if (a &gt; b) {
+   return 1;
+ } else {
+   return 0;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="compareDecending">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareDecending</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> a, <a href="http://api.dartlang.org/dart_core/int.html">int</a> b) <a class="anchor-link" href="#compareDecending"
+              title="Permalink to CollectionUtils.compareDecending">#</a></h4>
+<div class="doc">
+<p>Comparator function for sorting numeric collections in decending order.</p>
+<pre class="source">
+static int compareDecending(int a, int b) {
+ if (a &gt; b) {
+   return -1;
+ } else if (a &lt; b) {
+   return 1;
+ } else {
+   return 0;
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-10 09:04:05.401</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

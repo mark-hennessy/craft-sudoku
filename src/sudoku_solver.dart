@@ -22,6 +22,8 @@ class SudokuSolver {
    * If no solution works for the rest of the board, the algorithm
    * returns false (for “no solution”).
    *
+   * Algorithm has medium efficiency.
+   *
    * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
    */
   bool bruteForceSolve([int cellIndex = 0]) {
@@ -42,45 +44,92 @@ class SudokuSolver {
 
   /**
    * Fills in cells that only have one possible value until there are none left,
-   * and then brute force the algorithm if it is not solved.
+   * makes a guess, and then continues filling in cells that only have one
+   * possible value until there are none left, then makes another guess and so on.
+   * The algorithm undoes moves and tries a different guess if a contradiction is found.
+   *
+   * Algorithm has low efficiency.
    */
   bool humanSolve() {
-    var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
-    while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
-      for(var cell in emptyCellsWithOnlyOneAvailableValue) {
-        _setCellValue(cell, cell.availableValues.first);
-      }
-      _snapshotGameState("Iteration");
-      emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
+    if(board.hasContradictions) return false;
+    if(board.isSolved) return true;
+
+    var modifiedCells = new Set<Cell>();
+
+    var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+    var cellValueMap = new Map<Cell, int>();
+    for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+      cellValueMap[cell] = cell.availableValues.first;
+    }
+    for(var cell in cellValueMap.keys) {
+      _setCellValue(cell, cellValueMap[cell]);
+      modifiedCells.add(cell);
     }
 
-    if(!board.isSolved) {
+    if(modifiedCells.length > 0) {
+      if(humanSolve()) return true;
+    } else {
+      var emptyCell = board.emptyCellsSortedByAvailableValuesAscending.first;
+      for(var value in emptyCell.availableValues) {
+        _setCellValue(emptyCell, value);
+        modifiedCells.add(emptyCell);
+        if(humanSolve()) return true;
+      }
+    }
+
+    modifiedCells.forEach((Cell c) => c.clearValue());
+    return false;
+  }
+
+  /**
+   * Fills in cells that only have one possible value until there are none left,
+   * and then brute force the algorithm if it is not solved.
+   *
+   * Algorithm has low efficiency.
+   */
+  bool humanSolveThenBruteforce() {
+    var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+    while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
+      var cellValueMap = new Map<Cell, int>();
+      for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+        cellValueMap[cell] = cell.availableValues.first;
+      }
+      for(var cell in cellValueMap.keys) {
+        _setCellValue(cell, cellValueMap[cell]);
+      }
+      _snapshotGameState("Iteration");
+      emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+    }
+
+    if(board.isSolved) {
+      return true;
+    } else {
       _snapshotGameState("Brute Force");
       return bruteForceSolve();
     }
-    return true;
   }
 
   /**
    * The goal of this algorithm is to solve a Sudoku board in a similar sequence
    * to a beginner/intermediate human. An advanced player has a bag of tricks
-   * which make him a lot smarter than this algorithm. Also, this algorithm is
-   * quite slow and inefficient.
+   * which make him a lot smarter than this algorithm.
+   *
+   * Algorithm has low efficiency.
    */
   bool humanSequenceSolve() {
     var puzzleHasContradictions = !bruteForceSolve();
     if(puzzleHasContradictions) return false;
     var solvedBoard = new Board.fromPuzzle(board.cellValues);
+    _snapshotGameState("Cells brute forced");
     board.clearPuzzle();
-    _snapshotGameState("Cells brute forced, then cleared");
 
     while(true) {
-      var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
+      var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
       while(emptyCellsWithOnlyOneAvailableValue.length > 0) {
         for(var cell in emptyCellsWithOnlyOneAvailableValue) {
           _setCellValue(cell, cell.availableValues.first);
         }
-        emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOnlyOneAvailableValue;
+        emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
       }
       _snapshotGameState("Empty cells w/ 1 val");
 

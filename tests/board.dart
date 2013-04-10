@@ -108,8 +108,8 @@ void runBoardTests() {
       expect(board1.emptyCells, isNot(contains(board1.getCell(0, 2))));
     });
 
-    test('emptyCellsWithOnlyOneAvailableValue', () {
-      for(var cell in board1.emptyCellsWithOnlyOneAvailableValue) {
+    test('emptyCellsWithOneAvailableValue', () {
+      for(var cell in board1.emptyCellsWithOneAvailableValue) {
         expect(cell.hasValue, isFalse);
         expect(cell.availableValues, hasLength(1));
       }

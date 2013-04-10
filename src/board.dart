@@ -55,7 +55,7 @@ class Board {
   List<Cell> get emptyCells =>
       _cells.where((cell) => !cell.hasValue).toList();
 
-  List<Cell> get emptyCellsWithOnlyOneAvailableValue =>
+  List<Cell> get emptyCellsWithOneAvailableValue =>
       emptyCells.where((cell) => cell.availableValues.length == 1).toList();
 
   List<Cell> get emptyCellsSortedByAvailableValuesAscending {

@@ -11,20 +11,24 @@ void runSolverTests() {
       expect(solver.board.isSolved, true);
     }
 
-    test('bruteForceSolve easy', () {
+    test('bruteForceSolve', () {
       testSolve(puzzles_easy50[0], solver.bruteForceSolve);
-    });
-
-    test('bruteForceSolve hard', () {
       testSolve(puzzles_hardest11[7], solver.bruteForceSolve);
     });
 
-    test('humanSolve easy', () {
+    test('humanSolve', () {
       testSolve(puzzles_easy50[0], solver.humanSolve);
+      testSolve(puzzles_hardest11[7], solver.humanSolve);
     });
 
-    test('humanSolve hard', () {
-      testSolve(puzzles_hardest11[7], solver.humanSolve);
+    test('humanSolveThenBruteforce', () {
+      testSolve(puzzles_easy50[0], solver.humanSolveThenBruteforce);
+      testSolve(puzzles_hardest11[7], solver.humanSolveThenBruteforce);
+    });
+
+    test('humanSequenceSolve', () {
+      testSolve(puzzles_easy50[0], solver.humanSequenceSolve);
+      testSolve(puzzles_hardest11[7], solver.humanSequenceSolve);
     });
 
   });

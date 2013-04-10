@@ -1,0 +1,509 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Board class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Board">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Board.html">Board</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>Board</strong></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Board</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>This class represents a 9x9 <a class="crossref" href="../sudoku/Cell.html">Cell</a> Sudoku board.</p>
+<pre class="source">
+class Board {
+ static const int GRID_SIZE = 9;
+ static const int BOX_SIZE = 3;
+ static const int CELL_COUNT = GRID_SIZE * GRID_SIZE;
+
+ static int indexAtGridCoordinates(int row, int column) {
+   return row * GRID_SIZE + column;
+ }
+
+ static bool gridCoordinatesInBounds(int row, int column) {
+   return [row, column].every((coord)
+       =&gt; (coord &gt;= 0 &amp;&amp; coord &lt; GRID_SIZE));
+ }
+
+ List&lt;int&gt; _puzzle = new List.filled(CELL_COUNT, 0);
+
+ /**
+  * The puzzle that was last set on the board.
+  */
+ List&lt;int&gt; get puzzle =&gt; _puzzle.toList();
+
+ set puzzle(List&lt;int&gt; puzzle) {
+   if(puzzle.length != CELL_COUNT)
+     throw new ArgumentError("Puzzle must have length ${CELL_COUNT}, but was ${puzzle.length}.");
+
+   _puzzle = puzzle.toList();
+   cellValues = puzzle.toList();
+
+   //Mark cells with values as "fixed" to indicate that they are part of the original puzzle.
+   for(var cell in _cells) {
+     cell._isValueFixed = cell.hasValue;
+   }
+ }
+
+ /**
+  * The current cell values of the board.
+  */
+ List&lt;int&gt; cellValues = new List.filled(CELL_COUNT, 0);
+
+ List&lt;Unit&gt; _units = [];
+ List&lt;Unit&gt; get units =&gt; new List.from(_units);
+
+ List&lt;Cell&gt; _cells = [];
+ List&lt;Cell&gt; get cells =&gt; new List.from(_cells);
+
+ Cell getCell(int row, int column) {
+   return _cells[indexAtGridCoordinates(row, column)];
+ }
+
+ List&lt;Cell&gt; get emptyCells =&gt;
+     _cells.where((cell) =&gt; !cell.hasValue).toList();
+
+ List&lt;Cell&gt; get emptyCellsWithOnlyOneAvailableValue =&gt;
+     emptyCells.where((cell) =&gt; cell.availableValues.length == 1).toList();
+
+ List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
+   var sortedList = emptyCells;
+   sortedList.sort((c1, c2) =&gt;
+       CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+   return sortedList;
+ }
+
+ /**
+  * Returns all cells that have no possible value.
+  */
+ List&lt;Cell&gt; get contradictions =&gt;
+     cells.where((cell) =&gt; cell.hasContradiction).toList();
+
+ /**
+  * True if the board contains a cell that has no possible value.
+  */
+ bool get hasContradictions =&gt; cells.any((cell) =&gt; cell.hasContradiction);
+
+ /**
+  * True if there are no empty cells and no contradictions.
+  */
+ bool get isSolved =&gt; emptyCells.isEmpty &amp;&amp; !hasContradictions;
+
+ /**
+  * Constructs a board.
+  *
+  * The process of calculating and storing information about cells and
+  * their relationships is slow and memory intensive. Although the values
+  * of cells change, the relationships between cells do not. Because of this,
+  * the board is designed as a flyweight object. Its only state/context is
+  * the [cellValues] property, which can be changed at any time.
+  */
+ Board() {
+   _initialize();
+ }
+
+ /**
+  * Constructs a board for the given puzzle.
+  */
+ Board.fromPuzzle(List&lt;int&gt; puzzle) {
+   _initialize();
+   this.puzzle = puzzle;
+ }
+
+ void _initialize() {
+   _initializeGrid();
+   _defineRowAndColumnUnits();
+   _defineBoxes();
+ }
+
+ void _initializeGrid() {
+   for(int r = 0; r &lt; GRID_SIZE; r++) {
+     for(int c = 0; c &lt; GRID_SIZE; c++) {
+       _cells.add(new Cell._internal(this, r, c));
+     }
+   }
+ }
+
+ void _defineRowAndColumnUnits() {
+   for(int i = 0; i &lt; GRID_SIZE; i++) {
+
+     var rowUnit = new Unit();
+     _units.add(rowUnit);
+     _traverseCells((cell) {
+       rowUnit.add(cell);
+       cell._rowUnit = rowUnit;
+     }, row: i, columnSpan: GRID_SIZE);
+
+     var columnUnit = new Unit();
+     _units.add(columnUnit);
+     _traverseCells((cell) {
+       columnUnit.add(cell);
+       cell._columnUnit = columnUnit;
+     }, column: i, rowSpan: GRID_SIZE);
+
+   }
+ }
+
+ void _defineBoxes() {
+   var grayBox = false;
+   for(int r = 0; r &lt; GRID_SIZE; r+= BOX_SIZE) {
+     for(int c = 0; c &lt; GRID_SIZE; c+= BOX_SIZE) {
+       var boxUnit = new Unit();
+       _units.add(boxUnit);
+       if(grayBox) {
+         boxUnit.cssClass = CSS.GRAY_BOX_UNIT;
+       }
+       grayBox = !grayBox;
+       _traverseCells((cell) {
+         boxUnit.add(cell);
+         cell._boxUnit = boxUnit;
+       }, row: r, column: c, rowSpan: BOX_SIZE, columnSpan: BOX_SIZE);
+     }
+   }
+ }
+
+ /**
+  * Executes the given [cellFunc] for the given area of the board.
+  */
+ void _traverseCells(void cellFunc(Cell cell), {int row: 0, int column: 0, int rowSpan: 1, int columnSpan: 1}) {
+   for(int r = row; r &lt; row + rowSpan; r++) {
+     for(int c = column; c &lt; column + columnSpan; c++) {
+       cellFunc(getCell(r, c));
+     }
+   }
+ }
+
+ void clearPuzzle() {
+   cellValues = puzzle;
+ }
+
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="BOX_SIZE">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>BOX_SIZE</strong> <a class="anchor-link"
+            href="#BOX_SIZE"
+            title="Permalink to Board.BOX_SIZE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int BOX_SIZE = 3
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="CELL_COUNT">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>CELL_COUNT</strong> <a class="anchor-link"
+            href="#CELL_COUNT"
+            title="Permalink to Board.CELL_COUNT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int CELL_COUNT = GRID_SIZE * GRID_SIZE
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="GRID_SIZE">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>GRID_SIZE</strong> <a class="anchor-link"
+            href="#GRID_SIZE"
+            title="Permalink to Board.GRID_SIZE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int GRID_SIZE = 9
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="indexAtGridCoordinates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>indexAtGridCoordinates</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#indexAtGridCoordinates"
+              title="Permalink to Board.indexAtGridCoordinates">#</a></h4>
+<div class="doc">
+<pre class="source">
+static int indexAtGridCoordinates(int row, int column) {
+ return row * GRID_SIZE + column;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="gridCoordinatesInBounds">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>gridCoordinatesInBounds</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#gridCoordinatesInBounds"
+              title="Permalink to Board.gridCoordinatesInBounds">#</a></h4>
+<div class="doc">
+<pre class="source">
+static bool gridCoordinatesInBounds(int row, int column) {
+ return [row, column].every((coord)
+     =&gt; (coord &gt;= 0 &amp;&amp; coord &lt; GRID_SIZE));
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Board">
+<button class="show-code">Code</button>
+new <strong>Board</strong>() <a class="anchor-link" href="#Board"
+              title="Permalink to Board.Board">#</a></h4>
+<div class="doc">
+<p>Constructs a board.</p>
+<p>The process of calculating and storing information about cells and
+their relationships is slow and memory intensive. Although the values
+of cells change, the relationships between cells do not. Because of this,
+the board is designed as a flyweight object. Its only state/context is
+the <a class="crossref" href="../sudoku/Board.html#cellValues">cellValues</a> property, which can be changed at any time.</p>
+<pre class="source">
+Board() {
+ _initialize();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Board.fromPuzzle">
+<button class="show-code">Code</button>
+new <strong>Board.fromPuzzle</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt; puzzle) <a class="anchor-link" href="#Board.fromPuzzle"
+              title="Permalink to Board.Board.fromPuzzle">#</a></h4>
+<div class="doc">
+<p>Constructs a board for the given puzzle.</p>
+<pre class="source">
+Board.fromPuzzle(List&lt;int&gt; puzzle) {
+ _initialize();
+ this.puzzle = puzzle;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="cells">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>cells</strong> <a class="anchor-link"
+            href="#cells"
+            title="Permalink to Board.cells">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get cells =&gt; new List.from(_cells);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="cellValues">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>cellValues</strong> <a class="anchor-link"
+            href="#cellValues"
+            title="Permalink to Board.cellValues">#</a>
+        </h4>
+        <div class="doc">
+<p>The current cell values of the board.</p>
+<pre class="source">
+List&lt;int&gt; cellValues = new List.filled(CELL_COUNT, 0)
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="contradictions">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>contradictions</strong> <a class="anchor-link"
+            href="#contradictions"
+            title="Permalink to Board.contradictions">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns all cells that have no possible value.</p>
+<pre class="source">
+List&lt;Cell&gt; get contradictions =&gt;
+   cells.where((cell) =&gt; cell.hasContradiction).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="emptyCells">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCells</strong> <a class="anchor-link"
+            href="#emptyCells"
+            title="Permalink to Board.emptyCells">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCells =&gt;
+   _cells.where((cell) =&gt; !cell.hasValue).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="emptyCellsSortedByAvailableValuesAscending">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsSortedByAvailableValuesAscending</strong> <a class="anchor-link"
+            href="#emptyCellsSortedByAvailableValuesAscending"
+            title="Permalink to Board.emptyCellsSortedByAvailableValuesAscending">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
+ var sortedList = emptyCells;
+ sortedList.sort((c1, c2) =&gt;
+     CollectionUtils.compareAscending(c1.availableValues.length, c2.availableValues.length));
+ return sortedList;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="emptyCellsWithOnlyOneAvailableValue">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsWithOnlyOneAvailableValue</strong> <a class="anchor-link"
+            href="#emptyCellsWithOnlyOneAvailableValue"
+            title="Permalink to Board.emptyCellsWithOnlyOneAvailableValue">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get emptyCellsWithOnlyOneAvailableValue =&gt;
+   emptyCells.where((cell) =&gt; cell.availableValues.length == 1).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasContradictions">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>hasContradictions</strong> <a class="anchor-link"
+            href="#hasContradictions"
+            title="Permalink to Board.hasContradictions">#</a>
+        </h4>
+        <div class="doc">
+<p>True if the board contains a cell that has no possible value.</p>
+<pre class="source">
+bool get hasContradictions =&gt; cells.any((cell) =&gt; cell.hasContradiction);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isSolved">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSolved</strong> <a class="anchor-link"
+            href="#isSolved"
+            title="Permalink to Board.isSolved">#</a>
+        </h4>
+        <div class="doc">
+<p>True if there are no empty cells and no contradictions.</p>
+<pre class="source">
+bool get isSolved =&gt; emptyCells.isEmpty &amp;&amp; !hasContradictions;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="puzzle">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>puzzle</strong> <a class="anchor-link"
+            href="#puzzle"
+            title="Permalink to Board.puzzle">#</a>
+        </h4>
+        <div class="doc">
+<p>The puzzle that was last set on the board.</p>
+<pre class="source">
+List&lt;int&gt; get puzzle =&gt; _puzzle.toList();
+</pre>
+<pre class="source">
+set puzzle(List&lt;int&gt; puzzle) {
+ if(puzzle.length != CELL_COUNT)
+   throw new ArgumentError("Puzzle must have length ${CELL_COUNT}, but was ${puzzle.length}.");
+
+ _puzzle = puzzle.toList();
+ cellValues = puzzle.toList();
+
+ //Mark cells with values as "fixed" to indicate that they are part of the original puzzle.
+ for(var cell in _cells) {
+   cell._isValueFixed = cell.hasValue;
+ }
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="units">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Unit.html">Unit</a>&gt;         <strong>units</strong> <a class="anchor-link"
+            href="#units"
+            title="Permalink to Board.units">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Unit&gt; get units =&gt; new List.from(_units);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="clearPuzzle">
+<button class="show-code">Code</button>
+void <strong>clearPuzzle</strong>() <a class="anchor-link" href="#clearPuzzle"
+              title="Permalink to Board.clearPuzzle">#</a></h4>
+<div class="doc">
+<pre class="source">
+void clearPuzzle() {
+ cellValues = puzzle;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="getCell">
+<button class="show-code">Code</button>
+<a href="../sudoku/Cell.html">Cell</a> <strong>getCell</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> row, <a href="http://api.dartlang.org/dart_core/int.html">int</a> column) <a class="anchor-link" href="#getCell"
+              title="Permalink to Board.getCell">#</a></h4>
+<div class="doc">
+<pre class="source">
+Cell getCell(int row, int column) {
+ return _cells[indexAtGridCoordinates(row, column)];
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-10 09:04:05.480</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
