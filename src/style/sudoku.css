@@ -67,6 +67,10 @@ p {
   background-color: lightgray;
 }
 
+.selected-cell {
+  outline: 2px auto -webkit-focus-ring-color;
+}
+
 .fixed-value-cell {
   font-weight:bolder;
   font-size: 115%;
@@ -87,4 +91,38 @@ p {
 
 .contradiction-cell {
   background-color: lightcoral;
+}
+
+.key-legend, .cell-legend {
+
+}
+
+.legend-item {
+  height: 35px;
+}
+
+.legend-value {
+  width: 10%;
+  float: left;
+  text-align: right;
+}
+
+.legend-key {
+  font-weight: bold;
+}
+
+.legend-description {
+  width: 85%;
+  margin-left: 10px;
+  float: left;
+  vertical-align: middle;
+}
+
+.legend-cell {
+  display: table-cell;
+  vertical-align: middle;
+  border: 1px solid black;
+  width: 25px;
+  height: 25px;
+  text-align: center;
 }

@@ -35,6 +35,56 @@
       <input id="solve-puzzle-btn" type="button" value="Solve">
     </div>
 
+    <br />
+
+    <div id="legend">
+      <h3>Legend</h3>
+
+      <fieldset>
+        <legend>Keys:</legend>
+        <div id="key-legend">
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-key">1-9</div></div>
+            <div class="legend-description">Set cell value</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-key">0</div></div>
+            <div class="legend-description">Delete cell value (player added only)</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-key">Shift</div></div>
+            <div class="legend-description">Magnify row, column, and box values</div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Cells:</legend>
+        <div id="cell-legend">
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell">2</div></div>
+            <div class="legend-description">Normal cell with value</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell fixed-value-cell">2</div></div>
+            <div class="legend-description">Fixed value cell</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell selected-cell"></div></div>
+            <div class="legend-description">Currently selected cell</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell contradiction-cell"></div></div>
+            <div class="legend-description">Cell with contradiction</div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell contradiction-source-cell"></div></div>
+            <div class="legend-description">Cell that is likely source of contradictions</div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
     <div id="debug">
       <h3>Debug Info</h3>
       <textarea id="debug-output" readonly></textarea>

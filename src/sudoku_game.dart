@@ -161,13 +161,15 @@ class SudokuGame {
   }
 
   Future solvePuzzle() {
+    _solvedBoard.puzzle = gameBoard.puzzle;
     // Runs async
-    return new Future.of(() {
-      _solvedBoard.puzzle = gameBoard.puzzle;
+    Future future = new Future.of(() {
       _solver.bruteForceSolve();
+    }).then((unused) {
       gameBoard.cellValues = _solvedBoard.cellValues;
       _boardUI.update();
     });
+    return future;
   }
 
 }
