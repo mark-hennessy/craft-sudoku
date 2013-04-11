@@ -31,8 +31,15 @@
     <div id="puzzle-container"></div>
 
     <div id="puzzle-control">
-      <input id="clear-puzzle-btn" type="button" value="Clear">
-      <input id="solve-puzzle-btn" type="button" value="Solve">
+      <input id="hint-one-btn" type="button" value="Hint 1">
+      <input id="hint-easy-btn" type="button" value="Hint Easy">
+      <input id="clear-hints-btn" type="button" value="Clear Hints">
+      <br />
+      <input id="solve-one-btn" type="button" value="Solve 1">
+      <input id="solve-puzzle-btn" type="button" value="Solve Puzzle">
+      <br />
+      <br />
+      <input id="clear-puzzle-btn" type="button" value="Clear Puzzle">
     </div>
 
     <br />
@@ -63,23 +70,27 @@
         <div id="cell-legend">
           <div class="legend-item">
             <div class="legend-value"><div class="legend-cell">2</div></div>
-            <div class="legend-description">Normal cell with value</div>
+            <div class="legend-description">Normal</div>
           </div>
           <div class="legend-item">
             <div class="legend-value"><div class="legend-cell fixed-value-cell">2</div></div>
-            <div class="legend-description">Fixed value cell</div>
+            <div class="legend-description">Fixed value</div>
           </div>
           <div class="legend-item">
             <div class="legend-value"><div class="legend-cell selected-cell"></div></div>
-            <div class="legend-description">Currently selected cell</div>
+            <div class="legend-description">Currently selected</div>
+          </div>
+           <div class="legend-item">
+            <div class="legend-value"><div class="legend-cell hint-cell"></div></div>
+            <div class="legend-description">Hint</div>
           </div>
           <div class="legend-item">
             <div class="legend-value"><div class="legend-cell contradiction-cell"></div></div>
-            <div class="legend-description">Cell with contradiction</div>
+            <div class="legend-description">Contradiction</div>
           </div>
           <div class="legend-item">
             <div class="legend-value"><div class="legend-cell contradiction-source-cell"></div></div>
-            <div class="legend-description">Cell that is likely source of contradictions</div>
+            <div class="legend-description">Likely source of contradiction</div>
           </div>
         </div>
       </fieldset>

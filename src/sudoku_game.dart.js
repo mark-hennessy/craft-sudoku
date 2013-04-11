@@ -85,22 +85,22 @@ $$.ListIterable = {"": "Iterable;",
   }
 };
 
-$$.ListIterator = {"": "Object;_iterable,_liblib$_length,_index,_liblib$_current",
+$$.ListIterator = {"": "Object;_iterable,_length,_index,_current",
   get$current: function() {
-    return this._liblib$_current;
+    return this._current;
   },
   moveNext$0: function() {
     var t1, t2, t3;
-    t1 = this._liblib$_length;
+    t1 = this._length;
     t2 = this._iterable;
     if ($.$eq(t1, $.get$length$asx(t2)) !== true)
       throw $.$$throw($.ConcurrentModificationError$(t2));
     t3 = this._index;
     if (t3 === t1) {
-      this._liblib$_current = null;
+      this._current = null;
       return false;
     }
-    this._liblib$_current = $.elementAt$1$ax(t2, t3);
+    this._current = $.elementAt$1$ax(t2, t3);
     this._index = this._index + 1;
     return true;
   }
@@ -124,21 +124,21 @@ $$.MappedIterable = {"": "Iterable;_iterable,_f",
   }
 };
 
-$$.MappedIterator = {"": "Iterator;_liblib$_current,_iterator,_f",
+$$.MappedIterator = {"": "Iterator;_current,_iterator,_f",
   _f$1: function(arg0) {
     return this._f.call$1(arg0);
   },
   moveNext$0: function() {
     var t1 = this._iterator;
     if (t1.moveNext$0()) {
-      this._liblib$_current = this._f$1(t1.get$current());
+      this._current = this._f$1(t1.get$current());
       return true;
     }
-    this._liblib$_current = null;
+    this._current = null;
     return false;
   },
   get$current: function() {
-    return this._liblib$_current;
+    return this._current;
   }
 };
 
@@ -1254,6 +1254,11 @@ $$.JSArray = {"": "Interceptor;",
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.$$throw($.StateError$("No elements"));
+  },
   get$last: function(receiver) {
     var t1 = receiver.length;
     if (t1 > 0)
@@ -1266,6 +1271,17 @@ $$.JSArray = {"": "Interceptor;",
   },
   every$1: function(receiver, f) {
     return $.IterableMixinWorkaround_every(receiver, f);
+  },
+  sort$1: function(receiver, compare) {
+    var t1;
+    $.checkMutable(receiver, "sort");
+    if (compare == null)
+      compare = $.Comparable_compare;
+    t1 = receiver.length - 1;
+    if (t1 - 0 <= 32)
+      $.Sort_insertionSort_(receiver, 0, t1, compare);
+    else
+      $.Sort__dualPivotQuicksort(receiver, 0, t1, compare);
   },
   contains$1: function(receiver, other) {
     var t1, i;
@@ -1404,6 +1420,34 @@ $$.CastErrorImplementation = {"": "Object;message",
 };
 
 $$.JSNumber = {"": "Interceptor;",
+  compareTo$1: function(receiver, b) {
+    var bIsNegative;
+    if (!(typeof b === "number"))
+      throw $.$$throw($.ArgumentError$(b));
+    if (receiver < b)
+      return -1;
+    else if (receiver > b)
+      return 1;
+    else if (receiver === b) {
+      if (receiver === 0) {
+        bIsNegative = this.get$isNegative(b);
+        if (this.get$isNegative(receiver) === bIsNegative)
+          return 0;
+        if (this.get$isNegative(receiver))
+          return -1;
+        return 1;
+      }
+      return 0;
+    } else if (this.get$isNaN(receiver)) {
+      if (this.get$isNaN(b))
+        return 0;
+      return 1;
+    } else
+      return -1;
+  },
+  get$isNegative: function(receiver) {
+    return receiver === 0 ? 1 / receiver < 0 : receiver < 0;
+  },
   get$isNaN: function(receiver) {
     return isNaN(receiver);
   },
@@ -1597,6 +1641,16 @@ $$.JSString = {"": "Interceptor;",
   get$isEmpty: function(receiver) {
     return receiver.length === 0;
   },
+  compareTo$1: function(receiver, other) {
+    var t1;
+    if (!(typeof other === "string"))
+      throw $.$$throw($.ArgumentError$(other));
+    if (receiver === other)
+      t1 = 0;
+    else
+      t1 = receiver < other ? -1 : 1;
+    return t1;
+  },
   toString$0: function(receiver) {
     return receiver;
   },
@@ -1635,7 +1689,7 @@ $$._Random = {"": "Object;",
   }
 };
 
-$$.MetaInfo = {"": "Object;_tag<,_tags,_liblib5$_set<"};
+$$.MetaInfo = {"": "Object;_tag<,_tags,_liblib4$_set<"};
 
 $$.StringMatch = {"": "Object;start,str,pattern",
   $index: function(_, g) {
@@ -1889,9 +1943,6 @@ $$._FutureImpl = {"": "Object;_state@,_resultOrListeners<",
   },
   _asListener$0: function() {
     return $._FutureListenerWrapper$(this);
-  },
-  _FutureImpl$immediateError$2: function(error, stackTrace) {
-    this._setError$1(typeof error === "object" && error !== null && !!$.getInterceptor(error).$isAsyncError ? error : $.AsyncError$(error, stackTrace));
   },
   _FutureImpl$immediate$1: function(value) {
     this._state = 1;
@@ -3748,6 +3799,9 @@ $$.Duration = {"": "Object;_duration<",
   get$hashCode: function(_) {
     return $.JSNumber_methods.get$hashCode(this._duration);
   },
+  compareTo$1: function(_, other) {
+    return $.JSNumber_methods.compareTo$1(this._duration, other.get$_duration());
+  },
   toString$0: function(_) {
     var t1, t2, twoDigitMinutes, twoDigitSeconds, sixDigitUs;
     t1 = new $.Duration_toString_sixDigits();
@@ -3974,14 +4028,14 @@ $$.Runes = {"": "Iterable;string",
   }
 };
 
-$$.RuneIterator = {"": "Object;string,_liblib4$_position,_nextPosition,_currentCodePoint",
+$$.RuneIterator = {"": "Object;string,_liblib3$_position,_nextPosition,_currentCodePoint",
   get$current: function() {
     return this._currentCodePoint;
   },
   moveNext$0: function() {
     var t1, t3, t4, codeUnit, nextPosition, nextCodeUnit;
-    this._liblib4$_position = this._nextPosition;
-    t1 = this._liblib4$_position;
+    this._liblib3$_position = this._nextPosition;
+    t1 = this._liblib3$_position;
     if (typeof t1 !== "number")
       return this.moveNext$0$bailout(1, t1);
     t3 = this.string;
@@ -3991,7 +4045,7 @@ $$.RuneIterator = {"": "Object;string,_liblib4$_position,_nextPosition,_currentC
       return false;
     }
     codeUnit = $.JSString_methods.codeUnitAt$1(t3, t1);
-    t1 = this._liblib4$_position;
+    t1 = this._liblib3$_position;
     if (typeof t1 !== "number")
       return this.moveNext$0$bailout(2, t1, t3, t4, codeUnit);
     nextPosition = t1 + 1;
@@ -4010,8 +4064,8 @@ $$.RuneIterator = {"": "Object;string,_liblib4$_position,_nextPosition,_currentC
   moveNext$0$bailout: function(state0, t1, t3, t4, codeUnit) {
     switch (state0) {
       case 0:
-        this._liblib4$_position = this._nextPosition;
-        t1 = this._liblib4$_position;
+        this._liblib3$_position = this._nextPosition;
+        t1 = this._liblib3$_position;
       case 1:
         state0 = 0;
         t3 = this.string;
@@ -4020,8 +4074,8 @@ $$.RuneIterator = {"": "Object;string,_liblib4$_position,_nextPosition,_currentC
           this._currentCodePoint = null;
           return false;
         }
-        codeUnit = $.JSString_methods.codeUnitAt$1(t3, this._liblib4$_position);
-        t1 = this._liblib4$_position;
+        codeUnit = $.JSString_methods.codeUnitAt$1(t3, this._liblib3$_position);
+        t1 = this._liblib3$_position;
       case 2:
         var nextPosition, nextCodeUnit;
         state0 = 0;
@@ -4294,10 +4348,10 @@ $$._FrozenElementList = {"": "Object;_nodeList",
   }
 };
 
-$$._FrozenElementListIterator = {"": "Object;_list,_liblib2$_index,_current",
+$$._FrozenElementListIterator = {"": "Object;_list,_liblib$_index,_liblib$_current",
   moveNext$0: function() {
     var t1, nextIndex, t2;
-    t1 = this._liblib2$_index;
+    t1 = this._liblib$_index;
     if (typeof t1 !== "number")
       return this.moveNext$0$bailout(1, t1);
     nextIndex = t1 + 1;
@@ -4306,18 +4360,18 @@ $$._FrozenElementListIterator = {"": "Object;_list,_liblib2$_index,_current",
     if (typeof t2 !== "number")
       return this.moveNext$0$bailout(2, t1, t2, nextIndex);
     if (nextIndex < t2) {
-      this._current = t1.$index(t1, nextIndex);
-      this._liblib2$_index = nextIndex;
+      this._liblib$_current = t1.$index(t1, nextIndex);
+      this._liblib$_index = nextIndex;
       return true;
     }
-    this._liblib2$_index = t1.get$length(t1);
-    this._current = null;
+    this._liblib$_index = t1.get$length(t1);
+    this._liblib$_current = null;
     return false;
   },
   moveNext$0$bailout: function(state0, t1, t2, nextIndex) {
     switch (state0) {
       case 0:
-        t1 = this._liblib2$_index;
+        t1 = this._liblib$_index;
       case 1:
         state0 = 0;
         nextIndex = $.$add$ns(t1, 1);
@@ -4326,17 +4380,17 @@ $$._FrozenElementListIterator = {"": "Object;_list,_liblib2$_index,_current",
       case 2:
         state0 = 0;
         if ($.$lt$n(nextIndex, t2)) {
-          this._current = t1.$index(t1, nextIndex);
-          this._liblib2$_index = nextIndex;
+          this._liblib$_current = t1.$index(t1, nextIndex);
+          this._liblib$_index = nextIndex;
           return true;
         }
-        this._liblib2$_index = t1.get$length(t1);
-        this._current = null;
+        this._liblib$_index = t1.get$length(t1);
+        this._liblib$_current = null;
         return false;
     }
   },
   get$current: function() {
-    return this._current;
+    return this._liblib$_current;
   }
 };
 
@@ -4747,46 +4801,46 @@ $$._WrappedList = {"": "Object;_list",
   }
 };
 
-$$._WrappedIterator = {"": "Object;_liblib2$_iterator",
+$$._WrappedIterator = {"": "Object;_liblib$_iterator",
   moveNext$0: function() {
-    return this._liblib2$_iterator.moveNext$0();
+    return this._liblib$_iterator.moveNext$0();
   },
   get$current: function() {
-    return this._liblib2$_iterator.get$current();
+    return this._liblib$_iterator.get$current();
   }
 };
 
-$$.FixedSizeListIterator = {"": "Object;_array,_length,_position,_current",
+$$.FixedSizeListIterator = {"": "Object;_array,_liblib$_length,_position,_liblib$_current",
   moveNext$0: function() {
     var t1, nextPosition;
     t1 = this._position;
     if (typeof t1 !== "number")
       return this.moveNext$0$bailout(1, t1);
     nextPosition = t1 + 1;
-    t1 = this._length;
+    t1 = this._liblib$_length;
     if (nextPosition < t1) {
-      this._current = $.$index$asx(this._array, nextPosition);
+      this._liblib$_current = $.$index$asx(this._array, nextPosition);
       this._position = nextPosition;
       return true;
     }
-    this._current = null;
+    this._liblib$_current = null;
     this._position = t1;
     return false;
   },
   moveNext$0$bailout: function(state0, t1) {
     var nextPosition = $.$add$ns(t1, 1);
-    t1 = this._length;
+    t1 = this._liblib$_length;
     if ($.$lt$n(nextPosition, t1)) {
-      this._current = $.$index$asx(this._array, nextPosition);
+      this._liblib$_current = $.$index$asx(this._array, nextPosition);
       this._position = nextPosition;
       return true;
     }
-    this._current = null;
+    this._liblib$_current = null;
     this._position = t1;
     return false;
   },
   get$current: function() {
-    return this._current;
+    return this._liblib$_current;
   }
 };
 
@@ -4907,10 +4961,10 @@ $$.FilteredElementList__filtered_anon = {"": "Closure;",
   }
 };
 
-$$._AttributeClassSet = {"": "CssClassSet;_liblib3$_element",
+$$._AttributeClassSet = {"": "CssClassSet;_liblib2$_element",
   readClasses$0: function() {
     var t1, classname, s, trimmed;
-    t1 = $.get$attributes$x(this._liblib3$_element);
+    t1 = $.get$attributes$x(this._liblib2$_element);
     classname = t1.$index(t1, "class");
     s = $.LinkedHashSet$();
     if (classname == null)
@@ -4923,7 +4977,7 @@ $$._AttributeClassSet = {"": "CssClassSet;_liblib3$_element",
     return s;
   },
   writeClasses$1: function(s) {
-    var t1 = $.get$attributes$x(this._liblib3$_element);
+    var t1 = $.get$attributes$x(this._liblib2$_element);
     t1.$indexSet(t1, "class", s.join$1(s, " "));
   }
 };
@@ -4963,6 +5017,19 @@ $$.Board = {"": "Object;_puzzle,cellValues,_units,_cells",
     if (t2 < 0 || t2 >= t1.length)
       throw $.ioore(t2);
     return t1[t2];
+  },
+  get$emptyCells: function(_) {
+    var t1 = $.JSArray_methods.where$1(this._cells, new $.Board_emptyCells_anon());
+    return t1.toList$0(t1);
+  },
+  get$emptyCellsWithOneAvailableValue: function() {
+    var t1 = $.JSArray_methods.where$1(this.get$emptyCells(this), new $.Board_emptyCellsWithOneAvailableValue_anon());
+    return t1.toList$0(t1);
+  },
+  get$emptyCellsSortedByAvailableValuesAscending: function() {
+    var sortedList = this.get$emptyCells(this);
+    $.JSArray_methods.sort$1(sortedList, new $.Board_emptyCellsSortedByAvailableValuesAscending_anon());
+    return sortedList;
   },
   _initialize$0: function() {
     this._initializeGrid$0();
@@ -5064,6 +5131,24 @@ $$.Board_gridCoordinatesInBounds_anon = {"": "Closure;",
   call$1: function(coord) {
     var t1 = $.getInterceptor$n(coord);
     return t1.$ge(coord, 0) && t1.$lt(coord, 9);
+  }
+};
+
+$$.Board_emptyCells_anon = {"": "Closure;",
+  call$1: function(cell) {
+    return !cell.get$hasValue();
+  }
+};
+
+$$.Board_emptyCellsWithOneAvailableValue_anon = {"": "Closure;",
+  call$1: function(cell) {
+    return cell.get$availableValues().length === 1;
+  }
+};
+
+$$.Board_emptyCellsSortedByAvailableValuesAscending_anon = {"": "Closure;",
+  call$2: function(c1, c2) {
+    return $.CollectionUtils_compareAscending(c1.get$availableValues().length, c2.get$availableValues().length);
   }
 };
 
@@ -5225,7 +5310,7 @@ $$.Cell_hasContradiction_anon0 = {"": "Closure;",
   }
 };
 
-$$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyboard<,_isRendered,_temporaryCellStyles<",
+$$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyboard<,_isRendered,_temporaryCellStyles",
   get$titleElement: function() {
     return this._titleElement;
   },
@@ -5233,16 +5318,24 @@ $$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyb
     var t1 = this._cellElementMap.get$keys();
     return t1.toList$0(t1);
   },
+  get$cellElements: function() {
+    var t1 = this._cellElementMap;
+    t1 = t1.get$values(t1);
+    return t1.toList$0(t1);
+  },
   get$isRendered: function() {
     return this._isRendered;
   },
-  update$1: function(puzzleTitle) {
+  update$0: function() {
     var t1, t2, t3, t4, cellElement, t5, t6;
     t1 = this.get$isRendered();
     t2 = this.boardTitle;
     if (t1) {
-      t1 = this.get$titleElement();
-      t1.textContent = t2 != null ? t2 : "";
+      t1 = t2 != null;
+      if (t1) {
+        t3 = this.get$titleElement();
+        t3.textContent = t1 ? t2 : "";
+      }
       for (t1 = $.JSArray_methods.get$iterator(this.get$cells(this)), t2 = this._temporaryCellStyles; t1.moveNext$0();) {
         t3 = t1.get$current();
         t4 = this._cellElementMap;
@@ -5260,10 +5353,7 @@ $$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyb
     } else
       this.render$1(t2);
   },
-  update$0: function() {
-    return this.update$1(null);
-  },
-  render$1: function(puzzleTitle) {
+  render$1: function(title) {
     var elements, t1, t2, t3, t4, cellElement, t5, t6;
     elements = $.List_List($);
     this._titleElement = document.createElement("h3");
@@ -5271,8 +5361,11 @@ $$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyb
     elements.push(this.constructGrid$0());
     this._addGridElementsToDom$1(elements);
     this._isRendered = true;
-    t1 = this.get$titleElement();
-    t1.textContent = puzzleTitle != null ? puzzleTitle : "";
+    t1 = title != null;
+    if (t1) {
+      t2 = this.get$titleElement();
+      t2.textContent = t1 ? title : "";
+    }
     for (t1 = $.JSArray_methods.get$iterator(this.get$cells(this)), t2 = this._temporaryCellStyles; t1.moveNext$0();) {
       t3 = t1.get$current();
       t4 = this._cellElementMap;
@@ -5356,16 +5449,6 @@ $$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyb
     t1.get$onMouseOut(cellElement).listen$1(new $.BoardUI__initializeUserInput_anon0(this, cellElement));
     t1.get$onKeyDown(cellElement).listen$1(new $.BoardUI__initializeUserInput_anon1(this, cell));
   },
-  _setTemporaryCellStyle$2: function(cell, recentlyChanged) {
-    var t1, cellElement, contradictionStyle;
-    t1 = this._cellElementMap;
-    cellElement = t1.$index(t1, cell);
-    if (cell.get$hasContradiction()) {
-      contradictionStyle = recentlyChanged === true ? "contradiction-source-cell" : "contradiction-cell";
-      t1 = $.get$classes$x(cellElement);
-      t1.add$1(t1, contradictionStyle);
-    }
-  },
   _moveToNextCell$2: function(cell, e) {
     var row, column, t1, nextCell, t2, t3;
     row = cell.get$row();
@@ -5403,6 +5486,53 @@ $$.BoardUI = {"": "Object;_board,boardTitle,_titleElement,_cellElementMap<,_keyb
     t3.get$onKeyDown(t2).listen$1(new $.BoardUI__initializePeerHighlighting_anon1(t1));
     t3.get$onKeyUp(t2).listen$1(new $.BoardUI__initializePeerHighlighting_anon2(this, t1));
   },
+  updateCellValue$2: function(cell, value) {
+    var t1, t2, t3, t4, cellElement, t5, t6, t7;
+    if ($.JSArray_methods.get$isEmpty(this.get$cellElements()))
+      throw $.$$throw("The board UI must be rendered or updated before updating specific cell values.");
+    t1 = $.getInterceptor$x(cell);
+    t1.set$value(cell, value);
+    t2 = this._cellElementMap;
+    t2 = t2.$index(t2, cell);
+    $.set$text$x(t2, cell.get$hasValue() ? $.toString$0(t1.get$value(cell)) : "");
+    for (t1 = $.JSArray_methods.get$iterator(this.get$cells(this)), t2 = this._temporaryCellStyles; t1.moveNext$0();) {
+      t3 = t1.get$current();
+      t4 = this._cellElementMap;
+      cellElement = t4.$index(t4, t3);
+      for (t4 = $.JSArray_methods.get$iterator(t2), t5 = $.getInterceptor$x(cellElement); t4.moveNext$0();) {
+        t6 = t4.get$current();
+        t7 = t5.get$classes(cellElement);
+        t7.remove$1(t7, t6);
+      }
+      this._setTemporaryCellStyle$2(t3, $.$eq(t3, cell));
+    }
+  },
+  clearHints$0: function() {
+    var t1, t2;
+    for (t1 = $.JSArray_methods.get$iterator(this.get$cellElements()); t1.moveNext$0();) {
+      t2 = $.get$classes$x(t1.get$current());
+      t2.remove$1(t2, "hint-cell");
+    }
+  },
+  _setTemporaryCellStyle$2: function(cell, recentlyChanged) {
+    var t1, cellElement, contradictionStyle;
+    t1 = this._cellElementMap;
+    cellElement = t1.$index(t1, cell);
+    if (cell.get$hasContradiction()) {
+      contradictionStyle = recentlyChanged === true ? "contradiction-source-cell" : "contradiction-cell";
+      t1 = $.get$classes$x(cellElement);
+      t1.add$1(t1, contradictionStyle);
+    }
+  },
+  hintCells$1: function(cells) {
+    var t1, t2, t3;
+    for (t1 = $.JSArray_methods.get$iterator(cells); t1.moveNext$0();) {
+      t2 = t1.get$current();
+      t3 = this._cellElementMap;
+      t2 = $.get$classes$x(t3.$index(t3, t2));
+      t2.add$1(t2, "hint-cell");
+    }
+  },
   BoardUI$1: function(board) {
     this._board = board;
     this._cellElementMap = $.Map_Map();
@@ -5434,27 +5564,12 @@ $$.BoardUI__initializeUserInput_anon0 = {"": "Closure;this_2,cellElement_3",
 
 $$.BoardUI__initializeUserInput_anon1 = {"": "Closure;this_4,cell_5",
   call$1: function(e) {
-    var t1, t2, t3, t4, t5, cellElement, t6, t7, t8;
+    var t1, t2, value;
     t1 = $.getInterceptor$x(e);
     if ($.$ge$n(t1.get$keyCode(e), 48) && $.$le$n(t1.get$keyCode(e), 57) && !this.cell_5.get$isValueFixed()) {
       t2 = this.cell_5;
-      t3 = $.getInterceptor$x(t2);
-      t3.set$value(t2, $.Primitives_parseInt($.String_String$fromCharCodes($.List_List$filled(1, t1.get$keyCode(e))), null, null));
-      t1 = this.this_4;
-      t4 = t1.get$_cellElementMap();
-      t4 = t4.$index(t4, t2);
-      $.set$text$x(t4, t2.get$hasValue() ? $.toString$0(t3.get$value(t2)) : "");
-      for (t3 = $.get$iterator$ax($.get$cells$x(t1)); t3.moveNext$0();) {
-        t4 = t3.get$current();
-        t5 = t1.get$_cellElementMap();
-        cellElement = t5.$index(t5, t4);
-        for (t5 = $.JSArray_methods.get$iterator(t1.get$_temporaryCellStyles()), t6 = $.getInterceptor$x(cellElement); t5.moveNext$0();) {
-          t7 = t5.get$current();
-          t8 = t6.get$classes(cellElement);
-          t8.remove$1(t8, t7);
-        }
-        t1._setTemporaryCellStyle$2(t4, $.$eq(t4, t2));
-      }
+      value = $.Primitives_parseInt($.String_String$fromCharCodes($.List_List$filled(1, t1.get$keyCode(e))), null, null);
+      this.this_4.updateCellValue$2(t2, value);
     } else if ($.$ge$n(t1.get$keyCode(e), 37) && $.$le$n(t1.get$keyCode(e), 40))
       this.this_4._moveToNextCell$2(this.cell_5, e);
   }
@@ -5525,7 +5640,7 @@ $$.Parser__parseCellValues_anon = {"": "Closure;",
   }
 };
 
-$$.SudokuGame = {"": "Object;_randomGenerator<,_puzzles,puzzleDifficulty?,_puzzleIndex,_gameBoard,_boardUI<,_solver<,_solvedBoard<",
+$$.SudokuGame = {"": "Object;_puzzles,puzzleDifficulty?,_puzzleIndex,_gameBoard,_boardUI<,_wasSolved?,_solvedBoard,_randomGenerator<",
   get$puzzlesAtDifficulty: function() {
     var t1 = this._puzzles;
     return t1.$index(t1, this.puzzleDifficulty);
@@ -5546,7 +5661,16 @@ $$.SudokuGame = {"": "Object;_randomGenerator<,_puzzles,puzzleDifficulty?,_puzzl
   get$gameBoard: function() {
     return this._gameBoard;
   },
+  get$solvedBoard: function() {
+    if (this._wasSolved !== true) {
+      this._solvedBoard.set$puzzle(this.get$gameBoard().get$puzzle());
+      $.SudokuSolver$(this._solvedBoard).bruteForceSolve$0();
+      this._wasSolved = true;
+    }
+    return this._solvedBoard;
+  },
   run$0: function() {
+    this._wasSolved = false;
     this.get$gameBoard().set$puzzle(this.get$puzzle());
     this._boardUI.boardTitle = this.get$gameTitle();
     this._boardUI.update$0();
@@ -5566,18 +5690,31 @@ $$.SudokuGame = {"": "Object;_randomGenerator<,_puzzles,puzzleDifficulty?,_puzzl
     $.get$onClick$x(document.querySelector("#random-puzzle-btn")).listen$1(new $.SudokuGame__initializePuzzleSelection_anon4(this));
   },
   _initializePuzzleControl$0: function() {
-    $.get$onClick$x(document.querySelector("#clear-puzzle-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon(this));
-    $.get$onClick$x(document.querySelector("#solve-puzzle-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon0(this));
+    $.get$onClick$x(document.querySelector("#hint-one-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon(this));
+    $.get$onClick$x(document.querySelector("#hint-easy-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon0(this));
+    $.get$onClick$x(document.querySelector("#solve-one-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon1(this));
+    $.get$onClick$x(document.querySelector("#solve-puzzle-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon2(this));
+    $.get$onClick$x(document.querySelector("#clear-hints-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon3(this));
+    $.get$onClick$x(document.querySelector("#clear-puzzle-btn")).listen$1(new $.SudokuGame__initializePuzzleControl_anon4(this));
   },
   _initializeDebugInfo$0: function() {
     $.get$onClick$x(document.querySelector("#clear-debug-output-btn")).listen$1(new $.SudokuGame__initializeDebugInfo_anon());
   },
-  solvePuzzle$0: function() {
-    this._solvedBoard.set$puzzle(this.get$gameBoard().get$puzzle());
-    return $.Future_Future$of(new $.SudokuGame_solvePuzzle_anon(this)).then$1(new $.SudokuGame_solvePuzzle_anon0(this));
+  hintOneCell$1$solve: function(solve) {
+    var emptyCells, hintCell, solvedBoardCell;
+    this._boardUI.clearHints$0();
+    emptyCells = this.get$gameBoard().get$emptyCellsSortedByAvailableValuesAscending();
+    if ($.JSArray_methods.get$isEmpty(emptyCells))
+      return;
+    hintCell = $.JSArray_methods.get$first(emptyCells);
+    if (solve) {
+      solvedBoardCell = this.get$solvedBoard().getCell$2(hintCell.get$row(), hintCell.get$column());
+      this._boardUI.updateCellValue$2(hintCell, $.get$value$x(solvedBoardCell));
+    }
+    this._boardUI.hintCells$1([hintCell]);
+    return hintCell;
   },
   SudokuGame$0: function() {
-    this._randomGenerator = $.Random_Random(null);
     this._puzzles = $.Map_Map();
     var t1 = this._puzzles;
     t1.$indexSet(t1, "easy", $.Parser_parseSudokuData("003020600\n900305001\n001806400\n008102900\n700000008\n006708200\n002609500\n800203009\n005010300\n==\n200080300\n060070084\n030500209\n000105408\n000000000\n402706000\n301007040\n720040060\n004010003\n==\n000000907\n000420180\n000705026\n100904000\n050000040\n000507009\n920108000\n034059000\n507000000\n==\n030050040\n008010500\n460000012\n070502080\n000603000\n040109030\n250000098\n001020600\n080060020\n==\n020810740\n700003100\n090002805\n009040087\n400208003\n160030200\n302700060\n005600008\n076051090\n==\n100920000\n524010000\n000000070\n050008102\n000000000\n402700090\n060000000\n000030945\n000071006\n==\n043080250\n600000000\n000001094\n900004070\n000608000\n010200003\n820500000\n000000005\n034090710\n==\n480006902\n002008001\n900370060\n840010200\n003704100\n001060049\n020085007\n700900600\n609200018\n==\n000900002\n050123400\n030000160\n908000000\n070000090\n000000205\n091000050\n007439020\n400007000\n==\n001900003\n900700160\n030005007\n050000009\n004302600\n200000070\n600100030\n042007006\n500006800\n==\n000125400\n008400000\n420800000\n030000095\n060902010\n510000060\n000003049\n000007200\n001298000\n==\n062340750\n100005600\n570000040\n000094800\n400000006\n005830000\n030000091\n006400007\n059083260\n==\n300000000\n005009000\n200504000\n020000700\n160000058\n704310600\n000890100\n000067080\n000005437\n==\n630000000\n000500008\n005674000\n000020000\n003401020\n000000345\n000007004\n080300902\n947100080\n==\n000020040\n008035000\n000070602\n031046970\n200000000\n000501203\n049000730\n000000010\n800004000\n==\n361025900\n080960010\n400000057\n008000471\n000603000\n259000800\n740000005\n020018060\n005470329\n==\n050807020\n600010090\n702540006\n070020301\n504000908\n103080070\n900076205\n060090003\n080103040\n==\n080005000\n000003457\n000070809\n060400903\n007010500\n408007020\n901020000\n842300000\n000100080\n==\n003502900\n000040000\n106000305\n900251008\n070408030\n800763001\n308000104\n000020000\n005104800\n==\n000000000\n009805100\n051907420\n290401065\n000000000\n140508093\n026709580\n005103600\n000000000\n==\n020030090\n000907000\n900208005\n004806500\n607000208\n003102900\n800605007\n000309000\n030020050\n==\n005000006\n070009020\n000500107\n804150000\n000803000\n000092805\n907006000\n030400010\n200000600\n==\n040000050\n001943600\n009000300\n600050002\n103000506\n800020007\n005000200\n002436700\n030000040\n==\n004000000\n000030002\n390700080\n400009001\n209801307\n600200008\n010008053\n900040000\n000000800\n==\n360020089\n000361000\n000000000\n803000602\n400603007\n607000108\n000000000\n000418000\n970030014\n==\n500400060\n009000800\n640020000\n000001008\n208000501\n700500000\n000090084\n003000600\n060003002\n==\n007256400\n400000005\n010030060\n000508000\n008060200\n000107000\n030070090\n200000004\n006312700\n==\n000000000\n079050180\n800000007\n007306800\n450708096\n003502700\n700000005\n016030420\n000000000\n==\n030000080\n009000500\n007509200\n700105008\n020090030\n900402001\n004207100\n002000800\n070000090\n==\n200170603\n050000100\n000006079\n000040700\n000801000\n009050000\n310400000\n005000060\n906037002\n==\n000000080\n800701040\n040020030\n374000900\n000030000\n005000321\n010060050\n050802006\n080000000\n==\n000000085\n000210009\n960080100\n500800016\n000000000\n890006007\n009070052\n300054000\n480000000\n==\n608070502\n050608070\n002000300\n500090006\n040302050\n800050003\n005000200\n010704090\n409060701\n==\n050010040\n107000602\n000905000\n208030501\n040070020\n901080406\n000401000\n304000709\n020060010\n==\n053000790\n009753400\n100000002\n090080010\n000907000\n080030070\n500000003\n007641200\n061000940\n==\n006080300\n049070250\n000405000\n600317004\n007000800\n100826009\n000702000\n075040190\n003090600\n==\n005080700\n700204005\n320000084\n060105040\n008000500\n070803010\n450000091\n600508007\n003010600\n==\n000900800\n128006400\n070800060\n800430007\n500000009\n600079008\n090004010\n003600284\n001007000\n==\n000080000\n270000054\n095000810\n009806400\n020403060\n006905100\n017000620\n460000038\n000090000\n==\n000602000\n400050001\n085010620\n038206710\n000000000\n019407350\n026040530\n900020007\n000809000\n==\n000900002\n050123400\n030000160\n908000000\n070000090\n000000205\n091000050\n007439020\n400007000\n==\n380000000\n000400785\n009020300\n060090000\n800302009\n000040070\n001070500\n495006000\n000000092\n==\n000158000\n002060800\n030000040\n027030510\n000000000\n046080790\n050000080\n004070100\n000325000\n==\n010500200\n900001000\n002008030\n500030007\n008000500\n600080004\n040100700\n000700006\n003004050\n==\n080000040\n000469000\n400000007\n005904600\n070608030\n008502100\n900000005\n000781000\n060000010\n==\n904200007\n010000000\n000706500\n000800090\n020904060\n040002000\n001607000\n000000030\n300005702\n==\n000700800\n006000031\n040002000\n024070000\n010030080\n000060290\n000800070\n860000500\n002006000\n==\n001007090\n590080001\n030000080\n000005800\n050060020\n004100000\n080000030\n100020079\n020700400\n==\n000003017\n015009008\n060000000\n100007000\n009000200\n000500004\n000000020\n500600340\n340200000\n==\n300200000\n000107000\n706030500\n070009080\n900020004\n010800050\n009040301\n000702000\n000008006", "=="));
@@ -5589,8 +5726,9 @@ $$.SudokuGame = {"": "Object;_randomGenerator<,_puzzles,puzzleDifficulty?,_puzzl
     this.set$puzzleIndex(0);
     this._gameBoard = $.Board$();
     this._boardUI = $.BoardUI$(this.get$gameBoard());
+    this._wasSolved = false;
     this._solvedBoard = $.Board$();
-    this._solver = $.SudokuSolver$(this._solvedBoard);
+    this._randomGenerator = $.Random_Random(null);
     this._initializeUI$0();
   }
 };
@@ -5602,6 +5740,7 @@ $$.SudokuGame__initializePuzzleSelection_anon = {"": "Closure;this_0,selectEleme
     t2 = this.this_0;
     t2.set$puzzleDifficulty(t1);
     t2.set$puzzleIndex(0);
+    t2.set$_wasSolved(false);
     t2.get$gameBoard().set$puzzle(t2.get$puzzle());
     t2.get$_boardUI().boardTitle = t2.get$gameTitle();
     t2.get$_boardUI().update$0();
@@ -5612,6 +5751,7 @@ $$.SudokuGame__initializePuzzleSelection_anon0 = {"": "Closure;this_2",
   call$1: function(e) {
     var t1 = this.this_2;
     t1.set$puzzleIndex(0);
+    t1.set$_wasSolved(false);
     t1.get$gameBoard().set$puzzle(t1.get$puzzle());
     t1.get$_boardUI().boardTitle = t1.get$gameTitle();
     t1.get$_boardUI().update$0();
@@ -5623,6 +5763,7 @@ $$.SudokuGame__initializePuzzleSelection_anon1 = {"": "Closure;this_3",
   call$1: function(e) {
     var t1 = this.this_3;
     t1.set$puzzleIndex($.$sub$n(t1.get$puzzleIndex(), 1));
+    t1.set$_wasSolved(false);
     t1.get$gameBoard().set$puzzle(t1.get$puzzle());
     t1.get$_boardUI().boardTitle = t1.get$gameTitle();
     t1.get$_boardUI().update$0();
@@ -5634,6 +5775,7 @@ $$.SudokuGame__initializePuzzleSelection_anon2 = {"": "Closure;this_4",
   call$1: function(e) {
     var t1 = this.this_4;
     t1.set$puzzleIndex($.$add$ns(t1.get$puzzleIndex(), 1));
+    t1.set$_wasSolved(false);
     t1.get$gameBoard().set$puzzle(t1.get$puzzle());
     t1.get$_boardUI().boardTitle = t1.get$gameTitle();
     t1.get$_boardUI().update$0();
@@ -5645,6 +5787,7 @@ $$.SudokuGame__initializePuzzleSelection_anon3 = {"": "Closure;this_5",
   call$1: function(e) {
     var t1 = this.this_5;
     t1.set$puzzleIndex($.$sub$n($.get$length$asx(t1.get$puzzlesAtDifficulty()), 1));
+    t1.set$_wasSolved(false);
     t1.get$gameBoard().set$puzzle(t1.get$puzzle());
     t1.get$_boardUI().boardTitle = t1.get$gameTitle();
     t1.get$_boardUI().update$0();
@@ -5656,6 +5799,7 @@ $$.SudokuGame__initializePuzzleSelection_anon4 = {"": "Closure;this_6",
   call$1: function(e) {
     var t1 = this.this_6;
     t1.set$puzzleIndex(t1.get$_randomGenerator().nextInt$1($.get$length$asx(t1.get$puzzlesAtDifficulty())));
+    t1.set$_wasSolved(false);
     t1.get$gameBoard().set$puzzle(t1.get$puzzle());
     t1.get$_boardUI().boardTitle = t1.get$gameTitle();
     t1.get$_boardUI().update$0();
@@ -5665,16 +5809,52 @@ $$.SudokuGame__initializePuzzleSelection_anon4 = {"": "Closure;this_6",
 
 $$.SudokuGame__initializePuzzleControl_anon = {"": "Closure;this_0",
   call$1: function(e) {
-    var t1 = this.this_0;
-    t1.get$gameBoard().clearPuzzle$0();
-    t1.get$_boardUI().update$0();
-    return;
+    return this.this_0.hintOneCell$1$solve(false);
   }
 };
 
 $$.SudokuGame__initializePuzzleControl_anon0 = {"": "Closure;this_1",
   call$1: function(e) {
-    return this.this_1.solvePuzzle$0();
+    var t1, easyCells, t2, t3;
+    t1 = this.this_1;
+    t1.get$_boardUI().clearHints$0();
+    easyCells = t1.get$gameBoard().get$emptyCellsWithOneAvailableValue();
+    for (t2 = $.JSArray_methods.get$iterator(easyCells); t2.moveNext$0();) {
+      t3 = t2.get$current();
+      t1.get$_boardUI().hintCells$1([t3]);
+    }
+    return easyCells;
+  }
+};
+
+$$.SudokuGame__initializePuzzleControl_anon1 = {"": "Closure;this_2",
+  call$1: function(e) {
+    return this.this_2.hintOneCell$1$solve(true);
+  }
+};
+
+$$.SudokuGame__initializePuzzleControl_anon2 = {"": "Closure;this_3",
+  call$1: function(e) {
+    var t1 = this.this_3;
+    t1.get$gameBoard().cellValues = t1.get$solvedBoard().cellValues;
+    t1.get$_boardUI().update$0();
+    return;
+  }
+};
+
+$$.SudokuGame__initializePuzzleControl_anon3 = {"": "Closure;this_4",
+  call$1: function(e) {
+    this.this_4.get$_boardUI().clearHints$0();
+    return;
+  }
+};
+
+$$.SudokuGame__initializePuzzleControl_anon4 = {"": "Closure;this_5",
+  call$1: function(e) {
+    var t1 = this.this_5;
+    t1.get$gameBoard().clearPuzzle$0();
+    t1.get$_boardUI().update$0();
+    return;
   }
 };
 
@@ -5682,20 +5862,6 @@ $$.SudokuGame__initializeDebugInfo_anon = {"": "Closure;",
   call$1: function(e) {
     document.querySelector("#debug-output").textContent = "";
     return;
-  }
-};
-
-$$.SudokuGame_solvePuzzle_anon = {"": "Closure;this_0",
-  call$0: function() {
-    this.this_0.get$_solver().bruteForceSolve$0();
-  }
-};
-
-$$.SudokuGame_solvePuzzle_anon0 = {"": "Closure;this_1",
-  call$1: function(unused) {
-    var t1 = this.this_1;
-    t1.get$gameBoard().cellValues = t1.get$_solvedBoard().cellValues;
-    t1.get$_boardUI().update$0();
   }
 };
 
@@ -7005,6 +7171,698 @@ $.WhereIterator$ = function(_iterator, _f) {
   return new $.WhereIterator(_iterator, _f);
 };
 
+$.Sort_insertionSort_ = function(a, left, right, compare) {
+  var i, el, j, t1, t2, j0;
+  if (typeof a !== "object" || a === null || (a.constructor !== Array || !!a.immutable$list) && !$.getInterceptor(a).$isJavaScriptIndexingBehavior())
+    return $.Sort_insertionSort_$bailout(1, a, left, right, compare);
+  for (i = left + 1; i <= right; ++i) {
+    if (i < 0 || i >= a.length)
+      throw $.ioore(i);
+    el = a[i];
+    j = i;
+    while (true) {
+      if (j > left) {
+        t1 = j - 1;
+        if (t1 < 0 || t1 >= a.length)
+          throw $.ioore(t1);
+        t1 = $.$gt$n(compare.call$2(a[t1], el), 0);
+      } else
+        t1 = false;
+      t2 = a.length;
+      if (!t1)
+        break;
+      j0 = j - 1;
+      if (j0 < 0 || j0 >= t2)
+        throw $.ioore(j0);
+      t1 = a[j0];
+      if (j < 0 || j >= t2)
+        throw $.ioore(j);
+      a[j] = t1;
+      j = j0;
+    }
+    if (j < 0 || j >= t2)
+      throw $.ioore(j);
+    a[j] = el;
+  }
+};
+
+$.Sort_insertionSort_$bailout = function(state0, a, left, right, compare) {
+  var i, el, j, t1, j0;
+  for (i = left + 1; i <= right; ++i) {
+    if (i < 0 || i >= a.length)
+      throw $.ioore(i);
+    el = a[i];
+    j = i;
+    while (true) {
+      if (j > left) {
+        t1 = j - 1;
+        if (t1 < 0 || t1 >= a.length)
+          throw $.ioore(t1);
+        t1 = $.$gt$n(compare.call$2(a[t1], el), 0);
+      } else
+        t1 = false;
+      if (!t1)
+        break;
+      j0 = j - 1;
+      if (j0 < 0 || j0 >= a.length)
+        throw $.ioore(j0);
+      $.JSArray_methods.$indexSet(a, j, a[j0]);
+      j = j0;
+    }
+    $.JSArray_methods.$indexSet(a, j, el);
+  }
+};
+
+$.Sort__dualPivotQuicksort = function(a, left, right, compare) {
+  var sixth, index1, index5, index3, index2, index4, t1, el1, el2, el3, el4, el5, t0, t2, less, great, k, ak, comp, t3, great0, less0, t4;
+  if (typeof a !== "object" || a === null || (a.constructor !== Array || !!a.immutable$list) && !$.getInterceptor(a).$isJavaScriptIndexingBehavior())
+    return $.Sort__dualPivotQuicksort$bailout(1, a, left, right, compare);
+  sixth = $.JSNumber_methods.$tdiv(right - left + 1, 6);
+  index1 = left + sixth;
+  index5 = right - sixth;
+  index3 = $.JSInt_methods.$tdiv(left + right, 2);
+  index2 = index3 - sixth;
+  index4 = index3 + sixth;
+  if (index1 !== (index1 | 0))
+    throw $.iae(index1);
+  t1 = a.length;
+  if (index1 < 0 || index1 >= t1)
+    throw $.ioore(index1);
+  el1 = a[index1];
+  if (index2 !== (index2 | 0))
+    throw $.iae(index2);
+  if (index2 < 0 || index2 >= t1)
+    throw $.ioore(index2);
+  el2 = a[index2];
+  if (index3 !== (index3 | 0))
+    throw $.iae(index3);
+  if (index3 < 0 || index3 >= t1)
+    throw $.ioore(index3);
+  el3 = a[index3];
+  if (index4 !== (index4 | 0))
+    throw $.iae(index4);
+  if (index4 < 0 || index4 >= t1)
+    throw $.ioore(index4);
+  el4 = a[index4];
+  if (index5 !== (index5 | 0))
+    throw $.iae(index5);
+  if (index5 < 0 || index5 >= t1)
+    throw $.ioore(index5);
+  el5 = a[index5];
+  if ($.$gt$n(compare.call$2(el1, el2), 0)) {
+    t0 = el2;
+    el2 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el4, el5), 0)) {
+    t0 = el5;
+    el5 = el4;
+    el4 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el1, el3), 0)) {
+    t0 = el3;
+    el3 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el3), 0)) {
+    t0 = el3;
+    el3 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el1, el4), 0)) {
+    t0 = el4;
+    el4 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el3, el4), 0)) {
+    t0 = el4;
+    el4 = el3;
+    el3 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el5), 0)) {
+    t0 = el5;
+    el5 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el3), 0)) {
+    t0 = el3;
+    el3 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el4, el5), 0)) {
+    t0 = el5;
+    el5 = el4;
+    el4 = t0;
+  }
+  t1 = a.length;
+  if (index1 >= t1)
+    throw $.ioore(index1);
+  a[index1] = el1;
+  if (index3 >= t1)
+    throw $.ioore(index3);
+  a[index3] = el3;
+  if (index5 >= t1)
+    throw $.ioore(index5);
+  a[index5] = el5;
+  if (left < 0 || left >= t1)
+    throw $.ioore(left);
+  t2 = a[left];
+  if (index2 >= t1)
+    throw $.ioore(index2);
+  a[index2] = t2;
+  if (right < 0 || right >= t1)
+    throw $.ioore(right);
+  t2 = a[right];
+  if (index4 >= t1)
+    throw $.ioore(index4);
+  a[index4] = t2;
+  less = left + 1;
+  great = right - 1;
+  t1 = $.$eq(compare.call$2(el2, el4), 0) === true;
+  if (t1)
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      comp = compare.call$2(ak, el2);
+      t2 = $.getInterceptor(comp);
+      if (t2.$eq(comp, 0) === true)
+        continue;
+      if (t2.$lt(comp, 0)) {
+        if (k !== less) {
+          t2 = a.length;
+          if (less >= t2)
+            throw $.ioore(less);
+          t3 = a[less];
+          if (k >= t2)
+            throw $.ioore(k);
+          a[k] = t3;
+          a[less] = ak;
+        }
+        ++less;
+      } else
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          comp = compare.call$2(a[great], el2);
+          t2 = $.getInterceptor$n(comp);
+          if (t2.$gt(comp, 0)) {
+            --great;
+            continue;
+          } else {
+            t2 = t2.$lt(comp, 0);
+            t3 = a.length;
+            great0 = great - 1;
+            if (t2) {
+              if (less >= t3)
+                throw $.ioore(less);
+              t2 = a[less];
+              if (k >= t3)
+                throw $.ioore(k);
+              a[k] = t2;
+              less0 = less + 1;
+              if (great >= t3)
+                throw $.ioore(great);
+              a[less] = a[great];
+              a[great] = ak;
+              great = great0;
+              less = less0;
+              break;
+            } else {
+              if (great >= t3)
+                throw $.ioore(great);
+              t2 = a[great];
+              if (k >= t3)
+                throw $.ioore(k);
+              a[k] = t2;
+              a[great] = ak;
+              great = great0;
+              break;
+            }
+          }
+        }
+    }
+  else
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      if ($.$lt$n(compare.call$2(ak, el2), 0)) {
+        if (k !== less) {
+          t2 = a.length;
+          if (less >= t2)
+            throw $.ioore(less);
+          t3 = a[less];
+          if (k >= t2)
+            throw $.ioore(k);
+          a[k] = t3;
+          a[less] = ak;
+        }
+        ++less;
+      } else if ($.$gt$n(compare.call$2(ak, el4), 0))
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          if ($.$gt$n(compare.call$2(a[great], el4), 0)) {
+            --great;
+            if (great < k)
+              break;
+            continue;
+          } else {
+            if (great >= a.length)
+              throw $.ioore(great);
+            t2 = $.$lt$n(compare.call$2(a[great], el2), 0);
+            great0 = great - 1;
+            t3 = a.length;
+            if (t2) {
+              if (less >= t3)
+                throw $.ioore(less);
+              t2 = a[less];
+              if (k >= t3)
+                throw $.ioore(k);
+              a[k] = t2;
+              less0 = less + 1;
+              if (great >= t3)
+                throw $.ioore(great);
+              a[less] = a[great];
+              a[great] = ak;
+              less = less0;
+            } else {
+              if (great >= t3)
+                throw $.ioore(great);
+              t2 = a[great];
+              if (k >= t3)
+                throw $.ioore(k);
+              a[k] = t2;
+              a[great] = ak;
+            }
+            great = great0;
+            break;
+          }
+        }
+    }
+  t2 = less - 1;
+  t3 = a.length;
+  if (t2 >= t3)
+    throw $.ioore(t2);
+  t4 = a[t2];
+  if (left >= t3)
+    throw $.ioore(left);
+  a[left] = t4;
+  a[t2] = el2;
+  t2 = great + 1;
+  if (t2 < 0 || t2 >= t3)
+    throw $.ioore(t2);
+  t4 = a[t2];
+  if (right >= t3)
+    throw $.ioore(right);
+  a[right] = t4;
+  a[t2] = el4;
+  t2 = less - 2;
+  if (t2 - left <= 32)
+    $.Sort_insertionSort_(a, left, t2, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, left, t2, compare);
+  t2 = great + 2;
+  if (right - t2 <= 32)
+    $.Sort_insertionSort_(a, t2, right, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, t2, right, compare);
+  if (t1)
+    return;
+  if (less < index1 && great > index5) {
+    while (true) {
+      if (less >= a.length)
+        throw $.ioore(less);
+      if (!($.$eq(compare.call$2(a[less], el2), 0) === true))
+        break;
+      ++less;
+    }
+    while (true) {
+      if (great < 0 || great >= a.length)
+        throw $.ioore(great);
+      if (!($.$eq(compare.call$2(a[great], el4), 0) === true))
+        break;
+      --great;
+    }
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      if ($.$eq(compare.call$2(ak, el2), 0) === true) {
+        if (k !== less) {
+          t1 = a.length;
+          if (less >= t1)
+            throw $.ioore(less);
+          t2 = a[less];
+          if (k >= t1)
+            throw $.ioore(k);
+          a[k] = t2;
+          a[less] = ak;
+        }
+        ++less;
+      } else if ($.$eq(compare.call$2(ak, el4), 0) === true)
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          if ($.$eq(compare.call$2(a[great], el4), 0) === true) {
+            --great;
+            if (great < k)
+              break;
+            continue;
+          } else {
+            if (great >= a.length)
+              throw $.ioore(great);
+            t1 = $.$lt$n(compare.call$2(a[great], el2), 0);
+            t2 = a.length;
+            great0 = great - 1;
+            if (t1) {
+              if (less >= t2)
+                throw $.ioore(less);
+              t1 = a[less];
+              if (k >= t2)
+                throw $.ioore(k);
+              a[k] = t1;
+              less0 = less + 1;
+              if (great >= t2)
+                throw $.ioore(great);
+              a[less] = a[great];
+              a[great] = ak;
+              less = less0;
+            } else {
+              if (great >= t2)
+                throw $.ioore(great);
+              t1 = a[great];
+              if (k >= t2)
+                throw $.ioore(k);
+              a[k] = t1;
+              a[great] = ak;
+            }
+            great = great0;
+            break;
+          }
+        }
+    }
+    if (great - less <= 32)
+      $.Sort_insertionSort_(a, less, great, compare);
+    else
+      $.Sort__dualPivotQuicksort(a, less, great, compare);
+  } else if (great - less <= 32)
+    $.Sort_insertionSort_(a, less, great, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, less, great, compare);
+};
+
+$.Sort__dualPivotQuicksort$bailout = function(state0, a, left, right, compare) {
+  var sixth, index1, index5, index3, index2, index4, t1, el1, el2, el3, el4, el5, t0, less, great, k, ak, comp, t2, t3, great0, less0;
+  sixth = $.JSNumber_methods.$tdiv(right - left + 1, 6);
+  index1 = left + sixth;
+  index5 = right - sixth;
+  index3 = $.JSInt_methods.$tdiv(left + right, 2);
+  index2 = index3 - sixth;
+  index4 = index3 + sixth;
+  if (index1 !== (index1 | 0))
+    throw $.iae(index1);
+  t1 = a.length;
+  if (index1 < 0 || index1 >= t1)
+    throw $.ioore(index1);
+  el1 = a[index1];
+  if (index2 !== (index2 | 0))
+    throw $.iae(index2);
+  if (index2 < 0 || index2 >= t1)
+    throw $.ioore(index2);
+  el2 = a[index2];
+  if (index3 !== (index3 | 0))
+    throw $.iae(index3);
+  if (index3 < 0 || index3 >= t1)
+    throw $.ioore(index3);
+  el3 = a[index3];
+  if (index4 !== (index4 | 0))
+    throw $.iae(index4);
+  if (index4 < 0 || index4 >= t1)
+    throw $.ioore(index4);
+  el4 = a[index4];
+  if (index5 !== (index5 | 0))
+    throw $.iae(index5);
+  if (index5 < 0 || index5 >= t1)
+    throw $.ioore(index5);
+  el5 = a[index5];
+  if ($.$gt$n(compare.call$2(el1, el2), 0)) {
+    t0 = el2;
+    el2 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el4, el5), 0)) {
+    t0 = el5;
+    el5 = el4;
+    el4 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el1, el3), 0)) {
+    t0 = el3;
+    el3 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el3), 0)) {
+    t0 = el3;
+    el3 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el1, el4), 0)) {
+    t0 = el4;
+    el4 = el1;
+    el1 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el3, el4), 0)) {
+    t0 = el4;
+    el4 = el3;
+    el3 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el5), 0)) {
+    t0 = el5;
+    el5 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el2, el3), 0)) {
+    t0 = el3;
+    el3 = el2;
+    el2 = t0;
+  }
+  if ($.$gt$n(compare.call$2(el4, el5), 0)) {
+    t0 = el5;
+    el5 = el4;
+    el4 = t0;
+  }
+  $.JSArray_methods.$indexSet(a, index1, el1);
+  $.JSArray_methods.$indexSet(a, index3, el3);
+  $.JSArray_methods.$indexSet(a, index5, el5);
+  if (left < 0 || left >= a.length)
+    throw $.ioore(left);
+  $.JSArray_methods.$indexSet(a, index2, a[left]);
+  if (right < 0 || right >= a.length)
+    throw $.ioore(right);
+  $.JSArray_methods.$indexSet(a, index4, a[right]);
+  less = left + 1;
+  great = right - 1;
+  t1 = $.$eq(compare.call$2(el2, el4), 0) === true;
+  if (t1)
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      comp = compare.call$2(ak, el2);
+      t2 = $.getInterceptor(comp);
+      if (t2.$eq(comp, 0) === true)
+        continue;
+      if (t2.$lt(comp, 0)) {
+        if (k !== less) {
+          if (less >= a.length)
+            throw $.ioore(less);
+          $.JSArray_methods.$indexSet(a, k, a[less]);
+          $.JSArray_methods.$indexSet(a, less, ak);
+        }
+        ++less;
+      } else
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          comp = compare.call$2(a[great], el2);
+          t2 = $.getInterceptor$n(comp);
+          if (t2.$gt(comp, 0)) {
+            --great;
+            continue;
+          } else {
+            t2 = t2.$lt(comp, 0);
+            t3 = a.length;
+            great0 = great - 1;
+            if (t2) {
+              if (less >= t3)
+                throw $.ioore(less);
+              $.JSArray_methods.$indexSet(a, k, a[less]);
+              less0 = less + 1;
+              if (great >= a.length)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, less, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+              less = less0;
+              break;
+            } else {
+              if (great >= t3)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, k, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+              break;
+            }
+          }
+        }
+    }
+  else
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      if ($.$lt$n(compare.call$2(ak, el2), 0)) {
+        if (k !== less) {
+          if (less >= a.length)
+            throw $.ioore(less);
+          $.JSArray_methods.$indexSet(a, k, a[less]);
+          $.JSArray_methods.$indexSet(a, less, ak);
+        }
+        ++less;
+      } else if ($.$gt$n(compare.call$2(ak, el4), 0))
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          if ($.$gt$n(compare.call$2(a[great], el4), 0)) {
+            --great;
+            if (great < k)
+              break;
+            continue;
+          } else {
+            if (great >= a.length)
+              throw $.ioore(great);
+            t2 = $.$lt$n(compare.call$2(a[great], el2), 0);
+            great0 = great - 1;
+            t3 = a.length;
+            if (t2) {
+              if (less >= t3)
+                throw $.ioore(less);
+              $.JSArray_methods.$indexSet(a, k, a[less]);
+              less0 = less + 1;
+              if (great >= a.length)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, less, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+              less = less0;
+            } else {
+              if (great >= t3)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, k, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+            }
+            break;
+          }
+        }
+    }
+  t2 = less - 1;
+  if (t2 >= a.length)
+    throw $.ioore(t2);
+  $.JSArray_methods.$indexSet(a, left, a[t2]);
+  $.JSArray_methods.$indexSet(a, t2, el2);
+  t2 = great + 1;
+  if (t2 < 0 || t2 >= a.length)
+    throw $.ioore(t2);
+  $.JSArray_methods.$indexSet(a, right, a[t2]);
+  $.JSArray_methods.$indexSet(a, t2, el4);
+  t2 = less - 2;
+  if (t2 - left <= 32)
+    $.Sort_insertionSort_(a, left, t2, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, left, t2, compare);
+  t2 = great + 2;
+  if (right - t2 <= 32)
+    $.Sort_insertionSort_(a, t2, right, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, t2, right, compare);
+  if (t1)
+    return;
+  if (less < index1 && great > index5) {
+    while (true) {
+      if (less >= a.length)
+        throw $.ioore(less);
+      if (!($.$eq(compare.call$2(a[less], el2), 0) === true))
+        break;
+      ++less;
+    }
+    while (true) {
+      if (great < 0 || great >= a.length)
+        throw $.ioore(great);
+      if (!($.$eq(compare.call$2(a[great], el4), 0) === true))
+        break;
+      --great;
+    }
+    for (k = less; k <= great; ++k) {
+      if (k >= a.length)
+        throw $.ioore(k);
+      ak = a[k];
+      if ($.$eq(compare.call$2(ak, el2), 0) === true) {
+        if (k !== less) {
+          if (less >= a.length)
+            throw $.ioore(less);
+          $.JSArray_methods.$indexSet(a, k, a[less]);
+          $.JSArray_methods.$indexSet(a, less, ak);
+        }
+        ++less;
+      } else if ($.$eq(compare.call$2(ak, el4), 0) === true)
+        for (; true;) {
+          if (great < 0 || great >= a.length)
+            throw $.ioore(great);
+          if ($.$eq(compare.call$2(a[great], el4), 0) === true) {
+            --great;
+            if (great < k)
+              break;
+            continue;
+          } else {
+            if (great >= a.length)
+              throw $.ioore(great);
+            t1 = $.$lt$n(compare.call$2(a[great], el2), 0);
+            t2 = a.length;
+            great0 = great - 1;
+            if (t1) {
+              if (less >= t2)
+                throw $.ioore(less);
+              $.JSArray_methods.$indexSet(a, k, a[less]);
+              less0 = less + 1;
+              if (great >= a.length)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, less, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+              less = less0;
+            } else {
+              if (great >= t2)
+                throw $.ioore(great);
+              $.JSArray_methods.$indexSet(a, k, a[great]);
+              $.JSArray_methods.$indexSet(a, great, ak);
+              great = great0;
+            }
+            break;
+          }
+        }
+    }
+    if (great - less <= 32)
+      $.Sort_insertionSort_(a, less, great, compare);
+    else
+      $.Sort__dualPivotQuicksort(a, less, great, compare);
+  } else if (great - less <= 32)
+    $.Sort_insertionSort_(a, less, great, compare);
+  else
+    $.Sort__dualPivotQuicksort(a, less, great, compare);
+};
+
 $.ToString__emitCollection = function(c, result, visiting) {
   var t1, isList, t2, first, t3;
   t1 = $.getInterceptor$ax(visiting);
@@ -7872,7 +8730,7 @@ $.dynamicBindLookup = function(hasOwnPropertyFunction, tag, methods) {
       if (typeof($dynamicMetadata) === "undefined")
         $._dynamicMetadata([]);
       entry = $dynamicMetadata[i];
-      if (hasOwnPropertyFunction.call(entry.get$_liblib5$_set(), tag)) {
+      if (hasOwnPropertyFunction.call(entry.get$_liblib4$_set(), tag)) {
         t1 = entry.get$_tag();
         method = hasOwnPropertyFunction.call(methods, t1) ? methods[t1] : null;
         if (method != null)
@@ -8013,22 +8871,6 @@ $.AsyncError$withCause = function(error, stackTrace, cause) {
   return new $.AsyncError(error, stackTrace, cause);
 };
 
-$.Future_Future$of = function($function) {
-  var result, error, stackTrace, t1, exception;
-  try {
-    result = $function.call$0();
-    t1 = $._FutureImpl$();
-    t1._setOrChainValue$1(result);
-    return t1;
-  } catch (exception) {
-    t1 = $.unwrapException(exception);
-    error = t1;
-    stackTrace = $.getTraceFromException(exception);
-    return $._FutureImpl$immediateError(error, stackTrace);
-  }
-
-};
-
 $._CompleterImpl$ = function() {
   return new $._CompleterImpl($._FutureImpl$(), false);
 };
@@ -8044,12 +8886,6 @@ $._FutureImpl$ = function() {
 $._FutureImpl$immediate = function(value) {
   var t1 = new $._FutureImpl(0, null);
   t1._FutureImpl$immediate$1(value);
-  return t1;
-};
-
-$._FutureImpl$immediateError = function(error, stackTrace) {
-  var t1 = new $._FutureImpl(0, null);
-  t1._FutureImpl$immediateError$2(error, stackTrace);
   return t1;
 };
 
@@ -8265,6 +9101,10 @@ $.ListQueue__nextPowerOf2 = function(number) {
 
 $._ListQueueIterator$ = function(queue) {
   return new $._ListQueueIterator(queue, queue._tail, queue._modificationCount, queue._head, null);
+};
+
+$.Comparable_compare = function(a, b) {
+  return $.compareTo$1$ns(a, b);
 };
 
 $.Duration$ = function(days, hours, microseconds, milliseconds, minutes, seconds) {
@@ -8541,7 +9381,7 @@ $.Cell$_internal = function(_board, _row, _column) {
 };
 
 $.BoardUI$ = function(board) {
-  var t1 = new $.BoardUI(null, null, null, null, null, false, ["contradiction-source-cell", "contradiction-cell"]);
+  var t1 = new $.BoardUI(null, null, null, null, null, false, ["contradiction-source-cell", "contradiction-cell", "hint-cell"]);
   t1.BoardUI$1(board);
   return t1;
 };
@@ -8583,6 +9423,15 @@ $.SudokuSolver$ = function(board) {
 $.CollectionUtils_subtractListAFromListB = function(a, b) {
   var t1 = $.JSArray_methods.where$1(b, new $.CollectionUtils_subtractListAFromListB_anon(a));
   return t1.toList$0(t1);
+};
+
+$.CollectionUtils_compareAscending = function(a, b) {
+  if (a < b)
+    return -1;
+  else if (a > b)
+    return 1;
+  else
+    return 0;
 };
 
 $.Keyboard$ = function() {
@@ -8629,6 +9478,8 @@ $._nullErrorHandler.call$1 = $._nullErrorHandler;
 $._nullErrorHandler.$name = "_nullErrorHandler";
 $._nullDoneHandler.call$0 = $._nullDoneHandler;
 $._nullDoneHandler.$name = "_nullDoneHandler";
+$.Comparable_compare.call$2 = $.Comparable_compare;
+$.Comparable_compare.$name = "Comparable_compare";
 $.num = {builtin$cls: "num"};
 $.Match = {builtin$cls: "Match"};
 $._ManagerStub = {builtin$cls: "_ManagerStub"};
@@ -8646,15 +9497,15 @@ Isolate.makeConstantList = function(list) {
 $.List_empty = Isolate.makeConstantList([]);
 $.C_NullThrownError = new $.NullThrownError();
 $.EventStreamProvider_mouseover = new $.EventStreamProvider("mouseover");
-$.List_yXZ = Isolate.makeConstantList([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+$.C__Random = new $._Random();
 $.JSArray_methods = $.JSArray.prototype;
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
-$.C_Object = new $.Object();
+$.List_yXZ = Isolate.makeConstantList([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 $.EventStreamProvider_keyup = new $.EventStreamProvider("keyup");
-$.C__Random = new $._Random();
 $.C__LinkedHashTableHeadMarker = new $._LinkedHashTableHeadMarker();
 $.EventStreamProvider_mouseout = new $.EventStreamProvider("mouseout");
 $.EventStreamProvider_change = new $.EventStreamProvider("change");
+$.C_Object = new $.Object();
 $.JSInt_methods = $.JSInt.prototype;
 $.EventStreamProvider_blur = new $.EventStreamProvider("blur");
 $.JSNull_methods = $.JSNull.prototype;
@@ -8753,6 +9604,9 @@ $.addAll$1$ax = function(receiver, a0) {
 };
 $.allMatches$1$s = function(receiver, a0) {
   return $.getInterceptor$s(receiver).allMatches$1(receiver, a0);
+};
+$.compareTo$1$ns = function(receiver, a0) {
+  return $.getInterceptor$ns(receiver).compareTo$1(receiver, a0);
 };
 $.contains$1$asx = function(receiver, a0) {
   return $.getInterceptor$asx(receiver).contains$1(receiver, a0);

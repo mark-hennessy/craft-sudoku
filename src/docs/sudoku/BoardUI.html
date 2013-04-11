@@ -66,7 +66,7 @@ class BoardUI {
  bool _isRendered = false;
  bool get isRendered =&gt; _isRendered;
 
- List&lt;String&gt; _temporaryCellStyles = [CSS.CONTRADICTION_SOURCE_CELL, CSS.CONTRADICTION_CELL];
+ List&lt;String&gt; _temporaryCellStyles = [CSS.CONTRADICTION_SOURCE_CELL, CSS.CONTRADICTION_CELL, CSS.HINT_CELL];
 
  BoardUI(Board board) {
    _board = board;
@@ -75,7 +75,11 @@ class BoardUI {
    _keyboard = new Keyboard();
  }
 
- void update([String puzzleTitle]) {
+ /**
+  * Update the UI. This renders the board UI, or refreshes it if it has
+  * already been rendered.
+  */
+ void update() {
    if(isRendered) {
      refresh(boardTitle);
    } else {
@@ -83,13 +87,17 @@ class BoardUI {
    }
  }
 
- void renderGameState(GameState gameState, [String puzzleTitle]) {
+ /**
+  * Renders a new board UI for the given game state and title. This can be
+  * helpful for visualizing specific steps in an algorithm.
+  */
+ void renderGameState(GameState gameState, [String stateTitle]) {
    if(_board != gameState.board)
      throw "The board for which the UI was created must match the board of the game state";
 
    _board.cellValues = gameState.cellValues;
 
-   render(puzzleTitle);
+   render(stateTitle);
 
    for(Cell cell in cells) {
      if(gameState.changedCells.contains(cell)) {
@@ -99,7 +107,11 @@ class BoardUI {
    }
  }
 
- void render([String puzzleTitle]) {
+ /**
+  * Renders a new board. If there is already boards on the screen,
+  * then the new board is placed beneath them.
+  */
+ void render([String title]) {
    var elements = new List&lt;Element&gt;();
 
    _titleElement = new HeadingElement.h3();
@@ -110,11 +122,17 @@ class BoardUI {
 
    _addGridElementsToDom(elements);
    _isRendered = true;
-   refresh(puzzleTitle);
+   refresh(title);
  }
 
- void refresh([String puzzleTitle]) {
-   _setTitle(puzzleTitle);
+ /**
+  * Refresh the board UI to reflect accurate title, cell values, and cell styles.
+  * Refreshing the UI will remove temporary cell styles.
+  */
+ void refresh([String title]) {
+   if(title != null) {
+     _setTitle(title);
+   }
    for(var cell in cells) {
      _renderCellValue(cell);
      _setCellStyle(cell);
@@ -199,40 +217,6 @@ class BoardUI {
    cellElement.classes.remove(CSS.SELECTED_CELL);
  }
 
- void _updateCellValue(Cell cell, KeyboardEvent e) {
-   var value = Keyboard.parseKeyAsInt(e);
-   updateCellValue(cell, value);
- }
-
- void updateCellValue(Cell cell, int value) {
-   cell.value = value;
-   _renderCellValue(cell);
-   _updateStyle(cell);
- }
-
- void _updateStyle(Cell cell) {
-   for(var c in cells) {
-     _clearTemporaryCellStyle(c);
-     var recentlyChanged = (c == cell);
-     _setTemporaryCellStyle(c, recentlyChanged);
-   }
- }
-
- void _clearTemporaryCellStyle(Cell cell) {
-   var cellElement = _cellElementMap[cell];
-   for(var style in _temporaryCellStyles) {
-     cellElement.classes.remove(style);
-   }
- }
-
- void _setTemporaryCellStyle(Cell cell, bool recentlyChanged) {
-   var cellElement = _cellElementMap[cell];
-   if(cell.hasContradiction) {
-     var contradictionStyle = recentlyChanged ? CSS.CONTRADICTION_SOURCE_CELL : CSS.CONTRADICTION_CELL;
-     cellElement.classes.add(contradictionStyle);
-   }
- }
-
  void _moveToNextCell(Cell cell, KeyboardEvent e) {
    var row = cell.row;
    var column = cell.column;
@@ -288,6 +272,76 @@ class BoardUI {
        highlightPeers(false);
      }
    });
+ }
+
+ void _updateCellValue(Cell cell, KeyboardEvent e) {
+   var value = Keyboard.parseKeyAsInt(e);
+   updateCellValue(cell, value);
+ }
+
+ /**
+  * Updates the given cell with the given value as if the player
+  * had used the UI.
+  */
+ void updateCellValue(Cell cell, int value) {
+   if(cellElements.isEmpty)
+     throw "The board UI must be rendered or updated before updating specific cell values.";
+
+   cell.value = value;
+   _renderCellValue(cell);
+   _updateStyle(cell);
+ }
+
+ void _updateStyle(Cell cellToUpdate) {
+   for(var cell in cells) {
+     _clearTemporaryCellStyle(cell);
+     var recentlyChanged = (cell == cellToUpdate);
+     _setTemporaryCellStyle(cell, recentlyChanged);
+   }
+ }
+
+ /**
+  * Clears all temporary cell styles such as styles meant to draw the player's
+  * attention to hint and contradiction cells.
+  */
+ void clearTemporaryCellStyles() {
+   for(var cell in cells) {
+     _clearTemporaryCellStyle(cell);
+   }
+ }
+
+ /**
+  * Clears cell hints, but keeps other temporary cell styles.
+  */
+ void clearHints() {
+   for(var cellElement in cellElements) {
+     cellElement.classes.remove(CSS.HINT_CELL);
+   }
+ }
+
+ void _clearTemporaryCellStyle(Cell cell) {
+   var cellElement = _cellElementMap[cell];
+   for(var style in _temporaryCellStyles) {
+     cellElement.classes.remove(style);
+   }
+ }
+
+ void _setTemporaryCellStyle(Cell cell, bool recentlyChanged) {
+   var cellElement = _cellElementMap[cell];
+   if(cell.hasContradiction) {
+     var contradictionStyle = recentlyChanged ? CSS.CONTRADICTION_SOURCE_CELL : CSS.CONTRADICTION_CELL;
+     cellElement.classes.add(contradictionStyle);
+   }
+ }
+
+ /**
+  * Hints the given cells to the player.
+  */
+ void hintCells(List&lt;Cell&gt; cells) {
+   for(var cell in cells) {
+     var cellElement = _cellElementMap[cell];
+     cellElement.classes.add(CSS.HINT_CELL);
+   }
  }
 
 }
@@ -376,6 +430,37 @@ HeadingElement get titleElement =&gt; _titleElement;
 </div>
 <div>
 <h3>Methods</h3>
+<div class="method"><h4 id="clearHints">
+<button class="show-code">Code</button>
+void <strong>clearHints</strong>() <a class="anchor-link" href="#clearHints"
+              title="Permalink to BoardUI.clearHints">#</a></h4>
+<div class="doc">
+<p>Clears cell hints, but keeps other temporary cell styles.</p>
+<pre class="source">
+void clearHints() {
+ for(var cellElement in cellElements) {
+   cellElement.classes.remove(CSS.HINT_CELL);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="clearTemporaryCellStyles">
+<button class="show-code">Code</button>
+void <strong>clearTemporaryCellStyles</strong>() <a class="anchor-link" href="#clearTemporaryCellStyles"
+              title="Permalink to BoardUI.clearTemporaryCellStyles">#</a></h4>
+<div class="doc">
+<p>Clears all temporary cell styles such as styles meant to draw the player's
+attention to hint and contradiction cells.</p>
+<pre class="source">
+void clearTemporaryCellStyles() {
+ for(var cell in cells) {
+   _clearTemporaryCellStyle(cell);
+ }
+}
+</pre>
+</div>
+</div>
 <div class="method"><h4 id="constructGrid">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_html/Element.html">Element</a> <strong>constructGrid</strong>() <a class="anchor-link" href="#constructGrid"
@@ -402,14 +487,34 @@ Element constructGrid() {
 </pre>
 </div>
 </div>
+<div class="method"><h4 id="hintCells">
+<button class="show-code">Code</button>
+void <strong>hintCells</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt; cells) <a class="anchor-link" href="#hintCells"
+              title="Permalink to BoardUI.hintCells">#</a></h4>
+<div class="doc">
+<p>Hints the given cells to the player.</p>
+<pre class="source">
+void hintCells(List&lt;Cell&gt; cells) {
+ for(var cell in cells) {
+   var cellElement = _cellElementMap[cell];
+   cellElement.classes.add(CSS.HINT_CELL);
+ }
+}
+</pre>
+</div>
+</div>
 <div class="method"><h4 id="refresh">
 <button class="show-code">Code</button>
-void <strong>refresh</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> puzzleTitle]) <a class="anchor-link" href="#refresh"
+void <strong>refresh</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> title]) <a class="anchor-link" href="#refresh"
               title="Permalink to BoardUI.refresh">#</a></h4>
 <div class="doc">
+<p>Refresh the board UI to reflect accurate title, cell values, and cell styles.
+Refreshing the UI will remove temporary cell styles.</p>
 <pre class="source">
-void refresh([String puzzleTitle]) {
- _setTitle(puzzleTitle);
+void refresh([String title]) {
+ if(title != null) {
+   _setTitle(title);
+ }
  for(var cell in cells) {
    _renderCellValue(cell);
    _setCellStyle(cell);
@@ -421,11 +526,13 @@ void refresh([String puzzleTitle]) {
 </div>
 <div class="method"><h4 id="render">
 <button class="show-code">Code</button>
-void <strong>render</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> puzzleTitle]) <a class="anchor-link" href="#render"
+void <strong>render</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> title]) <a class="anchor-link" href="#render"
               title="Permalink to BoardUI.render">#</a></h4>
 <div class="doc">
+<p>Renders a new board. If there is already boards on the screen,
+then the new board is placed beneath them.</p>
 <pre class="source">
-void render([String puzzleTitle]) {
+void render([String title]) {
  var elements = new List&lt;Element&gt;();
 
  _titleElement = new HeadingElement.h3();
@@ -436,24 +543,26 @@ void render([String puzzleTitle]) {
 
  _addGridElementsToDom(elements);
  _isRendered = true;
- refresh(puzzleTitle);
+ refresh(title);
 }
 </pre>
 </div>
 </div>
 <div class="method"><h4 id="renderGameState">
 <button class="show-code">Code</button>
-void <strong>renderGameState</strong>(<a href="../sudoku/GameState.html">GameState</a> gameState, [<a href="http://api.dartlang.org/dart_core/String.html">String</a> puzzleTitle]) <a class="anchor-link" href="#renderGameState"
+void <strong>renderGameState</strong>(<a href="../sudoku/GameState.html">GameState</a> gameState, [<a href="http://api.dartlang.org/dart_core/String.html">String</a> stateTitle]) <a class="anchor-link" href="#renderGameState"
               title="Permalink to BoardUI.renderGameState">#</a></h4>
 <div class="doc">
+<p>Renders a new board UI for the given game state and title. This can be
+helpful for visualizing specific steps in an algorithm.</p>
 <pre class="source">
-void renderGameState(GameState gameState, [String puzzleTitle]) {
+void renderGameState(GameState gameState, [String stateTitle]) {
  if(_board != gameState.board)
    throw "The board for which the UI was created must match the board of the game state";
 
  _board.cellValues = gameState.cellValues;
 
- render(puzzleTitle);
+ render(stateTitle);
 
  for(Cell cell in cells) {
    if(gameState.changedCells.contains(cell)) {
@@ -467,11 +576,13 @@ void renderGameState(GameState gameState, [String puzzleTitle]) {
 </div>
 <div class="method"><h4 id="update">
 <button class="show-code">Code</button>
-void <strong>update</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> puzzleTitle]) <a class="anchor-link" href="#update"
+void <strong>update</strong>() <a class="anchor-link" href="#update"
               title="Permalink to BoardUI.update">#</a></h4>
 <div class="doc">
+<p>Update the UI. This renders the board UI, or refreshes it if it has
+already been rendered.</p>
 <pre class="source">
-void update([String puzzleTitle]) {
+void update() {
  if(isRendered) {
    refresh(boardTitle);
  } else {
@@ -486,8 +597,13 @@ void update([String puzzleTitle]) {
 void <strong>updateCellValue</strong>(<a href="../sudoku/Cell.html">Cell</a> cell, <a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#updateCellValue"
               title="Permalink to BoardUI.updateCellValue">#</a></h4>
 <div class="doc">
+<p>Updates the given cell with the given value as if the player
+had used the UI.</p>
 <pre class="source">
 void updateCellValue(Cell cell, int value) {
+ if(cellElements.isEmpty)
+   throw "The board UI must be rendered or updated before updating specific cell values.";
+
  cell.value = value;
  _renderCellValue(cell);
  _updateStyle(cell);
@@ -500,7 +616,7 @@ void updateCellValue(Cell cell, int value) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-04-10 09:04:05.433</div>
+          <div>This page was generated at 2013-04-10 21:27:36.950</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

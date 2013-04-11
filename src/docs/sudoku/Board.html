@@ -102,7 +102,7 @@ class Board {
  List&lt;Cell&gt; get emptyCells =&gt;
      _cells.where((cell) =&gt; !cell.hasValue).toList();
 
- List&lt;Cell&gt; get emptyCellsWithOnlyOneAvailableValue =&gt;
+ List&lt;Cell&gt; get emptyCellsWithOneAvailableValue =&gt;
      emptyCells.where((cell) =&gt; cell.availableValues.length == 1).toList();
 
  List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
@@ -392,15 +392,15 @@ List&lt;Cell&gt; get emptyCellsSortedByAvailableValuesAscending {
 </pre>
 </div>
 </div>
-<div class="field"><h4 id="emptyCellsWithOnlyOneAvailableValue">
+<div class="field"><h4 id="emptyCellsWithOneAvailableValue">
 <button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsWithOnlyOneAvailableValue</strong> <a class="anchor-link"
-            href="#emptyCellsWithOnlyOneAvailableValue"
-            title="Permalink to Board.emptyCellsWithOnlyOneAvailableValue">#</a>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>emptyCellsWithOneAvailableValue</strong> <a class="anchor-link"
+            href="#emptyCellsWithOneAvailableValue"
+            title="Permalink to Board.emptyCellsWithOneAvailableValue">#</a>
         </h4>
         <div class="doc">
 <pre class="source">
-List&lt;Cell&gt; get emptyCellsWithOnlyOneAvailableValue =&gt;
+List&lt;Cell&gt; get emptyCellsWithOneAvailableValue =&gt;
    emptyCells.where((cell) =&gt; cell.availableValues.length == 1).toList();
 </pre>
 </div>
@@ -502,7 +502,7 @@ Cell getCell(int row, int column) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-04-10 09:04:05.480</div>
+          <div>This page was generated at 2013-04-10 21:27:36.967</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

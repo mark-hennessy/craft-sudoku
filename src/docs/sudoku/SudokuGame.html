@@ -50,8 +50,6 @@
 <div class="doc">
 <pre class="source">
 class SudokuGame {
- Random _randomGenerator;
-
  Map _puzzles;
  List&lt;List&lt;int&gt;&gt; get puzzlesAtDifficulty =&gt; _puzzles[puzzleDifficulty];
  List&lt;int&gt; get puzzle =&gt; _puzzles[puzzleDifficulty][puzzleIndex];
@@ -68,15 +66,23 @@ class SudokuGame {
 
  Board _gameBoard;
  Board get gameBoard =&gt; _gameBoard;
-
  BoardUI _boardUI;
+ bool _wasSolved;
 
- SudokuSolver _solver;
  Board _solvedBoard;
+ Board get solvedBoard {
+   if(!_wasSolved) {
+     _solvedBoard.puzzle = gameBoard.puzzle;
+     var solver = new SudokuSolver(_solvedBoard);
+     solver.bruteForceSolve();
+     _wasSolved = true;
+   }
+   return _solvedBoard;
+ }
+
+ Random _randomGenerator;
 
  SudokuGame() {
-   _randomGenerator = new Random();
-
    _puzzles = new Map();
    _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
    _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
@@ -87,9 +93,9 @@ class SudokuGame {
 
    _gameBoard = new Board();
    _boardUI = new BoardUI(gameBoard);
-
+   _wasSolved = false;
    _solvedBoard = new Board();
-   _solver = new SudokuSolver(_solvedBoard);
+   _randomGenerator = new Random();
 
    _initializeUI();
  }
@@ -124,10 +130,18 @@ class SudokuGame {
  }
 
  void _initializePuzzleControl() {
-   query(CSS.CLEAR_PUZZLE_BTN)
-   ..onClick.listen((e) =&gt; clearPuzzle());
+   query(CSS.HINT_ONE_BTN)
+   ..onClick.listen((e) =&gt; hintOneCell(solve: false));
+   query(CSS.HINT_EASY_BTN)
+   ..onClick.listen((e) =&gt; hintEasyCells());
+   query(CSS.SOLVE_ONE_BTN)
+   ..onClick.listen((e) =&gt; hintOneCell(solve: true));
    query(CSS.SOLVE_PUZZLE_BTN)
    ..onClick.listen((e) =&gt; solvePuzzle());
+   query(CSS.CLEAR_HINTS_BTN)
+   ..onClick.listen((e) =&gt; clearHints());
+   query(CSS.CLEAR_PUZZLE_BTN)
+   ..onClick.listen((e) =&gt; clearPuzzle());
  }
 
  void _initializeDebugInfo() {
@@ -167,25 +181,46 @@ class SudokuGame {
  }
 
  void resetGame() {
+   _wasSolved = false;
    gameBoard.puzzle = puzzle;
    _boardUI.boardTitle = gameTitle;
    _boardUI.update();
  }
 
- void clearPuzzle() {
-   gameBoard.clearPuzzle();
+ List&lt;Cell&gt; hintEasyCells() {
+   clearHints();
+   var easyCells = gameBoard.emptyCellsWithOneAvailableValue;
+   for(var easyCell in easyCells) {
+     _boardUI.hintCells([easyCell]);
+   }
+   return easyCells;
+ }
+
+ Cell hintOneCell({bool solve: false}) {
+   clearHints();
+   var emptyCells = gameBoard.emptyCellsSortedByAvailableValuesAscending;
+   if(emptyCells.isEmpty) return null;
+   var hintCell = emptyCells.first;
+   if(solve) {
+     var solvedBoardCell = solvedBoard.getCell(hintCell.row, hintCell.column);
+     _boardUI.updateCellValue(hintCell, solvedBoardCell.value);
+   }
+   _boardUI.hintCells([hintCell]);
+   return hintCell;
+ }
+
+ void solvePuzzle() {
+   gameBoard.cellValues = solvedBoard.cellValues;
    _boardUI.update();
  }
 
- Future solvePuzzle() {
-   // Runs async
-   Future future = new Future.of(() {
-     _solvedBoard.puzzle = gameBoard.puzzle;
-     _solver.bruteForceSolve();
-     gameBoard.cellValues = _solvedBoard.cellValues;
-     _boardUI.update();
-   });
-   return future;
+ void clearHints() {
+   _boardUI.clearHints();
+ }
+
+ void clearPuzzle() {
+   gameBoard.clearPuzzle();
+   _boardUI.update();
  }
 
 }
@@ -200,8 +235,6 @@ new <strong>SudokuGame</strong>() <a class="anchor-link" href="#SudokuGame"
 <div class="doc">
 <pre class="source">
 SudokuGame() {
- _randomGenerator = new Random();
-
  _puzzles = new Map();
  _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
  _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
@@ -212,9 +245,9 @@ SudokuGame() {
 
  _gameBoard = new Board();
  _boardUI = new BoardUI(gameBoard);
-
+ _wasSolved = false;
  _solvedBoard = new Board();
- _solver = new SudokuSolver(_solvedBoard);
+ _randomGenerator = new Random();
 
  _initializeUI();
 }
@@ -301,9 +334,41 @@ List&lt;List&lt;int&gt;&gt; get puzzlesAtDifficulty =&gt; _puzzles[puzzleDifficu
 </pre>
 </div>
 </div>
+<div class="field"><h4 id="solvedBoard">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Board.html">Board</a>         <strong>solvedBoard</strong> <a class="anchor-link"
+            href="#solvedBoard"
+            title="Permalink to SudokuGame.solvedBoard">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Board get solvedBoard {
+ if(!_wasSolved) {
+   _solvedBoard.puzzle = gameBoard.puzzle;
+   var solver = new SudokuSolver(_solvedBoard);
+   solver.bruteForceSolve();
+   _wasSolved = true;
+ }
+ return _solvedBoard;
+}
+</pre>
+</div>
+</div>
 </div>
 <div>
 <h3>Methods</h3>
+<div class="method"><h4 id="clearHints">
+<button class="show-code">Code</button>
+void <strong>clearHints</strong>() <a class="anchor-link" href="#clearHints"
+              title="Permalink to SudokuGame.clearHints">#</a></h4>
+<div class="doc">
+<pre class="source">
+void clearHints() {
+ _boardUI.clearHints();
+}
+</pre>
+</div>
+</div>
 <div class="method"><h4 id="clearPuzzle">
 <button class="show-code">Code</button>
 void <strong>clearPuzzle</strong>() <a class="anchor-link" href="#clearPuzzle"
@@ -326,6 +391,44 @@ void <strong>firstPuzzle</strong>() <a class="anchor-link" href="#firstPuzzle"
 void firstPuzzle() {
  puzzleIndex = 0;
  resetGame();
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="hintEasyCells">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt; <strong>hintEasyCells</strong>() <a class="anchor-link" href="#hintEasyCells"
+              title="Permalink to SudokuGame.hintEasyCells">#</a></h4>
+<div class="doc">
+<pre class="source">
+List&lt;Cell&gt; hintEasyCells() {
+ clearHints();
+ var easyCells = gameBoard.emptyCellsWithOneAvailableValue;
+ for(var easyCell in easyCells) {
+   _boardUI.hintCells([easyCell]);
+ }
+ return easyCells;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="hintOneCell">
+<button class="show-code">Code</button>
+<a href="../sudoku/Cell.html">Cell</a> <strong>hintOneCell</strong>({<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> solve: false}) <a class="anchor-link" href="#hintOneCell"
+              title="Permalink to SudokuGame.hintOneCell">#</a></h4>
+<div class="doc">
+<pre class="source">
+Cell hintOneCell({bool solve: false}) {
+ clearHints();
+ var emptyCells = gameBoard.emptyCellsSortedByAvailableValuesAscending;
+ if(emptyCells.isEmpty) return null;
+ var hintCell = emptyCells.first;
+ if(solve) {
+   var solvedBoardCell = solvedBoard.getCell(hintCell.row, hintCell.column);
+   _boardUI.updateCellValue(hintCell, solvedBoardCell.value);
+ }
+ _boardUI.hintCells([hintCell]);
+ return hintCell;
 }
 </pre>
 </div>
@@ -389,6 +492,7 @@ void <strong>resetGame</strong>() <a class="anchor-link" href="#resetGame"
 <div class="doc">
 <pre class="source">
 void resetGame() {
+ _wasSolved = false;
  gameBoard.puzzle = puzzle;
  _boardUI.boardTitle = gameTitle;
  _boardUI.update();
@@ -424,19 +528,13 @@ void selectDifficulty(String difficulty) {
 </div>
 <div class="method"><h4 id="solvePuzzle">
 <button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_async/Future.html">Future</a> <strong>solvePuzzle</strong>() <a class="anchor-link" href="#solvePuzzle"
+void <strong>solvePuzzle</strong>() <a class="anchor-link" href="#solvePuzzle"
               title="Permalink to SudokuGame.solvePuzzle">#</a></h4>
 <div class="doc">
 <pre class="source">
-Future solvePuzzle() {
- // Runs async
- Future future = new Future.of(() {
-   _solvedBoard.puzzle = gameBoard.puzzle;
-   _solver.bruteForceSolve();
-   gameBoard.cellValues = _solvedBoard.cellValues;
-   _boardUI.update();
- });
- return future;
+void solvePuzzle() {
+ gameBoard.cellValues = solvedBoard.cellValues;
+ _boardUI.update();
 }
 </pre>
 </div>
@@ -446,7 +544,7 @@ Future solvePuzzle() {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-04-10 09:04:05.513</div>
+          <div>This page was generated at 2013-04-10 21:27:37.003</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

@@ -20,7 +20,6 @@ part 'utils/keyboard.dart';
 void main() {
   var game = new SudokuGame();
   game.run();
-
 //  visualizeHumanSequenceAlgorithm();
 }
 
@@ -33,8 +32,6 @@ void visualizeHumanSequenceAlgorithm() {
 }
 
 class SudokuGame {
-  Random _randomGenerator;
-
   Map _puzzles;
   List<List<int>> get puzzlesAtDifficulty => _puzzles[puzzleDifficulty];
   List<int> get puzzle => _puzzles[puzzleDifficulty][puzzleIndex];
@@ -51,15 +48,23 @@ class SudokuGame {
 
   Board _gameBoard;
   Board get gameBoard => _gameBoard;
-
   BoardUI _boardUI;
+  bool _wasSolved;
 
-  SudokuSolver _solver;
   Board _solvedBoard;
+  Board get solvedBoard {
+    if(!_wasSolved) {
+      _solvedBoard.puzzle = gameBoard.puzzle;
+      var solver = new SudokuSolver(_solvedBoard);
+      solver.bruteForceSolve();
+      _wasSolved = true;
+    }
+    return _solvedBoard;
+  }
+
+  Random _randomGenerator;
 
   SudokuGame() {
-    _randomGenerator = new Random();
-
     _puzzles = new Map();
     _puzzles["easy"] = Parser.parseSudokuData(PUZZLES_EASY_50, separator: '==');
     _puzzles["medium"] = Parser.parseSudokuData(PUZZLES_HARD_95);
@@ -70,9 +75,9 @@ class SudokuGame {
 
     _gameBoard = new Board();
     _boardUI = new BoardUI(gameBoard);
-
+    _wasSolved = false;
     _solvedBoard = new Board();
-    _solver = new SudokuSolver(_solvedBoard);
+    _randomGenerator = new Random();
 
     _initializeUI();
   }
@@ -107,10 +112,18 @@ class SudokuGame {
   }
 
   void _initializePuzzleControl() {
-    query(CSS.CLEAR_PUZZLE_BTN)
-    ..onClick.listen((e) => clearPuzzle());
+    query(CSS.HINT_ONE_BTN)
+    ..onClick.listen((e) => hintOneCell(solve: false));
+    query(CSS.HINT_EASY_BTN)
+    ..onClick.listen((e) => hintEasyCells());
+    query(CSS.SOLVE_ONE_BTN)
+    ..onClick.listen((e) => hintOneCell(solve: true));
     query(CSS.SOLVE_PUZZLE_BTN)
     ..onClick.listen((e) => solvePuzzle());
+    query(CSS.CLEAR_HINTS_BTN)
+    ..onClick.listen((e) => clearHints());
+    query(CSS.CLEAR_PUZZLE_BTN)
+    ..onClick.listen((e) => clearPuzzle());
   }
 
   void _initializeDebugInfo() {
@@ -150,25 +163,46 @@ class SudokuGame {
   }
 
   void resetGame() {
+    _wasSolved = false;
     gameBoard.puzzle = puzzle;
     _boardUI.boardTitle = gameTitle;
     _boardUI.update();
   }
 
-  void clearPuzzle() {
-    gameBoard.clearPuzzle();
+  List<Cell> hintEasyCells() {
+    clearHints();
+    var easyCells = gameBoard.emptyCellsWithOneAvailableValue;
+    for(var easyCell in easyCells) {
+      _boardUI.hintCells([easyCell]);
+    }
+    return easyCells;
+  }
+
+  Cell hintOneCell({bool solve: false}) {
+    clearHints();
+    var emptyCells = gameBoard.emptyCellsSortedByAvailableValuesAscending;
+    if(emptyCells.isEmpty) return null;
+    var hintCell = emptyCells.first;
+    if(solve) {
+      var solvedBoardCell = solvedBoard.getCell(hintCell.row, hintCell.column);
+      _boardUI.updateCellValue(hintCell, solvedBoardCell.value);
+    }
+    _boardUI.hintCells([hintCell]);
+    return hintCell;
+  }
+
+  void solvePuzzle() {
+    gameBoard.cellValues = solvedBoard.cellValues;
     _boardUI.update();
   }
 
-  Future solvePuzzle() {
-    // Runs async
-    Future future = new Future.of(() {
-      _solvedBoard.puzzle = gameBoard.puzzle;
-      _solver.bruteForceSolve();
-      gameBoard.cellValues = _solvedBoard.cellValues;
-      _boardUI.update();
-    });
-    return future;
+  void clearHints() {
+    _boardUI.clearHints();
+  }
+
+  void clearPuzzle() {
+    gameBoard.clearPuzzle();
+    _boardUI.update();
   }
 
 }

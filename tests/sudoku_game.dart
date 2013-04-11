@@ -3,12 +3,12 @@ part of test_suite;
 void runGameTests() {
   group('Game', () {
 
-    var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 5, 7,
+    var puzzleA_unsolved = [0, 8, 3, 9, 2, 1, 6, 0, 7,
                             9, 6, 7, 3, 4, 5, 8, 2, 1,
                             2, 5, 1, 8, 7, 6, 4, 9, 3,
                             5, 4, 8, 1, 3, 2, 9, 7, 6,
-                            7, 2, 9, 5, 6, 4, 1, 3, 8,
-                            1, 3, 6, 7, 9, 8, 2, 4, 5,
+                            7, 2, 0, 5, 6, 4, 1, 3, 8,
+                            1, 3, 6, 7, 9, 0, 2, 4, 5,
                             3, 7, 2, 6, 8, 9, 5, 1, 4,
                             8, 1, 4, 2, 5, 3, 7, 6, 9,
                             6, 9, 5, 4, 1, 7, 3, 8, 2];
@@ -87,17 +87,27 @@ void runGameTests() {
       }
     });
 
+    test('hintOneCell', () {
+      var game = new SudokuGame();
+      var gameBoard = game.gameBoard;
+      // Makes the game update the board UI
+      game.resetGame();
+
+      var emptyCellCount = gameBoard.emptyCells.length;
+      for(var i = 0; i < 3; i++) {
+        game.hintOneCell(solve: true);
+        expect(gameBoard.emptyCells.length, --emptyCellCount);
+      }
+    });
+
     test('solvePuzzle', () {
-      // Need to make a game not managed by the setUp method
-      // because we are calling an async method.
       var game = new SudokuGame();
       var gameBoard = game.gameBoard;
       gameBoard.puzzle = puzzleA_unsolved;
 
       expect(gameBoard.cellValues, orderedEquals(puzzleA_unsolved));
-      game.solvePuzzle().then((unused) {
-        expect(gameBoard.cellValues, orderedEquals(puzzleA_solved));
-      });
+      game.solvePuzzle();
+      expect(gameBoard.cellValues, orderedEquals(puzzleA_solved));
     });
 
   });
