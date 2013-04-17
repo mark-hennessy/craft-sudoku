@@ -2,7 +2,6 @@ library sudoku;
 
 import 'dart:html';
 import 'dart:math';
-import 'dart:async';
 
 part 'sudoku_solver.dart';
 part 'puzzle_parser.dart';
@@ -93,7 +92,7 @@ class SudokuGame {
   }
 
   void _initializePuzzleSelection() {
-    var selectElement = query(CSS.PUZZLE_DIFFICULTY_SELECT);
+    SelectElement selectElement = query(CSS.PUZZLE_DIFFICULTY_SELECT);
     selectElement
     ..onChange.listen((e) {
       selectDifficulty(selectElement.value);
