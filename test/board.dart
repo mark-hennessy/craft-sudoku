@@ -318,7 +318,6 @@ void runBoardTests() {
       var cell1 = board1.getCell(0, 0);
       var cell2 = board2.getCell(0, 0);
       expect(cell1, equals(cell2));
-      expect(true, isFalse);
     });
 
   });
