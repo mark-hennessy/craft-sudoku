@@ -1,6 +1,13 @@
 #!/bin/bash
-# http://work.j832.com/2013/01/headless-browser-testing-dart.html
 
+dart2js web/client/clock.dart -oweb/client/clock.dart.js -v
+git config --global user.email "mhennessy116@gmail.com"
+git config --global user.name "Drone Server"
+git status
+git add .
+git commit -am "Added compiled js files"
+
+# http://work.j832.com/2013/01/headless-browser-testing-dart.html
 # bail on error
 set -e
 
