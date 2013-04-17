@@ -1,16 +1,9 @@
-// Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 library server;
 
 import "dart:io";
 import "dart:utf";
 
 const HOST = "0.0.0.0";
-
-const LOG_REQUESTS = true;
-
 const _CLIENT_FILES = "web/client";
 
 
@@ -20,9 +13,24 @@ void main() {
 
   HttpServer.bind(HOST, port).then((server) {
     server.listen((HttpRequest request) {
-      request.response.write('Hello, world');
-      request.response.close();
+      onRequest(request, request.response);
     });
   });
   print("Server running on http://${HOST}:${port}.");
+}
+
+void onRequest(HttpRequest request, HttpResponse response) {
+  File file = new File(_CLIENT_FILES + "/sudoku_game.html");
+
+  // Set mime type
+  String mimeType = 'text/html; charset=UTF-8';
+  response.headers.set('Content-Type', mimeType);
+
+  // Set content length
+  RandomAccessFile openedFile = file.openSync();
+  response.contentLength = openedFile.lengthSync();
+  openedFile.closeSync();
+
+  // Pipe the file content into the response.
+  file.openRead().pipe(response);
 }
