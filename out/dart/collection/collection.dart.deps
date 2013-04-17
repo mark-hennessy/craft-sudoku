@@ -1,0 +1,187 @@
+v00001
+splay_tree.dart
+false
+_SplayTreeIterator _SplayTreeNode _SplayTreeKeyIterator _SplayTreeValueIterable _SplayTreeMapNode _SplayTree SplayTreeMap _SplayTreeKeyIterable _SplayTreeNodeIterator _SplayTreeValueIterator 
+modificationCount _SplayTreeKeyIterator _workList firstKey ifAbsent _rebuildWorkList initialSplayCount _getValue _addNewRoot isEmpty values _last tree value tmp _SplayTree _map _SplayTreeNodeIterator right _SplayTreeValueIterator key _root iterator mapRoot forEach key2 putIfAbsent key1 compare moveNext _SplayTreeKeyIterable _compare node containsValue toString _dummy SplayTreeMap _clear _splayMin result [] remove firstKeyAfter _remove K clear T _splay V _SplayTreeValueIterable length current currentNode map left _splayMax splayCount []= f comp _currentNode keys _modificationCount _first lastKeyBefore _SplayTreeMapNode _findLeftMostDescendent _splayCount lastKey _SplayTreeIterator containsKey _SplayTreeNode nodes _count _tree _comparator found 
+_addNewRoot _splay _root dart _last _count _modificationCount _first _clear _splayCount _remove 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1365811758000
+dart://collection/collection.dart dart://collection/collection.dart/splay_tree.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+
+hash_set.dart
+false
+_HashSetBase HashSet 
+E result other remove test containsAll contains object add objectsToRetain clear isEmpty objectsToRemove removeWhere _HashSetBase union _newSet length retainAll iterable retainWhere objects removeAll HashSet intersection element iterator addAll difference retainSet toString 
+dart retainWhere 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://collection/collection.dart dart://collection/collection.dart/hash_set.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+
+linked_hash_map.dart
+false
+LinkedHashMap 
+[] other addAll remove ifAbsent keys forEach putIfAbsent K clear isEmpty LinkedHashMap containsKey V values value containsValue action length toString key []= 
+dart 
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+collections.dart
+false
+UnmodifiableListView 
+E [] index _source source length UnmodifiableListView 
+dart 
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/collections.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/list.dart 1366074136000
+
+list.dart
+false
+ListMixin 
+single last count test contains indexOf matchFound singleWhere every where skip buffer isEmpty otherList takeWhile any value combine action expand insertAll iterable toList lastWhere insertionLength retained element iterator index addAll removeLast forEach compare fillRange lastIndexOf sublist reduce newContents removeAt start toString match separator E result sort otherStart getRange remove skipWhile ListMixin add clear replaceRange removeWhere initialValue map length reversed _filter retainWhere end f growable _rangeCheck startIndex asMap setRange fill toSet join removeRange fold elementAt skipCount i source setAll take orElse retainMatching firstWhere previousValue insert first 
+dart growable length 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/list.dart 1366074136000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/iterable.dart 1366074136000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/sort.dart 1365811758000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/list.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+
+iterable.dart
+false
+IterableBase IterableMixin 
+E result foundMatching single count last test skipWhile IterableMixin contains where skip singleWhere every buffer isEmpty remaining IterableBase takeWhile initialValue any length value combine map expand toList lastWhere f element iterator index growable e it forEach toSet n join fold elementAt reduce take orElse firstWhere previousValue first separator 
+dart iterator growable 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/iterable.dart 1366074136000
+
+hash_map.dart
+false
+HashMap 
+[] other addAll remove ifAbsent forEach keys putIfAbsent HashMap K clear isEmpty containsKey values V value containsValue length action toString key []= 
+dart 
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/hash_map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+maps.dart
+false
+Maps 
+f ifAbsent forEach putIfAbsent m Maps k clear isEmpty v containsKey value map length containsValue getValues mapToString key 
+dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://collection/collection.dart dart://collection/collection.dart/maps.dart 1365811758000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+collection.dart
+false
+
+
+dart 
+
+queue.dart
+false
+DoubleLinkedQueueEntry DoubleLinkedQueue _DoubleLinkedQueueIterator Queue _DoubleLinkedQueueEntrySentinel ListQueue _ListQueueIterator 
+modificationCount test _DoubleLinkedQueueEntrySentinel _end _filterIterable _grow toList _next elements _filterWhere element DoubleLinkedQueue firstPartSize _position prevOffset _DoubleLinkedQueueIterator endDistance number firstEntry startDistance nextNumber nextEntry addFirst _add _queue elementSet initialCapacity split E remove next ListQueue clear current length _table forEachEntry retainAll removeFirst retainWhere removeAll _ListQueueIterator f e preSpace _INITIAL_CAPACITY _current _modificationCount n o _currentEntry elementAt expectedModificationCount i p sentinel newTable queue single last removeMatching sourceList mask _elementCount isEmpty value lastEntry action Queue _nextPowerOf2 iterable append _checkModification iterator index addAll newCapacity _writeToList removeLast _tail forEach _element nextOffset moveNext _previous addLast toString _link result other previousEntry object add _remove _isPowerOf2 removeWhere _asNonSentinelEntry offset _filter _preGrow DoubleLinkedQueueEntry growable newElementCount prepend _sentinel list source _head addCount entry retainMatching target endSpace first 
+_link dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/to_string.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/queue.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/identical.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+
+linked_hash_set.dart
+false
+LinkedHashSet 
+E single remove last test contains object add clear objectsToRemove isEmpty removeWhere _newSet action length iterable objects retainWhere removeAll element iterator addAll forEach LinkedHashSet message first 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/hash_set.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/linked_hash_set.dart 1365811758000
+
+iterator.dart
+false
+HasNextIterator 
+_iterator E result _state hasNext _HAS_NEXT_AND_NEXT_IN_CURRENT next _NO_NEXT HasNextIterator _NOT_MOVED_YET _move 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+

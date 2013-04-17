@@ -1,0 +1,16 @@
+v00001
+board.dart
+true
+Cell Board Unit 
+isValueFixed _board gridCoordinatesInBounds otherCellsInUnit coord VALID_VALUES boxUnit BOX_SIZE peerValues rowUnit cellValues value Board cellFunc hasValue CELL_COUNT cell emptyCells _peers _defineRowAndColumnUnits board row _columnUnit clearPuzzle _calculatePeers getCell column _initialize availableValues cssClass sortedList _row emptyCellsWithOneAvailableValue cells _units _isValueFixed other Cell contradictions _cells hasContradictions hasContradiction isSolved add Unit GRID_SIZE otherCell _column == rowSpan _puzzle columnSpan clearValue columnUnit puzzle _boxUnit c emptyCellsSortedByAvailableValuesAscending _defineBoxes indexAtGridCoordinates units i _initializeGrid unit grayBox c1 r c2 peers _traverseCells _rowUnit otherValuesInUnit 
+remove compareAscending CSS contains subtractListAFromListB where row sudoku CollectionUtils column rowSpan map columnSpan 
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+file:/Users/mhennessy/dart/sudoku/src/board.dart file:/Users/mhennessy/dart/sudoku/src/board.dart/board.dart 1365611334000
+

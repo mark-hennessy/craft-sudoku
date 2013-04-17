@@ -1,0 +1,348 @@
+v00001
+identical.dart
+false
+identical 
+b identical a 
+dart 
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/identical.dart 1365811758000
+
+object.dart
+false
+Object 
+noSuchMethod other == invocation hashCode toString runtimeType Object 
+dart 
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/invocation.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/type.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/identical.dart 1365811758000
+
+num.dart
+false
+num 
+truncateToDouble floorToDouble other fractionDigits ceil round >= toStringAsPrecision remainder abs isInfinite isNegative ~/ toDouble precision toStringAsFixed % * + / - num upperLimit floor clamp ceilToDouble truncate <= lowerLimit roundToDouble isNaN > toInt < toStringAsExponential 
+dart 
+dart://core/core.dart dart://core/core.dart/num.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/double.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+print.dart
+false
+print 
+object print 
+dart 
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/print.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+
+iterable.dart
+false
+BidirectionalIterator Iterable _Generator _GeneratorIterable _GeneratorIterator 
+single count last test contains every where skip singleWhere buffer isEmpty takeWhile any combine value expand toList lastWhere element iterator index forEach _index moveNext reduce _Generator _GeneratorIterator separator BidirectionalIterator E skipWhile Iterable movePrevious initialValue current map length generator f growable _current toSet n _generator join fold elementAt _GeneratorIterable _count take orElse firstWhere previousValue first 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+list.dart
+false
+List 
+newLength test indexOf value insertAll iterable element index addAll removeLast compare fillRange lastIndexOf sublist fixedList removeAt start result E [] other sort getRange remove add clear replaceRange removeWhere length generator reversed List retainWhere end []= growable e b setRange asMap a fill list fillValue removeRange skipCount i setAll insert 
+dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+pattern.dart
+false
+Pattern 
+str allMatches Pattern 
+dart 
+dart://core/core.dart dart://core/core.dart/regexp.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/pattern.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+bool.dart
+false
+bool 
+bool 
+dart 
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+
+duration.dart
+false
+Duration 
+quotient inSeconds hashCode SECONDS_PER_DAY MILLISECONDS_PER_DAY twoDigitSeconds SECONDS_PER_HOUR MILLISECONDS_PER_HOUR ~/ MICROSECONDS_PER_MINUTE milliseconds ZERO twoDigitMinutes MICROSECONDS_PER_SECOND hours * inHours + compareTo MILLISECONDS_PER_SECOND microseconds - sixDigitUs toString MILLISECONDS_PER_MINUTE > inDays inMicroseconds < other SECONDS_PER_MINUTE >= MINUTES_PER_HOUR == Duration HOURS_PER_DAY MINUTES_PER_DAY inMilliseconds minutes n MICROSECONDS_PER_DAY factor inMinutes duration days seconds <= MICROSECONDS_PER_HOUR MICROSECONDS_PER_MILLISECOND _duration 
+dart seconds microseconds 
+dart://core/core.dart dart://core/core.dart/exceptions.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/duration.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+string_buffer.dart
+false
+StringBuffer 
+writeln iterator clear content isEmpty length write toString obj writeCharCode StringBuffer writeAll objects separator charCode 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string_sink.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/string_buffer.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+double.dart
+false
+double 
+truncateToDouble floorToDouble other ceil round remainder abs ~/ parse MAX_FINITE MIN_POSITIVE % * + INFINITY double / - NEGATIVE_INFINITY source floor handleError truncate ceilToDouble roundToDouble toString NAN 
+dart 
+dart://core/core.dart dart://core/core.dart/num.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/double.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+comparable.dart
+false
+Comparator Comparable 
+T other b Comparator a compare compareTo Comparable 
+dart 
+dart://core/core.dart dart://core/core.dart/comparable.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+string_sink.dart
+false
+StringSink 
+writeln write StringSink obj writeCharCode writeAll objects separator charCode 
+dart 
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string_sink.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+regexp.dart
+false
+Match RegExp 
+[] firstMatch stringMatch Match caseSensitive isMultiLine RegExp groupCount str pattern start multiLine allMatches hasMatch group isCaseSensitive groups end 
+dart 
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/pattern.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+int.dart
+false
+int 
+truncateToDouble onError floorToDouble other ceil round abs shiftAmount ^ parse isEven & int toRadixString isOdd - >> source floor truncate ceilToDouble radix << roundToDouble ~ toString | 
+dart 
+dart://core/core.dart dart://core/core.dart/num.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/double.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+stacktrace.dart
+false
+StackTrace 
+toString StackTrace 
+dart 
+dart://core/core.dart dart://core/core.dart/stacktrace.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+
+function.dart
+false
+Function 
+apply positionalArguments namedArguments Function function 
+dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/symbol.dart 1366074134000
+
+type.dart
+false
+Type 
+Type 
+dart 
+dart://core/core.dart dart://core/core.dart/type.dart 1365811758000
+
+exceptions.dart
+false
+Exception FormatException IntegerDivisionByZeroException _ExceptionImplementation 
+message Exception FormatException IntegerDivisionByZeroException _ExceptionImplementation toString 
+dart 
+dart://core/core.dart dart://core/core.dart/exceptions.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+
+symbol.dart
+false
+Symbol 
+Symbol name 
+dart 
+dart://_collection_dev/collection_dev.dart dart://_collection_dev/collection_dev.dart/symbol.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/symbol.dart 1366074134000
+
+core.dart
+false
+
+
+dart Symbol _collection_dev 
+
+date_time.dart
+false
+DateTime 
+SEPTEMBER second matched WEDNESDAY hashCode JULY APRIL millisecondsSinceEpoch OCTOBER MAY isAfter DateTime MARCH year FRIDAY isUtc absN toUtc timeZoneOffset DAYS_PER_WEEK compareTo toLocal otherMs sign difference _MAX_MILLISECONDS_SINCE_EPOCH _brokenDownDateToMillisecondsSinceEpoch month toString timeZoneName day match years formattedString other NOVEMBER SATURDAY add re minute FEBRUARY MONDAY isBefore SUNDAY weekday JUNE == millisecond JANUARY parse min d isAtSameMomentAs THURSDAY ms n hour m h DECEMBER AUGUST MONTHS_PER_YEAR subtract duration addOneMillisecond sec TUESDAY y 
+isUtc dart milliseconds 
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/double.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/duration.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/date_time.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+set.dart
+false
+Set 
+intersection element E other addAll remove test containsAll contains add clear difference removeWhere union value retainAll Set elements retainWhere removeAll 
+dart 
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://collection/collection.dart dart://collection/collection.dart/hash_set.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/set.dart 1366074134000
+
+errors.dart
+false
+UnimplementedError RuntimeError AssertionError RangeError ArgumentError StackOverflowError OutOfMemoryError Error NoSuchMethodError TypeError AbstractClassInstantiationError StateError NullThrownError ConcurrentModificationError FallThroughError CastError UnsupportedError 
+UnimplementedError _namedArguments RuntimeError ArgumentError _existingArgumentNames StackOverflowError escaped object backslash StateError NullThrownError existingArgumentNames _receiver CastError modifiedObject _objectToString value UnsupportedError end _memberName AssertionError RangeError _className OutOfMemoryError NoSuchMethodError Error message safeToString AbstractClassInstantiationError TypeError start ConcurrentModificationError FallThroughError string toString _arguments 
+message dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/num.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/double.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+iterator.dart
+false
+Iterator 
+E Iterator current moveNext 
+dart 
+dart://core/core.dart dart://core/core.dart/iterator.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+
+string.dart
+false
+_isLeadSurrogate String Runes RuneIterator _combineSurrogatePair _isTrailSurrogate 
+to codeUnits last _nextPosition _checkSplitSurrogate splitMapJoin RuneIterator onNonMatch contains endIndex indexOf charCodes toUpperCase isEmpty rawIndex substring reset iterator index nonMatch codeUnit _position nextPosition + moveNext lastIndexOf code _currentCodePoint start String toLowerCase replaceAllMapped split replaceAll match position [] other from prevCodeUnit codeUnitAt == movePrevious current length runes Runes replaceFirst _isTrailSurrogate trim nextCodeUnit end charCode startsWith startIndex _combineSurrogatePair replace _isLeadSurrogate pattern string onMatch previousCode endsWith currentSize currentAsString 
+dart 
+dart://core/core.dart dart://core/core.dart/errors.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/regexp.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/comparable.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/iterable.dart 1366074136000
+dart://core/core.dart dart://core/core.dart/pattern.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+invocation.dart
+false
+Invocation 
+isMethod isSetter positionalArguments invokeOn receiver namedArguments isAccessor memberName isGetter Invocation 
+dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/list.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/invocation.dart 1366074134000
+
+map.dart
+false
+Map 
+f [] other ifAbsent remove keys forEach Map putIfAbsent K clear isEmpty containsKey V values value containsValue length key []= 
+dart 
+dart://core/core.dart dart://core/core.dart/map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://collection/collection.dart dart://collection/collection.dart/hash_map.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/iterable.dart 1366074134000
+
+stopwatch.dart
+false
+Stopwatch 
+elapsedMicroseconds stop _now isRunning _frequency frequency _start _stop elapsed Stopwatch start reset elapsedTicks elapsedMilliseconds 
+dart microseconds 
+dart://core/core.dart dart://core/core.dart/bool.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/duration.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/stopwatch.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/int.dart 1365811758000
+
+expando.dart
+false
+Expando 
+Expando T [] name value toString object []= 
+dart 
+dart://core/core.dart dart://core/core.dart/expando.dart 1365811758000
+dart://core/core.dart dart://core/core.dart/object.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/function.dart 1366074134000
+dart://core/core.dart dart://core/core.dart/string.dart 1366074134000
+
