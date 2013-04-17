@@ -1,4 +1,4 @@
-library test_suite;
+library test_runner;
 
 import 'dart:html';
 import '../src/sudoku_game.dart';

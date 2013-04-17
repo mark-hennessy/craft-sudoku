@@ -1,4 +1,4 @@
-part of test_suite;
+part of test_runner;
 
 void runGameTests() {
   group('Game', () {
