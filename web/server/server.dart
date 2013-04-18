@@ -65,10 +65,7 @@ void startServer() {
   HttpServer.bind(HOST, port)
   .then((HttpServer server) {
     server.listen((HttpRequest request) {
-      HttpResponse response = request.response;
-      var requestPath = request.uri.path;
-      print(requestPath);
-      requestReceivedHandler(request, response);
+      requestReceivedHandler(request, request.response);
     });
     print("Serving on http://${HOST}:${port}.");
   });
