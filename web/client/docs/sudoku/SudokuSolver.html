@@ -1,0 +1,478 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SudokuSolver class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="SudokuSolver">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/SudokuSolver.html">SudokuSolver</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><div class="icon-class"></div><strong>SudokuSolver</strong></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>SudokuSolver</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class SudokuSolver {
+
+ Board board;
+
+ List&lt;GameState&gt; gameStates = [];
+ GameState get currentGameState =&gt; gameStates.last;
+
+ SudokuSolver(Board this.board) {
+   _resetGameStates();
+ }
+
+ void visualizeAlgorithm(bool solveAlgorithm(), [String title]) {
+   _resetGameStates();
+   solveAlgorithm();
+   displayAllGameStates(title);
+ }
+
+ /**
+  * The algorithm tries all available options for a cell in order.
+  * If no solution works for the rest of the board, the algorithm
+  * returns false (for “no solution”).
+  *
+  * Algorithm has medium efficiency.
+  *
+  * Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/
+  */
+ bool bruteForceSolve([int cellIndex = 0]) {
+   if (cellIndex &gt;= Board.CELL_COUNT) return true;
+
+   var cell = board.cells[cellIndex];
+
+   if (cell.hasValue) return bruteForceSolve(cellIndex + 1);
+
+   for(int value in cell.availableValues) {
+     _setCellValue(cell, value);
+     if (bruteForceSolve(cellIndex + 1)) return true;
+   }
+
+   cell.clearValue();
+   return false;
+ }
+
+ /**
+  * Fills in cells that only have one possible value until there are none left,
+  * makes a guess, and then continues filling in cells that only have one
+  * possible value until there are none left, then makes another guess and so on.
+  * The algorithm undoes moves and tries a different guess if a contradiction is found.
+  *
+  * Algorithm has low efficiency.
+  */
+ bool humanSolve() {
+   if(board.hasContradictions) return false;
+   if(board.isSolved) return true;
+
+   var modifiedCells = new Set&lt;Cell&gt;();
+
+   var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+   var cellValueMap = new Map&lt;Cell, int&gt;();
+   for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+     cellValueMap[cell] = cell.availableValues.first;
+   }
+   for(var cell in cellValueMap.keys) {
+     _setCellValue(cell, cellValueMap[cell]);
+     modifiedCells.add(cell);
+   }
+
+   if(modifiedCells.length &gt; 0) {
+     if(humanSolve()) return true;
+   } else {
+     var emptyCell = board.emptyCellsSortedByAvailableValuesAscending.first;
+     for(var value in emptyCell.availableValues) {
+       _setCellValue(emptyCell, value);
+       modifiedCells.add(emptyCell);
+       if(humanSolve()) return true;
+     }
+   }
+
+   modifiedCells.forEach((Cell c) =&gt; c.clearValue());
+   return false;
+ }
+
+ /**
+  * Fills in cells that only have one possible value until there are none left,
+  * and then brute force the algorithm if it is not solved.
+  *
+  * Algorithm has low efficiency.
+  */
+ bool humanSolveThenBruteforce() {
+   var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+   while(emptyCellsWithOnlyOneAvailableValue.length &gt; 0) {
+     var cellValueMap = new Map&lt;Cell, int&gt;();
+     for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+       cellValueMap[cell] = cell.availableValues.first;
+     }
+     for(var cell in cellValueMap.keys) {
+       _setCellValue(cell, cellValueMap[cell]);
+     }
+     _snapshotGameState("Iteration");
+     emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+   }
+
+   if(board.isSolved) {
+     return true;
+   } else {
+     _snapshotGameState("Brute Force");
+     return bruteForceSolve();
+   }
+ }
+
+ /**
+  * The goal of this algorithm is to solve a Sudoku board in a similar sequence
+  * to a beginner/intermediate human. An advanced player has a bag of tricks
+  * which make him a lot smarter than this algorithm.
+  *
+  * Algorithm has low efficiency.
+  */
+ bool humanSequenceSolve() {
+   var puzzleHasContradictions = !bruteForceSolve();
+   if(puzzleHasContradictions) return false;
+   var solvedBoard = new Board.fromPuzzle(board.cellValues);
+   _snapshotGameState("Cells brute forced");
+   board.clearPuzzle();
+
+   while(true) {
+     var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+     while(emptyCellsWithOnlyOneAvailableValue.length &gt; 0) {
+       for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+         _setCellValue(cell, cell.availableValues.first);
+       }
+       emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+     }
+     _snapshotGameState("Empty cells w/ 1 val");
+
+     var emptyCellsSorted = board.emptyCellsSortedByAvailableValuesAscending;
+     var solved = emptyCellsSorted.isEmpty;
+     if(solved) return true;
+
+     var cellToFill = emptyCellsSorted.first;
+     var value = solvedBoard.getCell(cellToFill.row, cellToFill.column).value;
+     _setCellValue(cellToFill, value);
+     _snapshotGameState("Guess");
+   }
+ }
+
+ void displayAllGameStates([String title = ""]) {
+   for(int i = 0; i &lt; gameStates.length; i++) {
+     var gameState = gameStates[i];
+
+     var gameTitle = "$title - State $i";
+     if(gameState.title != null) {
+       gameTitle += " - ${gameState.title}";
+     }
+
+     var boardUI = new BoardUI(board);
+     boardUI.renderGameState(gameState, gameTitle);
+   }
+ }
+
+ void _setCellValue(Cell cell, int value) {
+   cell.value = value;
+   currentGameState.addChangedCell(cell);
+ }
+
+ void _resetGameStates() {
+   gameStates.clear();
+   gameStates.add(new GameState(board));
+   //Snapshot the initial state before any cell values have changed.
+   _snapshotGameState();
+ }
+
+ void _snapshotGameState([String title]) {
+   currentGameState.title = title;
+   currentGameState.freezeCellValues();
+   gameStates.add(new GameState(board));
+ }
+
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="SudokuSolver">
+<button class="show-code">Code</button>
+new <strong>SudokuSolver</strong>(<a href="../sudoku/Board.html">Board</a> board) <a class="anchor-link" href="#SudokuSolver"
+              title="Permalink to SudokuSolver.SudokuSolver">#</a></h4>
+<div class="doc">
+<pre class="source">
+SudokuSolver(Board this.board) {
+ _resetGameStates();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="board">
+<button class="show-code">Code</button>
+<a href="../sudoku/Board.html">Board</a>         <strong>board</strong> <a class="anchor-link"
+            href="#board"
+            title="Permalink to SudokuSolver.board">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Board board
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="currentGameState">
+<button class="show-code">Code</button>
+final <a href="../sudoku/GameState.html">GameState</a>         <strong>currentGameState</strong> <a class="anchor-link"
+            href="#currentGameState"
+            title="Permalink to SudokuSolver.currentGameState">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+GameState get currentGameState =&gt; gameStates.last;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="gameStates">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/GameState.html">GameState</a>&gt;         <strong>gameStates</strong> <a class="anchor-link"
+            href="#gameStates"
+            title="Permalink to SudokuSolver.gameStates">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;GameState&gt; gameStates = []
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="bruteForceSolve">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>bruteForceSolve</strong>([<a href="http://api.dartlang.org/dart_core/int.html">int</a> cellIndex = 0]) <a class="anchor-link" href="#bruteForceSolve"
+              title="Permalink to SudokuSolver.bruteForceSolve">#</a></h4>
+<div class="doc">
+<p>The algorithm tries all available options for a cell in order.
+If no solution works for the rest of the board, the algorithm
+returns false (for “no solution”).</p>
+<p>Algorithm has medium efficiency.</p>
+<p>Source: http://johannesbrodwall.com/2010/04/06/why-tdd-makes-a-lot-of-sense-for-sudoko/</p>
+<pre class="source">
+bool bruteForceSolve([int cellIndex = 0]) {
+ if (cellIndex &gt;= Board.CELL_COUNT) return true;
+
+ var cell = board.cells[cellIndex];
+
+ if (cell.hasValue) return bruteForceSolve(cellIndex + 1);
+
+ for(int value in cell.availableValues) {
+   _setCellValue(cell, value);
+   if (bruteForceSolve(cellIndex + 1)) return true;
+ }
+
+ cell.clearValue();
+ return false;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="displayAllGameStates">
+<button class="show-code">Code</button>
+void <strong>displayAllGameStates</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> title = ""]) <a class="anchor-link" href="#displayAllGameStates"
+              title="Permalink to SudokuSolver.displayAllGameStates">#</a></h4>
+<div class="doc">
+<pre class="source">
+void displayAllGameStates([String title = ""]) {
+ for(int i = 0; i &lt; gameStates.length; i++) {
+   var gameState = gameStates[i];
+
+   var gameTitle = "$title - State $i";
+   if(gameState.title != null) {
+     gameTitle += " - ${gameState.title}";
+   }
+
+   var boardUI = new BoardUI(board);
+   boardUI.renderGameState(gameState, gameTitle);
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="humanSequenceSolve">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>humanSequenceSolve</strong>() <a class="anchor-link" href="#humanSequenceSolve"
+              title="Permalink to SudokuSolver.humanSequenceSolve">#</a></h4>
+<div class="doc">
+<p>The goal of this algorithm is to solve a Sudoku board in a similar sequence
+to a beginner/intermediate human. An advanced player has a bag of tricks
+which make him a lot smarter than this algorithm.</p>
+<p>Algorithm has low efficiency.</p>
+<pre class="source">
+bool humanSequenceSolve() {
+ var puzzleHasContradictions = !bruteForceSolve();
+ if(puzzleHasContradictions) return false;
+ var solvedBoard = new Board.fromPuzzle(board.cellValues);
+ _snapshotGameState("Cells brute forced");
+ board.clearPuzzle();
+
+ while(true) {
+   var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+   while(emptyCellsWithOnlyOneAvailableValue.length &gt; 0) {
+     for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+       _setCellValue(cell, cell.availableValues.first);
+     }
+     emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+   }
+   _snapshotGameState("Empty cells w/ 1 val");
+
+   var emptyCellsSorted = board.emptyCellsSortedByAvailableValuesAscending;
+   var solved = emptyCellsSorted.isEmpty;
+   if(solved) return true;
+
+   var cellToFill = emptyCellsSorted.first;
+   var value = solvedBoard.getCell(cellToFill.row, cellToFill.column).value;
+   _setCellValue(cellToFill, value);
+   _snapshotGameState("Guess");
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="humanSolve">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>humanSolve</strong>() <a class="anchor-link" href="#humanSolve"
+              title="Permalink to SudokuSolver.humanSolve">#</a></h4>
+<div class="doc">
+<p>Fills in cells that only have one possible value until there are none left,
+makes a guess, and then continues filling in cells that only have one
+possible value until there are none left, then makes another guess and so on.
+The algorithm undoes moves and tries a different guess if a contradiction is found.</p>
+<p>Algorithm has low efficiency.</p>
+<pre class="source">
+bool humanSolve() {
+ if(board.hasContradictions) return false;
+ if(board.isSolved) return true;
+
+ var modifiedCells = new Set&lt;Cell&gt;();
+
+ var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+ var cellValueMap = new Map&lt;Cell, int&gt;();
+ for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+   cellValueMap[cell] = cell.availableValues.first;
+ }
+ for(var cell in cellValueMap.keys) {
+   _setCellValue(cell, cellValueMap[cell]);
+   modifiedCells.add(cell);
+ }
+
+ if(modifiedCells.length &gt; 0) {
+   if(humanSolve()) return true;
+ } else {
+   var emptyCell = board.emptyCellsSortedByAvailableValuesAscending.first;
+   for(var value in emptyCell.availableValues) {
+     _setCellValue(emptyCell, value);
+     modifiedCells.add(emptyCell);
+     if(humanSolve()) return true;
+   }
+ }
+
+ modifiedCells.forEach((Cell c) =&gt; c.clearValue());
+ return false;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="humanSolveThenBruteforce">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>humanSolveThenBruteforce</strong>() <a class="anchor-link" href="#humanSolveThenBruteforce"
+              title="Permalink to SudokuSolver.humanSolveThenBruteforce">#</a></h4>
+<div class="doc">
+<p>Fills in cells that only have one possible value until there are none left,
+and then brute force the algorithm if it is not solved.</p>
+<p>Algorithm has low efficiency.</p>
+<pre class="source">
+bool humanSolveThenBruteforce() {
+ var emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+ while(emptyCellsWithOnlyOneAvailableValue.length &gt; 0) {
+   var cellValueMap = new Map&lt;Cell, int&gt;();
+   for(var cell in emptyCellsWithOnlyOneAvailableValue) {
+     cellValueMap[cell] = cell.availableValues.first;
+   }
+   for(var cell in cellValueMap.keys) {
+     _setCellValue(cell, cellValueMap[cell]);
+   }
+   _snapshotGameState("Iteration");
+   emptyCellsWithOnlyOneAvailableValue = board.emptyCellsWithOneAvailableValue;
+ }
+
+ if(board.isSolved) {
+   return true;
+ } else {
+   _snapshotGameState("Brute Force");
+   return bruteForceSolve();
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="visualizeAlgorithm">
+<button class="show-code">Code</button>
+void <strong>visualizeAlgorithm</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> solveAlgorithm(), [<a href="http://api.dartlang.org/dart_core/String.html">String</a> title]) <a class="anchor-link" href="#visualizeAlgorithm"
+              title="Permalink to SudokuSolver.visualizeAlgorithm">#</a></h4>
+<div class="doc">
+<pre class="source">
+void visualizeAlgorithm(bool solveAlgorithm(), [String title]) {
+ _resetGameStates();
+ solveAlgorithm();
+ displayAllGameStates(title);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-17 21:05:55.382</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

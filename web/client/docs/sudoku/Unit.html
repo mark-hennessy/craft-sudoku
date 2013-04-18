@@ -1,0 +1,134 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Unit class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Unit">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Unit.html">Unit</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><a href="../sudoku/Cell.html"><div class="icon-class"></div>Cell</a></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><div class="icon-class"></div><strong>Unit</strong></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Unit</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A grouping of cells such as a row, column or block.</p>
+<pre class="source">
+class Unit {
+ List&lt;Cell&gt; _cells = [];
+ List&lt;Cell&gt; get cells =&gt; _cells.toList();
+
+ List&lt;int&gt; get cellValues =&gt;
+     _cells.where((cell) =&gt; cell.hasValue)
+     .map((cell) =&gt; cell.value).toList();
+
+ String cssClass = '';
+
+ void add(Cell cell) {
+   _cells.add(cell);
+ }
+
+}
+</pre>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="cells">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>cells</strong> <a class="anchor-link"
+            href="#cells"
+            title="Permalink to Unit.cells">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;Cell&gt; get cells =&gt; _cells.toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="cellValues">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>cellValues</strong> <a class="anchor-link"
+            href="#cellValues"
+            title="Permalink to Unit.cellValues">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+List&lt;int&gt; get cellValues =&gt;
+   _cells.where((cell) =&gt; cell.hasValue)
+   .map((cell) =&gt; cell.value).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="cssClass">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>cssClass</strong> <a class="anchor-link"
+            href="#cssClass"
+            title="Permalink to Unit.cssClass">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+String cssClass = ''
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="add">
+<button class="show-code">Code</button>
+void <strong>add</strong>(<a href="../sudoku/Cell.html">Cell</a> cell) <a class="anchor-link" href="#add"
+              title="Permalink to Unit.add">#</a></h4>
+<div class="doc">
+<pre class="source">
+void add(Cell cell) {
+ _cells.add(cell);
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-17 21:05:55.345</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

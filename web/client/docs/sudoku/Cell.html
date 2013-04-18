@@ -1,0 +1,420 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Cell class / sudoku Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="sudoku" data-type="Cell">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../sudoku.html">sudoku</a> &rsaquo; <a href="../sudoku/Cell.html">Cell</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../metadata.html">metadata</a></h2><h2><div class="icon-library"></div><a href="../sudoku.html">sudoku</a></h2><ul class="icon">
+<li><a href="../sudoku/Board.html"><div class="icon-class"></div>Board</a></li>
+<li><a href="../sudoku/BoardUI.html"><div class="icon-class"></div>BoardUI</a></li>
+<li><div class="icon-class"></div><strong>Cell</strong></li>
+<li><a href="../sudoku/CollectionUtils.html"><div class="icon-class"></div>CollectionUtils</a></li>
+<li><a href="../sudoku/CSS.html"><div class="icon-class"></div>CSS</a></li>
+<li><a href="../sudoku/DomUtils.html"><div class="icon-class"></div>DomUtils</a></li>
+<li><a href="../sudoku/GameState.html"><div class="icon-class"></div>GameState</a></li>
+<li><a href="../sudoku/IO.html"><div class="icon-class"></div>IO</a></li>
+<li><a href="../sudoku/Keyboard.html"><div class="icon-class"></div>Keyboard</a></li>
+<li><a href="../sudoku/Parser.html"><div class="icon-class"></div>Parser</a></li>
+<li><a href="../sudoku/StringUtils.html"><div class="icon-class"></div>StringUtils</a></li>
+<li><a href="../sudoku/SudokuGame.html"><div class="icon-class"></div>SudokuGame</a></li>
+<li><a href="../sudoku/SudokuSolver.html"><div class="icon-class"></div>SudokuSolver</a></li>
+<li><a href="../sudoku/Unit.html"><div class="icon-class"></div>Unit</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Cell</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Represents a single cell in the 81 cell <a class="crossref" href="../sudoku/Board.html">Board</a>.</p>
+<pre class="source">
+class Cell {
+ static const List&lt;int&gt; VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+ Board _board;
+ Board get board =&gt; _board;
+
+ int _row, _column;
+ int get row =&gt; _row;
+ int get column =&gt; _column;
+
+ Unit _boxUnit, _rowUnit, _columnUnit;
+ Unit get boxUnit =&gt; _boxUnit;
+ Unit get rowUnit =&gt; _rowUnit;
+ Unit get columnUnit =&gt; _columnUnit;
+
+ Set&lt;Cell&gt; _peers;
+
+ /**
+  * The unique set of cells in the same box, row, or column as this cell.
+  */
+ Set&lt;Cell&gt; get peers {
+   if(_peers == null) {
+     _calculatePeers();
+   }
+   return _peers.toSet();
+ }
+
+ void _calculatePeers() {
+   _peers = new Set&lt;Cell&gt;();
+   _peers.addAll(boxUnit.cells);
+   _peers.addAll(rowUnit.cells);
+   _peers.addAll(columnUnit.cells);
+   _peers.remove(this);
+ }
+
+ /**
+  * Cell values that are already taken by the cell's box, row, or column.
+  */
+ List&lt;int&gt; get peerValues =&gt;
+     peers.where((cell) =&gt; cell.hasValue)
+     .map((cell) =&gt; cell.value).toList();
+
+ /**
+  * True if the cell's value cannot be changed because it is part of the original puzzle.
+  */
+ bool _isValueFixed = false;
+ bool get isValueFixed =&gt; _isValueFixed;
+
+ int get value =&gt;
+     board.cellValues[Board.indexAtGridCoordinates(row, column)];
+
+ /**
+  * Sets the cell's value. Throws an exception if the cell's value is fixed.
+  */
+ set value(int value) {
+   if(isValueFixed) throw "The cell value at [r:${row}, c:${column}]"
+     " cannot be set because it is part of the original puzzle.";
+
+   board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
+ }
+
+ /**
+  * True if the cell has a valid value. A valid value is a number between 1 and 9 inclusive.
+  */
+ bool get hasValue =&gt; VALID_VALUES.contains(value);
+
+ /**
+  * Cell values that are not already taken by the cell's box, row, or column [Unit].
+  */
+ List&lt;int&gt; get availableValues =&gt;
+     CollectionUtils.subtractListAFromListB(peerValues, VALID_VALUES);
+
+ /**
+  * True if there are no possible values for this cell, or if another cell
+  * in this cell's row, column, or box has the same value.
+  */
+ bool get hasContradiction {
+   if(hasValue) {
+     for(var unit in [rowUnit, columnUnit, boxUnit]) {
+       var otherCellsInUnit = unit.cells;
+       otherCellsInUnit.remove(this);
+       var otherValuesInUnit = otherCellsInUnit
+           .where((cell) =&gt; cell.hasValue)
+           .map((cell) =&gt; cell.value);
+       if(otherValuesInUnit.contains(value)) return true;
+     }
+   }
+   return availableValues.isEmpty;
+ }
+
+ Cell._internal(this._board, this._row, this._column);
+
+ void clearValue() {
+   if(!isValueFixed) {
+     value = 0;
+   }
+ }
+
+ /**
+  * Cells are equal if they have the same row, column, and value.
+  */
+ operator ==(Object other) {
+   Cell otherCell = other as Cell;
+   if(otherCell == null) return false;
+   return otherCell.row == this.row &amp;&amp;
+       otherCell.column == this.column &amp;&amp;
+       otherCell.value == this.value;
+ }
+
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="VALID_VALUES">
+<button class="show-code">Code</button>
+const <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>VALID_VALUES</strong> <a class="anchor-link"
+            href="#VALID_VALUES"
+            title="Permalink to Cell.VALID_VALUES">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const List&lt;int&gt; VALID_VALUES = const[1, 2, 3, 4, 5, 6, 7, 8, 9]
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="availableValues">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>availableValues</strong> <a class="anchor-link"
+            href="#availableValues"
+            title="Permalink to Cell.availableValues">#</a>
+        </h4>
+        <div class="doc">
+<p>Cell values that are not already taken by the cell's box, row, or column <a class="crossref" href="../sudoku/Unit.html">Unit</a>.</p>
+<pre class="source">
+List&lt;int&gt; get availableValues =&gt;
+   CollectionUtils.subtractListAFromListB(peerValues, VALID_VALUES);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="board">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Board.html">Board</a>         <strong>board</strong> <a class="anchor-link"
+            href="#board"
+            title="Permalink to Cell.board">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Board get board =&gt; _board;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boxUnit">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Unit.html">Unit</a>         <strong>boxUnit</strong> <a class="anchor-link"
+            href="#boxUnit"
+            title="Permalink to Cell.boxUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Unit get boxUnit =&gt; _boxUnit;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="column">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>column</strong> <a class="anchor-link"
+            href="#column"
+            title="Permalink to Cell.column">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get column =&gt; _column;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="columnUnit">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Unit.html">Unit</a>         <strong>columnUnit</strong> <a class="anchor-link"
+            href="#columnUnit"
+            title="Permalink to Cell.columnUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Unit get columnUnit =&gt; _columnUnit;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasContradiction">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>hasContradiction</strong> <a class="anchor-link"
+            href="#hasContradiction"
+            title="Permalink to Cell.hasContradiction">#</a>
+        </h4>
+        <div class="doc">
+<p>True if there are no possible values for this cell, or if another cell
+in this cell's row, column, or box has the same value.</p>
+<pre class="source">
+bool get hasContradiction {
+ if(hasValue) {
+   for(var unit in [rowUnit, columnUnit, boxUnit]) {
+     var otherCellsInUnit = unit.cells;
+     otherCellsInUnit.remove(this);
+     var otherValuesInUnit = otherCellsInUnit
+         .where((cell) =&gt; cell.hasValue)
+         .map((cell) =&gt; cell.value);
+     if(otherValuesInUnit.contains(value)) return true;
+   }
+ }
+ return availableValues.isEmpty;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasValue">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>hasValue</strong> <a class="anchor-link"
+            href="#hasValue"
+            title="Permalink to Cell.hasValue">#</a>
+        </h4>
+        <div class="doc">
+<p>True if the cell has a valid value. A valid value is a number between 1 and 9 inclusive.</p>
+<pre class="source">
+bool get hasValue =&gt; VALID_VALUES.contains(value);
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isValueFixed">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isValueFixed</strong> <a class="anchor-link"
+            href="#isValueFixed"
+            title="Permalink to Cell.isValueFixed">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+bool get isValueFixed =&gt; _isValueFixed;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="peers">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Set.html">Set</a>&lt;<a href="../sudoku/Cell.html">Cell</a>&gt;         <strong>peers</strong> <a class="anchor-link"
+            href="#peers"
+            title="Permalink to Cell.peers">#</a>
+        </h4>
+        <div class="doc">
+<p>The unique set of cells in the same box, row, or column as this cell.</p>
+<pre class="source">
+Set&lt;Cell&gt; get peers {
+ if(_peers == null) {
+   _calculatePeers();
+ }
+ return _peers.toSet();
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="peerValues">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/int.html">int</a>&gt;         <strong>peerValues</strong> <a class="anchor-link"
+            href="#peerValues"
+            title="Permalink to Cell.peerValues">#</a>
+        </h4>
+        <div class="doc">
+<p>Cell values that are already taken by the cell's box, row, or column.</p>
+<pre class="source">
+List&lt;int&gt; get peerValues =&gt;
+   peers.where((cell) =&gt; cell.hasValue)
+   .map((cell) =&gt; cell.value).toList();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="row">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>row</strong> <a class="anchor-link"
+            href="#row"
+            title="Permalink to Cell.row">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get row =&gt; _row;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="rowUnit">
+<button class="show-code">Code</button>
+final <a href="../sudoku/Unit.html">Unit</a>         <strong>rowUnit</strong> <a class="anchor-link"
+            href="#rowUnit"
+            title="Permalink to Cell.rowUnit">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+Unit get rowUnit =&gt; _rowUnit;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="value">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>value</strong> <a class="anchor-link"
+            href="#value"
+            title="Permalink to Cell.value">#</a>
+        </h4>
+        <div class="doc">
+<p>Sets the cell's value. Throws an exception if the cell's value is fixed.</p>
+<pre class="source">
+int get value =&gt;
+   board.cellValues[Board.indexAtGridCoordinates(row, column)];
+</pre>
+<pre class="source">
+set value(int value) {
+ if(isValueFixed) throw "The cell value at [r:${row}, c:${column}]"
+   " cannot be set because it is part of the original puzzle.";
+
+ board.cellValues[Board.indexAtGridCoordinates(row, column)] = value;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Operators</h3>
+<div class="method"><h4 id="==">
+<button class="show-code">Code</button>
+dynamic <strong>operator ==</strong>(<a href="http://api.dartlang.org/dart_core/Object.html">Object</a> other) <a class="anchor-link" href="#=="
+              title="Permalink to Cell.operator ==">#</a></h4>
+<div class="doc">
+<p>Cells are equal if they have the same row, column, and value.</p>
+<pre class="source">
+operator ==(Object other) {
+ Cell otherCell = other as Cell;
+ if(otherCell == null) return false;
+ return otherCell.row == this.row &amp;&amp;
+     otherCell.column == this.column &amp;&amp;
+     otherCell.value == this.value;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="clearValue">
+<button class="show-code">Code</button>
+void <strong>clearValue</strong>() <a class="anchor-link" href="#clearValue"
+              title="Permalink to Cell.clearValue">#</a></h4>
+<div class="doc">
+<pre class="source">
+void clearValue() {
+ if(!isValueFixed) {
+   value = 0;
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-17 21:05:55.342</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

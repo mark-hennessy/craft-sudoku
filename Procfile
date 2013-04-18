@@ -1,2 +1,2 @@
-web: dart web/server.dart
+web: dart web/server/server.dart
 
