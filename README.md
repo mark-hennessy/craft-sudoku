@@ -1,5 +1,5 @@
-craft-sudoku
-============
+# craft-sudoku
+
 A Sudoku solver/game developed in the Dart programming language. 
 
 Check it out!<br />
