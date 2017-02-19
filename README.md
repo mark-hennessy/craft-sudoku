@@ -9,4 +9,4 @@ http://craft-sudoku.herokuapp.com/
 
 © Mark Hennessy
 
-Licensed under the [MIT License](LICENSE.md).
+Licensed under the [MIT License](LICENSE).
