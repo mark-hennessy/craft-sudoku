@@ -1,6 +1,10 @@
 craft-sudoku
 ============
-A Sudoku solver/game developed in the Dart programming language. Check it out! <br />
+A Sudoku solver/game developed in the Dart programming language. Check it out!
 http://craft-sudoku.herokuapp.com/
 
-[![Build Status](https://drone.io/github.com/markhennessy/craft-sudoku/status.png)](https://drone.io/github.com/markhennessy/craft-sudoku/latest)
+## License & copyright
+
+© Mark Hennessy
+
+Licensed under the [MIT License](LICENSE.md).
