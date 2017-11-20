@@ -1,4 +1,4 @@
-# craft-sudoku
+# Craft Sudoku
 
 A Sudoku solver/game developed in the Dart programming language. 
 
