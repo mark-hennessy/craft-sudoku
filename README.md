@@ -5,7 +5,7 @@ A Sudoku solver/game developed in the Dart programming language.
 Check it out!<br />
 http://craft-sudoku.herokuapp.com/
 
-## License & copyright
+## License & Copyright
 
 © Mark Hennessy
 
